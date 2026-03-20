@@ -206,3 +206,55 @@ export async function updateRegistrationStatus(id, status) {
 
   if (error) throw error;
 }
+
+// ─── Social Links Operations ───
+
+export async function fetchSocialLinks() {
+  const { data, error } = await supabase
+    .from('social_links')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addSocialLink(link) {
+  const { data, error } = await supabase
+    .from('social_links')
+    .insert({
+      id: link.id,
+      platform: link.platform,
+      url: link.url,
+      label: link.label || null,
+      sort_order: link.sort_order || 0,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateSocialLink(link) {
+  const { error } = await supabase
+    .from('social_links')
+    .update({
+      platform: link.platform,
+      url: link.url,
+      label: link.label || null,
+      sort_order: link.sort_order || 0,
+    })
+    .eq('id', link.id);
+
+  if (error) throw error;
+}
+
+export async function deleteSocialLink(id) {
+  const { error } = await supabase
+    .from('social_links')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+}

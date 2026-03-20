@@ -3,6 +3,7 @@ import {
   fetchTemples, addTemple as dbAddTemple, updateTemple as dbUpdateTemple, deleteTemple as dbDeleteTemple,
   addPuja as dbAddPuja, deletePuja as dbDeletePuja,
   fetchRegistrations, addRegistration as dbAddRegistration, updateRegistrationStatus as dbUpdateStatus,
+  fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
 
@@ -11,7 +12,7 @@ const LOGO_SRC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAIAAAC2
 
 // ─── State ───
 const initialState = {
-  temples: [], registrations: [],
+  temples: [], registrations: [], socialLinks: [],
   view: "home", selectedTemple: null, selectedPujas: [],
   adminTab: "registrations", editingTempleId: null,
   notification: null, loading: true, error: null,
@@ -19,7 +20,7 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "SET_DATA": return { ...state, temples: action.payload.temples, registrations: action.payload.registrations, loading: false };
+    case "SET_DATA": return { ...state, temples: action.payload.temples, registrations: action.payload.registrations, socialLinks: action.payload.socialLinks || [], loading: false };
     case "SET_LOADING": return { ...state, loading: action.payload };
     case "SET_ERROR": return { ...state, error: action.payload, loading: false };
     case "SET_VIEW": return { ...state, view: action.payload };
@@ -153,8 +154,25 @@ function AdminLogin({ dispatch, onLogin }) {
   );
 }
 
+// ─── Social Icons Map ───
+const SOCIAL_ICONS = {
+  facebook: { color: "#1877F2", svg: '<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>' },
+  instagram: { color: "#E4405F", svg: '<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>' },
+  youtube: { color: "#FF0000", svg: '<path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>' },
+  twitter: { color: "#000000", svg: '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>' },
+  whatsapp: { color: "#25D366", svg: '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>' },
+  telegram: { color: "#0088CC", svg: '<path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>' },
+  linkedin: { color: "#0A66C2", svg: '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>' },
+  website: { color: "#e8621e", svg: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>' },
+};
+
+function SocialIcon({ platform, size = 22 }) {
+  const icon = SOCIAL_ICONS[platform] || SOCIAL_ICONS.website;
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill={icon.color} dangerouslySetInnerHTML={{ __html: icon.svg }} />;
+}
+
 // ─── About Page ───
-function AboutPage() {
+function AboutPage({ socialLinks = [] }) {
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 36 }}>
@@ -168,14 +186,21 @@ function AboutPage() {
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: "0 0 14px" }}>This platform is an initiative driven by <strong style={{ color: C.maroon }}>Shree Dattaraj Gurumauli</strong> to bring sacred traditions of temple worship closer to every devotee.</p>
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: 0 }}>Our goal is to provide a seamless way for devotees to register for pujas and rituals at various temples, preserving traditions while embracing modern convenience.</p>
       </div>
-      <div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, padding: "28px 32px", marginBottom: 20, color: "#fff", textAlign: "center" }}>
-        <h3 style={{ fontFamily: font, fontSize: 20, margin: "0 0 12px", color: C.gold }}>🙏 Connect With Us</h3>
-        <p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.85, margin: "0 0 20px", lineHeight: 1.7 }}>Follow us for updates on pujas, events, and community gatherings.</p>
-        <a href="https://www.facebook.com/shreedattarajgurumauli" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: sansFont, fontSize: 15, fontWeight: 700, padding: "14px 32px", borderRadius: 12, background: "#fff", color: C.maroon, textDecoration: "none", boxShadow: "0 4px 16px rgba(0,0,0,0.2)" }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Follow on Facebook
-        </a>
-      </div>
+      {socialLinks.length > 0 && (
+        <div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, padding: "28px 32px", marginBottom: 20, color: "#fff", textAlign: "center" }}>
+          <h3 style={{ fontFamily: font, fontSize: 20, margin: "0 0 12px", color: C.gold }}>🙏 Connect With Us</h3>
+          <p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.85, margin: "0 0 20px", lineHeight: 1.7 }}>Follow us for updates on pujas, events, and community gatherings.</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+            {socialLinks.map(link => (
+              <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 24px", borderRadius: 12, background: "#fff", color: C.maroon, textDecoration: "none", boxShadow: "0 4px 16px rgba(0,0,0,0.2)", transition: "transform 0.2s" }}>
+                <SocialIcon platform={link.platform} />
+                {link.label || link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -286,7 +311,7 @@ function StatusBadge({ status }) {
 
 // ─── Admin ───
 function AdminPanel({ state, dispatch, onRefresh }) {
-  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }];
+  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }, { key: "social-links", label: "🔗 Social Links" }];
   return (
     <div>
       <h2 style={{ fontFamily: font, fontSize: 26, color: C.maroon, margin: "0 0 20px" }}>⚙️ Admin Dashboard</h2>
@@ -296,6 +321,7 @@ function AdminPanel({ state, dispatch, onRefresh }) {
       {state.adminTab === "add-temple" && <AddTempleForm dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "edit-temple" && <EditTempleForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "add-puja" && <AddPujaForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
+      {state.adminTab === "social-links" && <SocialLinksManager state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       <div style={{ marginTop: 36, padding: "12px 18px", background: C.successBg, borderRadius: 10, fontFamily: sansFont, fontSize: 13, color: C.success }}>💾 Connected to Supabase — all data synced to cloud database</div>
     </div>
   );
@@ -425,6 +451,88 @@ function AddPujaForm({ state, dispatch, onRefresh }) {
   );
 }
 
+// ─── Social Links Manager ───
+function SocialLinksManager({ state, dispatch, onRefresh }) {
+  const platforms = ["facebook", "instagram", "youtube", "twitter", "whatsapp", "telegram", "linkedin", "website"];
+  const [f, setF] = useState({ platform: "facebook", url: "", label: "" });
+  const [saving, setSaving] = useState(false);
+
+  const handleAdd = async () => {
+    if (!f.url) { alert("Enter a URL"); return; }
+    setSaving(true);
+    try {
+      await dbAddSocial({ id: "sl" + Date.now(), platform: f.platform, url: f.url, label: f.label, sort_order: state.socialLinks.length });
+      await onRefresh();
+      setF({ platform: "facebook", url: "", label: "" });
+      dispatch({ type: "SET_NOTIFICATION", payload: "Social link added!" });
+    } catch (e) { alert(e.message); }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id) => {
+    try { await dbDeleteSocial(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Link removed" }); }
+    catch (e) { alert(e.message); }
+  };
+
+  return (
+    <div style={{ maxWidth: 600 }}>
+      <h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: "0 0 18px" }}>🔗 Manage Social Links</h3>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 20px" }}>These links appear on the About page for devotees to follow you.</p>
+
+      {/* Existing links */}
+      {state.socialLinks.length > 0 && (
+        <div style={{ marginBottom: 24, display: "flex", flexDirection: "column", gap: 10 }}>
+          {state.socialLinks.map(link => (
+            <div key={link.id} style={{ background: "#fff", borderRadius: 12, padding: "14px 18px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 14 }}>
+              <SocialIcon platform={link.platform} size={28} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h4 style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark, margin: "0 0 2px", textTransform: "capitalize" }}>{link.label || link.platform}</h4>
+                <p style={{ fontFamily: sansFont, fontSize: 12, color: C.light, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{link.url}</p>
+              </div>
+              <button onClick={() => handleDelete(link.id)} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled, cursor: "pointer" }}>Remove</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {state.socialLinks.length === 0 && (
+        <div style={{ textAlign: "center", padding: 32, background: C.cream, borderRadius: 12, marginBottom: 24, fontFamily: sansFont, color: C.light }}>
+          <span style={{ fontSize: 32, display: "block", marginBottom: 8 }}>🔗</span>
+          No social links yet. Add your first one below.
+        </div>
+      )}
+
+      {/* Add new link */}
+      <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: `1px solid ${C.border}` }}>
+        <h4 style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, color: C.dark, margin: "0 0 16px" }}>➕ Add New Link</h4>
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Platform</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {platforms.map(p => (
+              <button key={p} onClick={() => setF(x => ({ ...x, platform: p }))}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, cursor: "pointer", fontFamily: sansFont, fontSize: 13, fontWeight: 600, textTransform: "capitalize", border: f.platform === p ? `2px solid ${C.saffron}` : `1px solid ${C.border}`, background: f.platform === p ? C.saffronLight : "#fff", color: f.platform === p ? C.saffron : C.mid }}>
+                <SocialIcon platform={p} size={18} /> {p}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>URL *</label>
+          <input value={f.url} onChange={e => setF(x => ({ ...x, url: e.target.value }))} placeholder="https://www.facebook.com/yourpage" style={inputStyle} />
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <label style={labelStyle}>Button Label <span style={{ fontWeight: 400, color: C.light }}>(optional, defaults to platform name)</span></label>
+          <input value={f.label} onChange={e => setF(x => ({ ...x, label: e.target.value }))} placeholder="e.g. Follow on Facebook" style={inputStyle} />
+        </div>
+        <button onClick={handleAdd} disabled={saving}
+          style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 28px", borderRadius: 10, border: "none", cursor: "pointer", background: C.saffron, color: "#fff", opacity: saving ? 0.5 : 1 }}>
+          {saving ? "Adding..." : "➕ Add Social Link"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── App ───
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -433,8 +541,8 @@ export default function App() {
 
   const refreshData = useCallback(async () => {
     try {
-      const [temples, registrations] = await Promise.all([fetchTemples(), fetchRegistrations()]);
-      dispatch({ type: "SET_DATA", payload: { temples, registrations } });
+      const [temples, registrations, socialLinks] = await Promise.all([fetchTemples(), fetchRegistrations(), fetchSocialLinks()]);
+      dispatch({ type: "SET_DATA", payload: { temples, registrations, socialLinks } });
     } catch (e) {
       dispatch({ type: "SET_ERROR", payload: e.message });
     }
@@ -502,7 +610,7 @@ export default function App() {
       <main style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px 60px" }}>
         {state.view === "home" && <HomePage state={state} dispatch={dispatch} />}
         {state.view === "register" && <RegistrationForm state={state} dispatch={dispatch} onRefresh={refreshData} />}
-        {state.view === "about" && <AboutPage />}
+        {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
         {showAdmin && <AdminPanel state={state} dispatch={dispatch} onRefresh={refreshData} />}
         {state.view === "success" && <SuccessPage dispatch={dispatch} />}
