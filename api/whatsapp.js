@@ -138,7 +138,8 @@ async function handleMessage(from, body, mediaUrl) {
     const email = msg === "skip" ? null : body.trim();
     await saveSession(from, { step: "payment", data: { ...session.data, email } });
     const total = session.data.totalAmount;
-    return `💳 *Payment Details*\n\nAmount: *₹${total}*\n\nPlease pay via UPI or Bank Transfer and send the *payment screenshot* here.\n\n_You can also send "skip" to pay later_`;
+    const upiLink = `upi://pay?pa=shreedattarajgurumauli@kotak&pn=Shree%20Dattaraj%20Gurumauli&am=${total}&cu=INR&tn=Puja%20Registration`;
+    return `💳 *Payment Details*\n\nAmount: *₹${total}*\nUPI ID: *shreedattarajgurumauli@kotak*\n\n👉 Pay via UPI: ${upiLink}\n\nOr pay manually via GPay/PhonePe/Paytm to the UPI ID above.\n\nAfter payment, send the *payment screenshot* here.\n\n_Send "skip" to pay later_`;
   }
 
   // ─── Step: Payment Screenshot ───

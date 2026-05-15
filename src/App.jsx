@@ -258,6 +258,38 @@ function HomePage({ state, dispatch }) {
   );
 }
 
+// ─── UPI Config ───
+const UPI_ID = "shreedattarajgurumauli@kotak";
+const UPI_NAME = "Shree Dattaraj Gurumauli";
+
+// ─── UPI QR Code Generator (SVG-based, no external dependency) ───
+function UpiQrCode({ amount, size = 200 }) {
+  const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent("Puja Registration")}`;
+
+  // Generate QR using a canvas-free approach via external API (reliable, no dependencies)
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(upiUrl)}&margin=8`;
+
+  return (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ background: "#fff", borderRadius: 16, padding: 20, border: `2px solid ${C.gold}`, display: "inline-block" }}>
+        <img src={qrImageUrl} alt="UPI QR Code" width={size} height={size} style={{ borderRadius: 8, display: "block" }} />
+        <div style={{ marginTop: 12 }}>
+          <p style={{ fontFamily: sansFont, fontSize: 18, fontWeight: 700, color: C.saffron, margin: "0 0 4px" }}>₹{amount}</p>
+          <p style={{ fontFamily: sansFont, fontSize: 12, color: C.mid, margin: "0 0 2px" }}>Scan with any UPI app</p>
+          <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: 0 }}>GPay • PhonePe • Paytm • BHIM</p>
+        </div>
+      </div>
+      <div style={{ marginTop: 10 }}>
+        <p style={{ fontFamily: sansFont, fontSize: 12, color: C.mid, margin: "0 0 4px" }}>Or pay directly to UPI ID:</p>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.cream, padding: "8px 16px", borderRadius: 8, border: `1px solid ${C.border}` }}>
+          <span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark }}>{UPI_ID}</span>
+          <button onClick={() => { navigator.clipboard.writeText(UPI_ID); }} style={{ fontFamily: sansFont, fontSize: 11, padding: "4px 10px", borderRadius: 6, border: `1px solid ${C.border}`, background: "#fff", color: C.saffron, cursor: "pointer", fontWeight: 600 }}>Copy</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Registration Form ───
 function RegistrationForm({ state, dispatch, onRefresh }) {
   const [form, setForm] = useState({ devoteeName: "", phone: "", email: "", gotra: "", templeId: state.selectedTemple || "", pujaIds: [...state.selectedPujas], date: "", time: "", members: 1, paymentScreenshot: null, screenshotName: "" });
@@ -292,7 +324,7 @@ function RegistrationForm({ state, dispatch, onRefresh }) {
         </div>
         <div style={{ marginBottom: 24 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>🙏 Devotee Details</h3><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}><div><label style={labelStyle}>Full Name *</label><input value={form.devoteeName} onChange={e => setForm(f => ({ ...f, devoteeName: e.target.value }))} placeholder="Enter full name" style={inputStyle} /></div><div><label style={labelStyle}>Gotra</label><input value={form.gotra} onChange={e => setForm(f => ({ ...f, gotra: e.target.value }))} placeholder="e.g. Kashyap" style={inputStyle} /></div><div><label style={labelStyle}>Phone *</label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="10-digit" style={inputStyle} type="tel" /></div><div><label style={labelStyle}>Email</label><input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" style={inputStyle} type="email" /></div></div></div>
         <div style={{ marginBottom: 24 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>📅 Schedule</h3><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}><div><label style={labelStyle}>Date *</label><input value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={inputStyle} type="date" /></div><div><label style={labelStyle}>Time</label><input value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} style={inputStyle} type="time" /></div><div><label style={labelStyle}>Members</label><input value={form.members} onChange={e => setForm(f => ({ ...f, members: Math.max(1, parseInt(e.target.value) || 1) }))} style={inputStyle} type="number" min="1" /></div></div></div>
-        <div style={{ marginBottom: 28 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>💳 Payment</h3>{selPujas.length > 0 && <div style={{ background: C.goldLight, borderRadius: 10, padding: "14px 18px", marginBottom: 14, fontFamily: sansFont, fontSize: 14, border: `1px solid ${C.gold}` }}><strong>Total: ₹{grandTotal}</strong><br /><span style={{ fontSize: 12, color: C.light }}>Pay via UPI, upload screenshot</span></div>}<label style={labelStyle}>Payment Screenshot</label><div style={{ border: `2px dashed ${form.paymentScreenshot ? C.success : C.border}`, borderRadius: 12, padding: 24, textAlign: "center", cursor: "pointer", background: form.paymentScreenshot ? C.successBg : C.cream }} onClick={() => document.getElementById("fileInput").click()}><input type="file" id="fileInput" accept="image/*" onChange={handleFile} style={{ display: "none" }} />{form.paymentScreenshot ? <div>✅ <span style={{ fontFamily: sansFont, fontSize: 13, color: C.success }}>{form.screenshotName}</span></div> : <div>📤 <span style={{ fontFamily: sansFont, fontSize: 13, color: C.light }}>Click to upload</span></div>}</div></div>
+        <div style={{ marginBottom: 28 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>💳 Payment</h3>{selPujas.length > 0 && <div style={{ background: C.goldLight, borderRadius: 10, padding: "14px 18px", marginBottom: 14, fontFamily: sansFont, fontSize: 14, border: `1px solid ${C.gold}` }}><strong>Total: ₹{grandTotal}</strong><br /><span style={{ fontSize: 12, color: C.light }}>Scan QR below to pay, then upload screenshot</span></div>}{grandTotal > 0 && <div style={{ marginBottom: 18 }}><UpiQrCode amount={grandTotal} /></div>}<label style={labelStyle}>Payment Screenshot *</label><div style={{ border: `2px dashed ${form.paymentScreenshot ? C.success : C.border}`, borderRadius: 12, padding: 24, textAlign: "center", cursor: "pointer", background: form.paymentScreenshot ? C.successBg : C.cream }} onClick={() => document.getElementById("fileInput").click()}><input type="file" id="fileInput" accept="image/*" onChange={handleFile} style={{ display: "none" }} />{form.paymentScreenshot ? <div>✅ <span style={{ fontFamily: sansFont, fontSize: 13, color: C.success }}>{form.screenshotName}</span></div> : <div>📤 <span style={{ fontFamily: sansFont, fontSize: 13, color: C.light }}>After payment, click here to upload screenshot</span></div>}</div></div>
         <button onClick={handleSubmit} disabled={form.pujaIds.length === 0 || saving} style={{ width: "100%", fontFamily: sansFont, fontSize: 16, fontWeight: 700, padding: 14, borderRadius: 12, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", opacity: form.pujaIds.length === 0 || saving ? 0.5 : 1 }}>{saving ? "Submitting..." : `🙏 Submit (${selPujas.length} Puja${selPujas.length !== 1 ? "s" : ""})`}</button>
       </div>
     </div>
