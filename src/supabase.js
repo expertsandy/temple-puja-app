@@ -274,3 +274,61 @@ export async function deleteSocialLink(id) {
 
   if (error) throw error;
 }
+
+// ─── Blog Operations ───
+
+export async function fetchBlogPosts() {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addBlogPost(post) {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .insert({
+      id: post.id,
+      title: post.title,
+      excerpt: post.excerpt || null,
+      content: post.content,
+      category: post.category || null,
+      author: post.author || null,
+      cover_image: post.cover_image || null,
+      published: post.published ?? true,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateBlogPost(post) {
+  const { error } = await supabase
+    .from('blog_posts')
+    .update({
+      title: post.title,
+      excerpt: post.excerpt || null,
+      content: post.content,
+      category: post.category || null,
+      author: post.author || null,
+      cover_image: post.cover_image || null,
+      published: post.published ?? true,
+    })
+    .eq('id', post.id);
+
+  if (error) throw error;
+}
+
+export async function deleteBlogPost(id) {
+  const { error } = await supabase
+    .from('blog_posts')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+}
