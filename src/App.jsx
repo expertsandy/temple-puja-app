@@ -2,7 +2,7 @@ import { useState, useEffect, useReducer, useCallback } from "react";
 import {
   fetchTemples, addTemple as dbAddTemple, updateTemple as dbUpdateTemple, deleteTemple as dbDeleteTemple,
   addPuja as dbAddPuja, deletePuja as dbDeletePuja,
-  fetchRegistrations, addRegistration as dbAddRegistration, updateRegistrationStatus as dbUpdateStatus,
+  fetchRegistrations, addRegistration as dbAddRegistration, updateRegistrationStatus as dbUpdateStatus, deleteRegistration as dbDeleteRegistration,
   fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
@@ -366,6 +366,11 @@ function RegistrationsList({ state, dispatch, onRefresh }) {
     try { await dbUpdateStatus(id, status); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: `Status: ${status}` }); }
     catch (e) { alert("Error: " + e.message); }
   };
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this registration? This cannot be undone.")) return;
+    try { await dbDeleteRegistration(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Registration deleted" }); }
+    catch (e) { alert("Error: " + e.message); }
+  };
   return (
     <div>{state.registrations.length === 0 ? <div style={{ textAlign: "center", padding: 48, color: C.light, fontFamily: sansFont }}>No registrations yet.</div> : <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{state.registrations.map(r => {
       const temple = state.temples.find(t => t.id === r.templeId); const ids = r.pujaIds || []; const bk = temple ? temple.pujas.filter(p => ids.includes(p.id)) : []; const amt = bk.reduce((s, p) => s + p.price, 0) * (r.members || 1); const open = exp === r.id;
@@ -378,7 +383,7 @@ function RegistrationsList({ state, dispatch, onRefresh }) {
           <div style={{ marginTop: 16, marginBottom: 16, padding: "14px 16px", background: C.saffronLight, borderRadius: 10, fontFamily: sansFont, fontSize: 13 }}><div style={{ fontWeight: 700, color: C.maroon, marginBottom: 8 }}>🪔 Booked Pujas</div>{bk.map(p => <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", color: C.mid }}><span>{p.name}</span><span>₹{p.price}</span></div>)}<div style={{ borderTop: `1px solid ${C.border}`, marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between" }}><span style={{ color: C.light }}>× {r.members || 1}</span><span style={{ fontWeight: 700, color: C.saffron }}>₹{amt}</span></div></div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 14 }}>{[{ l: "Phone", v: r.phone }, { l: "Email", v: r.email || "—" }, { l: "Gotra", v: r.gotra || "—" }, { l: "Time", v: r.time || "Flexible" }].map(i => <div key={i.l}><p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px", textTransform: "uppercase" }}>{i.l}</p><p style={{ fontFamily: sansFont, fontSize: 14, color: C.dark, margin: 0, fontWeight: 500 }}>{i.v}</p></div>)}</div>
           {r.paymentScreenshot && <div style={{ marginTop: 14 }}><img src={r.paymentScreenshot} alt="Payment" style={{ maxWidth: 240, borderRadius: 8, border: `1px solid ${C.border}` }} /></div>}
-          <div style={{ marginTop: 16, display: "flex", gap: 8 }}>{["confirmed", "pending", "cancelled"].map(s => <button key={s} onClick={() => handleStatus(r.id, s)} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 16px", borderRadius: 8, cursor: "pointer", textTransform: "capitalize", border: r.status === s ? "none" : `1px solid ${C.border}`, background: r.status === s ? C.saffron : "#fff", color: r.status === s ? "#fff" : C.mid }}>{s}</button>)}</div>
+          <div style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>{["confirmed", "pending", "cancelled"].map(s => <button key={s} onClick={() => handleStatus(r.id, s)} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 16px", borderRadius: 8, cursor: "pointer", textTransform: "capitalize", border: r.status === s ? "none" : `1px solid ${C.border}`, background: r.status === s ? C.saffron : "#fff", color: r.status === s ? "#fff" : C.mid }}>{s}</button>)}<div style={{ flex: 1 }} /><button onClick={() => handleDelete(r.id)} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 16px", borderRadius: 8, cursor: "pointer", border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled }}>🗑️ Delete</button></div>
         </div>}
       </div>);
     })}</div>}</div>
@@ -387,7 +392,14 @@ function RegistrationsList({ state, dispatch, onRefresh }) {
 
 // ─── Temples List ───
 function TemplesList({ state, dispatch, onRefresh }) {
-  const handleDelete = async (id) => { if (!confirm("Remove temple?")) return; try { await dbDeleteTemple(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Temple removed" }); } catch (e) { alert(e.message); } };
+  const handleDelete = async (id) => {
+    const regCount = state.registrations.filter(r => r.templeId === id).length;
+    const msg = regCount > 0
+      ? `This temple has ${regCount} registration${regCount > 1 ? 's' : ''}. Deleting will remove the temple AND all its registrations. Continue?`
+      : "Remove this temple?";
+    if (!confirm(msg)) return;
+    try { await dbDeleteTemple(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Temple removed" }); } catch (e) { alert(e.message); }
+  };
   const handleDeletePuja = async (id) => { try { await dbDeletePuja(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Puja removed" }); } catch (e) { alert(e.message); } };
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>{state.temples.map(t => (

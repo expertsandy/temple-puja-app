@@ -110,6 +110,13 @@ export async function updateTemple(temple) {
 }
 
 export async function deleteTemple(templeId) {
+  // First delete all registrations linked to this temple
+  await supabase
+    .from('registrations')
+    .delete()
+    .eq('temple_id', templeId);
+
+  // Then delete the temple (pujas cascade automatically)
   const { error } = await supabase
     .from('temples')
     .delete()
@@ -202,6 +209,15 @@ export async function updateRegistrationStatus(id, status) {
   const { error } = await supabase
     .from('registrations')
     .update({ status })
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+export async function deleteRegistration(id) {
+  const { error } = await supabase
+    .from('registrations')
+    .delete()
     .eq('id', id);
 
   if (error) throw error;
