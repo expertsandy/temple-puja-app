@@ -93,26 +93,63 @@ function Notification({ message, onClose }) {
 // ─── Header ───
 function Header({ state, dispatch, adminUser, onLogout }) {
   const { t } = useLang();
+  const [menuOpen, setMenuOpen] = useState(false);
   const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...publicNav, ...adminNav];
   return (
     <header style={{ background: `linear-gradient(135deg, ${C.maroon} 0%, ${C.saffronDark} 50%, ${C.saffron} 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14, cursor: "pointer" }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); }}>
-          <img src={LOGO_SRC} alt="Logo" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover", border: "2px solid rgba(255,255,255,0.3)", boxShadow: "0 2px 12px rgba(0,0,0,0.25)" }} />
-          <div><h1 style={{ fontFamily: font, fontSize: 20, color: C.gold, margin: 0 }}>{t("appName")}</h1><p style={{ fontFamily: sansFont, fontSize: 10, color: "rgba(255,255,255,0.7)", margin: 0, letterSpacing: 1.5, textTransform: "uppercase" }}>{t("appSubtitle")}</p></div>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}>
+          <img src={LOGO_SRC} alt="Logo" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "2px solid rgba(255,255,255,0.3)" }} />
+          <div>
+            <h1 style={{ fontFamily: font, fontSize: 16, color: C.gold, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
+            <p style={{ fontFamily: sansFont, fontSize: 9, color: "rgba(255,255,255,0.6)", margin: 0, letterSpacing: 1, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {nav.map(n => <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); }} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "8px 14px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(255,255,255,0.2)" : "transparent", color: state.view === n.view ? "#fff" : "rgba(255,255,255,0.75)" }}>{n.label}</button>)}
+
+        {/* Desktop Nav */}
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {nav.map(n => <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); }} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(255,255,255,0.2)" : "transparent", color: state.view === n.view ? "#fff" : "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}>{n.label}</button>)}
           {!adminUser ? (
-            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "login" })} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)", marginLeft: 4 }}>{t("navAdmin")}</button>
+            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "login" })} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)" }}>{t("navAdmin")}</button>
           ) : (
-            <button onClick={onLogout} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)", marginLeft: 4 }}>{t("navLogout")}</button>
+            <button onClick={onLogout} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)" }}>{t("navLogout")}</button>
           )}
-          <LangSwitcher style={{ marginLeft: 6 }} />
+          <LangSwitcher style={{ marginLeft: 4 }} />
+        </div>
+
+        {/* Mobile: Lang + Hamburger */}
+        <div className="mobile-nav-toggle" style={{ display: "none", alignItems: "center", gap: 6 }}>
+          <LangSwitcher />
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", padding: 6 }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff">
+              {menuOpen
+                ? <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                : <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+              }
+            </svg>
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {menuOpen && (
+        <div className="mobile-menu" style={{ padding: "8px 16px 16px", display: "none", flexDirection: "column", gap: 4, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+          {nav.map(n => (
+            <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}
+              style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(255,255,255,0.2)" : "transparent", color: state.view === n.view ? "#fff" : "rgba(255,255,255,0.8)", textAlign: "left", width: "100%" }}>
+              {n.label}
+            </button>
+          ))}
+          {!adminUser ? (
+            <button onClick={() => { dispatch({ type: "SET_VIEW", payload: "login" }); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.7)", textAlign: "left", width: "100%" }}>{t("navAdmin")}</button>
+          ) : (
+            <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.7)", textAlign: "left", width: "100%" }}>{t("navLogout")}</button>
+          )}
+        </div>
+      )}
     </header>
   );
 }
@@ -694,6 +731,23 @@ export default function App() {
         * { box-sizing: border-box; }
         input:focus, select:focus, textarea:focus { border-color: #e8621e !important; box-shadow: 0 0 0 3px rgba(232,98,30,0.1); }
         button:hover { opacity: 0.92; }
+
+        /* Desktop: show nav, hide hamburger */
+        .desktop-nav { display: flex !important; }
+        .mobile-nav-toggle { display: none !important; }
+        .mobile-menu { display: none !important; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+          .desktop-nav { display: none !important; }
+          .mobile-nav-toggle { display: flex !important; }
+          .mobile-menu { display: flex !important; }
+          main { padding: 16px 12px 40px !important; }
+        }
+        @media (max-width: 520px) {
+          h1 { font-size: 15px !important; }
+          h2 { font-size: 22px !important; }
+        }
       `}</style>
       {state.notification && <Notification message={state.notification} onClose={() => dispatch({ type: "CLEAR_NOTIFICATION" })} />}
       <Header state={state} dispatch={dispatch} adminUser={adminUser} onLogout={handleLogout} />
