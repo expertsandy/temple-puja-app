@@ -629,7 +629,7 @@ function SocialLinksManager({ state, dispatch, onRefresh }) {
 }
 
 // ─── WhatsApp Floating Button ───
-const WHATSAPP_NUMBER = "14155238886"; // Change to your Twilio/WhatsApp Business number
+const WHATSAPP_NUMBER = "919930576556"; // Shree Dattaraj Gurumauli WhatsApp
 
 function WhatsAppFloatingButton() {
   const { t } = useLang();

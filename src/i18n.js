@@ -333,24 +333,24 @@ const translations = {
 
   // ─── WhatsApp Button ───
   whatsappTitle: {
-    en: "🙏 Register via WhatsApp!",
-    hi: "🙏 व्हाट्सएप से पंजीकरण करें!",
-    mr: "🙏 व्हाट्सएपवरून नोंदणी करा!",
+    en: "🙏 Chat with us on WhatsApp!",
+    hi: "🙏 व्हाट्सएप पर हमसे बात करें!",
+    mr: "🙏 व्हाट्सएपवर आमच्याशी बोला!",
   },
   whatsappDesc: {
-    en: "Book pujas instantly through our WhatsApp bot — no app download needed.",
-    hi: "व्हाट्सएप बॉट के माध्यम से तुरंत पूजा बुक करें — कोई ऐप डाउनलोड नहीं।",
-    mr: "व्हाट्सएप बॉटद्वारे त्वरित पूजा बुक करा — कोणताही ॲप डाउनलोड नाही.",
+    en: "Have questions about pujas or need help with registration? Chat with us directly.",
+    hi: "पूजा के बारे में कोई प्रश्न हैं या पंजीकरण में सहायता चाहिए? सीधे हमसे बात करें।",
+    mr: "पूजेबद्दल काही प्रश्न आहेत किंवा नोंदणीसाठी मदत हवी आहे? थेट आमच्याशी बोला.",
   },
   whatsappStart: {
-    en: "Start Chat →",
-    hi: "चैट शुरू करें →",
-    mr: "चॅट सुरू करा →",
+    en: "Chat Now →",
+    hi: "अभी चैट करें →",
+    mr: "आता चॅट करा →",
   },
   whatsappMessage: {
-    en: "Hi, I'd like to register for a puja 🙏",
-    hi: "नमस्ते, मैं पूजा के लिए पंजीकरण करना चाहता हूं 🙏",
-    mr: "नमस्कार, मला पूजेसाठी नोंदणी करायची आहे 🙏",
+    en: "🙏 Namaste, I have a query about puja registration",
+    hi: "🙏 नमस्ते, मुझे पूजा पंजीकरण के बारे में जानकारी चाहिए",
+    mr: "🙏 नमस्कार, मला पूजा नोंदणीबद्दल माहिती हवी आहे",
   },
 
   // ─── Legal Footer ───

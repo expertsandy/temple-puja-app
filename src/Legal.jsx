@@ -241,7 +241,7 @@ export function ContactPage() {
     }
     // Open WhatsApp with pre-filled message
     const text = `🙏 संपर्क / Contact\n\nनाम: ${form.name}\n📱: ${form.phone || "—"}\n📧: ${form.email || "—"}\n\nसंदेश:\n${form.message}`;
-    window.open(`https://wa.me/919930363756?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://wa.me/919930576556?text=${encodeURIComponent(text)}`, "_blank");
     setSent(true);
   };
 
@@ -255,7 +255,7 @@ export function ContactPage() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 28 }}>
         {[
-          { icon: "📱", title: lang === "hi" ? "व्हाट्सएप" : "WhatsApp", detail: "+91 99303 63756", link: "https://wa.me/919930363756?text=🙏 नमस्कार" },
+          { icon: "📱", title: lang === "hi" ? "व्हाट्सएप" : "WhatsApp", detail: "+91 99305 76556", link: "https://wa.me/919930576556?text=🙏 नमस्कार" },
           { icon: "📘", title: "Facebook", detail: "Shree Dattaraj Gurumauli", link: "https://www.facebook.com/shreedattarajgurumauli" },
           { icon: "🌐", title: lang === "hi" ? "वेबसाइट" : "Website", detail: "shreedattarajgurumauli.com", link: "https://shreedattarajgurumauli.com" },
           { icon: "📧", title: lang === "hi" ? "ईमेल" : "Email", detail: "info@shreedattarajgurumauli.com", link: "mailto:info@shreedattarajgurumauli.com" },
