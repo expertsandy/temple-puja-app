@@ -1,16 +1,23 @@
 import { useState } from "react";
 import { useLang } from "./LangContext.jsx";
 
-// ─── Styles (shared with main app) ───
+// ─── Styles ───
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
 const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10", maroon: "#7b1a2c", gold: "#c9a84c", goldLight: "#faf4e0", cream: "#fdf8f0", dark: "#2d1810", mid: "#5c3d2e", light: "#8a6e5e", border: "#e8d5c4", success: "#2d7a4f", successBg: "#e8f5ee", cancelled: "#c0392b", cancelledBg: "#fde8e8" };
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 const labelStyle = { fontFamily: sansFont, fontSize: 13, fontWeight: 600, color: C.mid, marginBottom: 6, display: "block" };
 
+// ─── Helper: get localized field from post ───
+function getField(post, field, lang) {
+  if (lang === "hi") return post[field] || "";
+  const localized = post[`${field}_${lang}`];
+  return localized || post[field] || ""; // fallback to Hindi
+}
+
 // ─── Blog List (Public) ───
 export function BlogPage({ posts, onSelectPost }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const published = posts.filter(p => p.published);
 
   return (
@@ -23,41 +30,45 @@ export function BlogPage({ posts, onSelectPost }) {
       {published.length === 0 ? (
         <div style={{ textAlign: "center", padding: 60, color: C.light, fontFamily: sansFont }}>
           <span style={{ fontSize: 48, display: "block", marginBottom: 12 }}>📝</span>
-          कोई लेख अभी उपलब्ध नहीं है। जल्द ही आएंगे!
+          {t("noPosts")}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {published.map(post => (
-            <article key={post.id} onClick={() => onSelectPost(post.id)}
-              style={{ background: "#fff", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${C.border}`, transition: "all 0.3s", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(232,98,30,0.1)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)"; }}>
-              <div style={{ display: "flex", gap: 0 }}>
-                {post.cover_image && (
-                  <div style={{ width: 200, minHeight: 160, flexShrink: 0 }}>
-                    <img src={post.cover_image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  </div>
-                )}
-                <div style={{ padding: "20px 24px", flex: 1 }}>
-                  {post.category && (
-                    <span style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, color: C.saffron, background: C.saffronLight, padding: "4px 10px", borderRadius: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                      {post.category}
-                    </span>
+          {published.map(post => {
+            const title = getField(post, "title", lang);
+            const excerpt = getField(post, "excerpt", lang);
+            return (
+              <article key={post.id} onClick={() => onSelectPost(post.id)}
+                style={{ background: "#fff", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${C.border}`, transition: "all 0.3s", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(232,98,30,0.1)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)"; }}>
+                <div style={{ display: "flex", gap: 0 }}>
+                  {post.cover_image && (
+                    <div style={{ width: 200, minHeight: 160, flexShrink: 0 }}>
+                      <img src={post.cover_image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
                   )}
-                  <h3 style={{ fontFamily: font, fontSize: 20, color: C.dark, margin: "10px 0 8px", lineHeight: 1.4 }}>
-                    {post.title}
-                  </h3>
-                  <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, margin: "0 0 12px", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {post.excerpt}
-                  </p>
-                  <div style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>
-                    {post.author && <span>✍️ {post.author}</span>}
-                    {post.created_at && <span style={{ marginLeft: 16 }}>📅 {new Date(post.created_at).toLocaleDateString("hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
+                  <div style={{ padding: "20px 24px", flex: 1 }}>
+                    {post.category && (
+                      <span style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, color: C.saffron, background: C.saffronLight, padding: "4px 10px", borderRadius: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                        {post.category}
+                      </span>
+                    )}
+                    <h3 style={{ fontFamily: font, fontSize: 20, color: C.dark, margin: "10px 0 8px", lineHeight: 1.4 }}>
+                      {title}
+                    </h3>
+                    <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, margin: "0 0 12px", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {excerpt}
+                    </p>
+                    <div style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>
+                      {post.author && <span>✍️ {post.author}</span>}
+                      {post.created_at && <span style={{ marginLeft: 16 }}>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
     </div>
@@ -66,34 +77,28 @@ export function BlogPage({ posts, onSelectPost }) {
 
 // ─── Single Blog Post (Public) ───
 export function BlogPostView({ post, onBack }) {
+  const { t, lang } = useLang();
   if (!post) return null;
 
-  // Simple markdown-like rendering: split by \n\n for paragraphs
-  const renderContent = (content) => {
-    return content.split('\n\n').map((para, i) => {
-      // Heading (starts with ##)
-      if (para.startsWith('## ')) {
-        return <h3 key={i} style={{ fontFamily: font, fontSize: 22, color: C.maroon, margin: "28px 0 12px" }}>{para.replace('## ', '')}</h3>;
-      }
-      if (para.startsWith('### ')) {
-        return <h4 key={i} style={{ fontFamily: font, fontSize: 18, color: C.saffron, margin: "24px 0 10px" }}>{para.replace('### ', '')}</h4>;
-      }
-      // Quote (starts with >)
-      if (para.startsWith('> ')) {
-        return (
-          <blockquote key={i} style={{ borderLeft: `4px solid ${C.gold}`, padding: "12px 20px", margin: "20px 0", background: C.goldLight, borderRadius: "0 10px 10px 0", fontFamily: font, fontSize: 16, color: C.maroon, fontStyle: "italic", lineHeight: 1.7 }}>
-            {para.replace('> ', '')}
-          </blockquote>
-        );
-      }
-      // Regular paragraph
+  const title = getField(post, "title", lang);
+  const content = getField(post, "content", lang);
+
+  const renderContent = (text) => {
+    return text.split('\n\n').map((para, i) => {
+      if (para.startsWith('## ')) return <h3 key={i} style={{ fontFamily: font, fontSize: 22, color: C.maroon, margin: "28px 0 12px" }}>{para.replace('## ', '')}</h3>;
+      if (para.startsWith('### ')) return <h4 key={i} style={{ fontFamily: font, fontSize: 18, color: C.saffron, margin: "24px 0 10px" }}>{para.replace('### ', '')}</h4>;
+      if (para.startsWith('> ')) return (
+        <blockquote key={i} style={{ borderLeft: `4px solid ${C.gold}`, padding: "12px 20px", margin: "20px 0", background: C.goldLight, borderRadius: "0 10px 10px 0", fontFamily: font, fontSize: 16, color: C.maroon, fontStyle: "italic", lineHeight: 1.7 }}>
+          {para.replace('> ', '')}
+        </blockquote>
+      );
       return <p key={i} style={{ fontFamily: sansFont, fontSize: 16, color: C.mid, lineHeight: 1.8, margin: "0 0 16px" }}>{para}</p>;
     });
   };
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
-      <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 20, padding: 0, fontWeight: 600 }}>← सभी लेख</button>
+      <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 20, padding: 0, fontWeight: 600 }}>{t("allArticles")}</button>
 
       {post.cover_image && (
         <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 24 }}>
@@ -108,38 +113,34 @@ export function BlogPostView({ post, onBack }) {
       )}
 
       <h1 style={{ fontFamily: font, fontSize: 32, color: C.maroon, margin: "14px 0 12px", lineHeight: 1.3 }}>
-        {post.title}
+        {title}
       </h1>
 
       <div style={{ fontFamily: sansFont, fontSize: 13, color: C.light, marginBottom: 28, display: "flex", gap: 20 }}>
         {post.author && <span>✍️ {post.author}</span>}
-        {post.created_at && <span>📅 {new Date(post.created_at).toLocaleDateString("hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
+        {post.created_at && <span>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
       </div>
 
       <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px", border: `1px solid ${C.border}` }}>
-        {renderContent(post.content)}
+        {renderContent(content)}
       </div>
 
       <div style={{ textAlign: "center", marginTop: 32 }}>
-        <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 28px", borderRadius: 10, border: `2px solid ${C.saffron}`, cursor: "pointer", background: "transparent", color: C.saffron }}>← और लेख पढ़ें</button>
+        <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 28px", borderRadius: 10, border: `2px solid ${C.saffron}`, cursor: "pointer", background: "transparent", color: C.saffron }}>{t("readMore")}</button>
       </div>
     </div>
   );
 }
 
-// ─── Blog Admin ───
+// ─── Blog Admin (stays in English, but allows editing all languages) ───
 export function BlogAdmin({ posts, onRefresh, dbAddPost, dbUpdatePost, dbDeletePost, dispatch }) {
-  const [editing, setEditing] = useState(null); // null = list, "new" = new post, post object = editing
+  const [editing, setEditing] = useState(null);
 
   if (editing) {
     return <BlogEditor
       post={editing === "new" ? null : editing}
       onSave={async (post) => {
-        if (editing === "new") {
-          await dbAddPost(post);
-        } else {
-          await dbUpdatePost(post);
-        }
+        if (editing === "new") { await dbAddPost(post); } else { await dbUpdatePost(post); }
         await onRefresh();
         setEditing(null);
         dispatch({ type: "SET_NOTIFICATION", payload: editing === "new" ? "Article published!" : "Article updated!" });
@@ -162,34 +163,49 @@ export function BlogAdmin({ posts, onRefresh, dbAddPost, dbUpdatePost, dbDeleteP
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {posts.map(post => (
-            <div key={post.id} style={{ background: "#fff", borderRadius: 12, padding: "16px 20px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-              <div style={{ flex: 1 }}>
-                <h4 style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 600, color: C.dark, margin: "0 0 4px" }}>{post.title}</h4>
-                <div style={{ display: "flex", gap: 12, fontFamily: sansFont, fontSize: 12, color: C.light }}>
-                  {post.category && <span>{post.category}</span>}
-                  <span>{new Date(post.created_at).toLocaleDateString("en-IN")}</span>
-                  <span style={{ fontWeight: 600, color: post.published ? C.success : C.cancelled }}>{post.published ? "Published" : "Draft"}</span>
+          {posts.map(post => {
+            const hasEn = post.title_en && post.content_en;
+            const hasMr = post.title_mr && post.content_mr;
+            return (
+              <div key={post.id} style={{ background: "#fff", borderRadius: 12, padding: "16px 20px", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 600, color: C.dark, margin: "0 0 4px" }}>{post.title}</h4>
+                  <div style={{ display: "flex", gap: 8, fontFamily: sansFont, fontSize: 12, color: C.light, alignItems: "center" }}>
+                    {post.category && <span>{post.category}</span>}
+                    <span>{new Date(post.created_at).toLocaleDateString("en-IN")}</span>
+                    <span style={{ fontWeight: 600, color: post.published ? C.success : C.cancelled }}>{post.published ? "Published" : "Draft"}</span>
+                    <span style={{ color: C.light }}>|</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: C.success }}>हि ✓</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: hasEn ? C.success : C.cancelled }}>{hasEn ? "EN ✓" : "EN ✗"}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: hasMr ? C.success : C.cancelled }}>{hasMr ? "MR ✓" : "MR ✗"}</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <button onClick={() => setEditing(post)} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.saffron}`, background: "transparent", color: C.saffron, cursor: "pointer" }}>✏️ Edit</button>
+                  <button onClick={async () => { if (!confirm("Delete this article?")) return; await dbDeletePost(post.id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Article deleted" }); }} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled, cursor: "pointer" }}>🗑️</button>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={() => setEditing(post)} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.saffron}`, background: "transparent", color: C.saffron, cursor: "pointer" }}>✏️ Edit</button>
-                <button onClick={async () => { if (!confirm("Delete this article?")) return; await dbDeletePost(post.id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Article deleted" }); }} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled, cursor: "pointer" }}>🗑️</button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-// ─── Blog Editor ───
+// ─── Blog Editor (with language tabs) ───
 function BlogEditor({ post, onSave, onCancel }) {
+  const [activeLang, setActiveLang] = useState("hi");
   const [f, setF] = useState({
     title: post?.title || "",
+    title_en: post?.title_en || "",
+    title_mr: post?.title_mr || "",
     excerpt: post?.excerpt || "",
+    excerpt_en: post?.excerpt_en || "",
+    excerpt_mr: post?.excerpt_mr || "",
     content: post?.content || "",
+    content_en: post?.content_en || "",
+    content_mr: post?.content_mr || "",
     category: post?.category || "दत्त संप्रदाय",
     author: post?.author || "श्री दत्तराज गुरुमाऊली",
     cover_image: post?.cover_image || null,
@@ -199,6 +215,15 @@ function BlogEditor({ post, onSave, onCancel }) {
   const [preview, setPreview] = useState(false);
 
   const categories = ["दत्त संप्रदाय", "पूजा विधि", "तीर्थ क्षेत्र", "अध्यात्म", "गुरु परंपरा", "सामान्य"];
+  const langTabs = [
+    { code: "hi", label: "हिंदी (Primary)", required: true },
+    { code: "en", label: "English", required: false },
+    { code: "mr", label: "मराठी", required: false },
+  ];
+
+  const titleKey = activeLang === "hi" ? "title" : `title_${activeLang}`;
+  const excerptKey = activeLang === "hi" ? "excerpt" : `excerpt_${activeLang}`;
+  const contentKey = activeLang === "hi" ? "content" : `content_${activeLang}`;
 
   const handleCoverUpload = (e) => {
     const file = e.target.files[0];
@@ -210,35 +235,25 @@ function BlogEditor({ post, onSave, onCancel }) {
   };
 
   const handleSubmit = async () => {
-    if (!f.title || !f.content) { alert("Title and content are required"); return; }
+    if (!f.title || !f.content) { alert("Hindi title and content are required (primary language)"); return; }
     setSaving(true);
     try {
-      await onSave({
-        id: post?.id || "blog_" + Date.now(),
-        ...f,
-      });
+      await onSave({ id: post?.id || "blog_" + Date.now(), ...f });
     } catch (e) { alert(e.message); }
     setSaving(false);
   };
 
+  const currentContent = f[contentKey] || "";
+
   return (
-    <div style={{ maxWidth: 720 }}>
+    <div style={{ maxWidth: 760 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: 0 }}>{post ? "✏️ Edit Article" : "📝 New Article"}</h3>
         <button onClick={onCancel} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>← Back to list</button>
       </div>
 
       <div style={{ background: "#fff", borderRadius: 16, padding: 28, border: `1px solid ${C.border}` }}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={labelStyle}>Title *</label>
-          <input value={f.title} onChange={e => setF(x => ({ ...x, title: e.target.value }))} placeholder="लेख का शीर्षक" style={{ ...inputStyle, fontFamily: font, fontSize: 18 }} />
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
-          <label style={labelStyle}>Excerpt (short summary)</label>
-          <textarea value={f.excerpt} onChange={e => setF(x => ({ ...x, excerpt: e.target.value }))} placeholder="लेख का संक्षिप्त विवरण..." rows={2} style={{ ...inputStyle, resize: "vertical" }} />
-        </div>
-
+        {/* Common fields */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
           <div>
             <label style={labelStyle}>Category</label>
@@ -263,28 +278,64 @@ function BlogEditor({ post, onSave, onCancel }) {
           </div>
         </div>
 
+        {/* Language Tabs */}
+        <div style={{ display: "flex", gap: 4, marginBottom: 20, background: C.cream, borderRadius: 10, padding: 4 }}>
+          {langTabs.map(lt => {
+            const hasContent = lt.code === "hi" ? (f.title && f.content) : (f[`title_${lt.code}`] && f[`content_${lt.code}`]);
+            return (
+              <button key={lt.code} onClick={() => setActiveLang(lt.code)}
+                style={{ flex: 1, fontFamily: sansFont, fontSize: 13, fontWeight: 600, padding: "10px 14px", borderRadius: 8, border: "none", cursor: "pointer", background: activeLang === lt.code ? C.saffron : "transparent", color: activeLang === lt.code ? "#fff" : C.mid, position: "relative" }}>
+                {lt.label}
+                {lt.code !== "hi" && (
+                  <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, background: hasContent ? C.success : C.cancelled, marginLeft: 6 }} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {activeLang !== "hi" && (
+          <div style={{ background: C.goldLight, borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontFamily: sansFont, fontSize: 12, color: C.mid }}>
+            💡 {activeLang === "en" ? "English" : "मराठी"} translation is optional. If left empty, Hindi content will be shown as fallback.
+          </div>
+        )}
+
+        {/* Title */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={labelStyle}>Title {activeLang === "hi" ? "*" : "(optional)"}</label>
+          <input value={f[titleKey] || ""} onChange={e => setF(x => ({ ...x, [titleKey]: e.target.value }))} placeholder={activeLang === "hi" ? "लेख का शीर्षक" : activeLang === "en" ? "Article title in English" : "लेखाचे शीर्षक मराठीत"} style={{ ...inputStyle, fontFamily: font, fontSize: 18 }} />
+        </div>
+
+        {/* Excerpt */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={labelStyle}>Excerpt (short summary)</label>
+          <textarea value={f[excerptKey] || ""} onChange={e => setF(x => ({ ...x, [excerptKey]: e.target.value }))} placeholder={activeLang === "hi" ? "संक्षिप्त विवरण" : activeLang === "en" ? "Short summary in English" : "संक्षिप्त वर्णन मराठीत"} rows={2} style={{ ...inputStyle, resize: "vertical" }} />
+        </div>
+
+        {/* Content */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <label style={{ ...labelStyle, margin: 0 }}>Content *</label>
+            <label style={{ ...labelStyle, margin: 0 }}>Content {activeLang === "hi" ? "*" : "(optional)"}</label>
             <button onClick={() => setPreview(!preview)} style={{ fontFamily: sansFont, fontSize: 12, color: C.saffron, background: "none", border: `1px solid ${C.saffron}`, borderRadius: 6, padding: "4px 12px", cursor: "pointer" }}>{preview ? "Edit" : "Preview"}</button>
           </div>
           {!preview ? (
             <div>
-              <textarea value={f.content} onChange={e => setF(x => ({ ...x, content: e.target.value }))} placeholder="लेख का पूरा विषय लिखें...&#10;&#10;## उपशीर्षक के लिए ## का उपयोग करें&#10;&#10;> उद्धरण के लिए > का उपयोग करें&#10;&#10;पैराग्राफ के बीच एक खाली लाइन छोड़ें" rows={16} style={{ ...inputStyle, resize: "vertical", fontFamily: sansFont, lineHeight: 1.7 }} />
-              <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "6px 0 0" }}>Tips: Use ## for headings, {'>'} for quotes, empty lines between paragraphs</p>
+              <textarea value={currentContent} onChange={e => setF(x => ({ ...x, [contentKey]: e.target.value }))} placeholder={activeLang === "hi" ? "लेख का पूरा विषय लिखें..." : activeLang === "en" ? "Write the full article in English..." : "लेखाचा संपूर्ण मजकूर मराठीत लिहा..."} rows={16} style={{ ...inputStyle, resize: "vertical", fontFamily: sansFont, lineHeight: 1.7 }} />
+              <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "6px 0 0" }}>## for headings, {'>'} for quotes, empty lines between paragraphs</p>
             </div>
           ) : (
             <div style={{ padding: "20px 24px", border: `1px solid ${C.border}`, borderRadius: 10, minHeight: 200, background: C.cream }}>
-              {f.content.split('\n\n').map((para, i) => {
+              {currentContent ? currentContent.split('\n\n').map((para, i) => {
                 if (para.startsWith('## ')) return <h3 key={i} style={{ fontFamily: font, fontSize: 20, color: C.maroon, margin: "16px 0 8px" }}>{para.replace('## ', '')}</h3>;
                 if (para.startsWith('### ')) return <h4 key={i} style={{ fontFamily: font, fontSize: 17, color: C.saffron, margin: "12px 0 6px" }}>{para.replace('### ', '')}</h4>;
                 if (para.startsWith('> ')) return <blockquote key={i} style={{ borderLeft: `4px solid ${C.gold}`, padding: "10px 16px", margin: "12px 0", background: C.goldLight, borderRadius: "0 8px 8px 0", fontFamily: font, fontSize: 15, color: C.maroon, fontStyle: "italic" }}>{para.replace('> ', '')}</blockquote>;
                 return <p key={i} style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: "0 0 12px" }}>{para}</p>;
-              })}
+              }) : <p style={{ color: C.light, fontStyle: "italic" }}>No content yet for this language</p>}
             </div>
           )}
         </div>
 
+        {/* Publish toggle */}
         <div style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
           <input type="checkbox" id="published" checked={f.published} onChange={e => setF(x => ({ ...x, published: e.target.checked }))} />
           <label htmlFor="published" style={{ fontFamily: sansFont, fontSize: 14, color: C.dark, cursor: "pointer" }}>Publish immediately</label>
