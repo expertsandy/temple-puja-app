@@ -214,6 +214,41 @@ const translations = {
     hi: "सभी आवश्यक फ़ील्ड भरें और पूजा चुनें",
     mr: "सर्व आवश्यक फील्ड भरा आणि पूजा निवडा",
   },
+  enterFullName: {
+    en: "Enter full name",
+    hi: "पूरा नाम दर्ज करें",
+    mr: "पूर्ण नाव प्रविष्ट करा",
+  },
+  egGotra: {
+    en: "e.g. Kashyap",
+    hi: "उदा. कश्यप",
+    mr: "उदा. कश्यप",
+  },
+  tenDigit: {
+    en: "10-digit mobile",
+    hi: "10 अंकों का मोबाइल",
+    mr: "10 अंकी मोबाइल",
+  },
+  puja: {
+    en: "Puja",
+    hi: "पूजा",
+    mr: "पूजा",
+  },
+  pujas: {
+    en: "Pujas",
+    hi: "पूजाएं",
+    mr: "पूजा",
+  },
+  member: {
+    en: "member",
+    hi: "सदस्य",
+    mr: "सदस्य",
+  },
+  uploaded: {
+    en: "uploaded",
+    hi: "अपलोड किया गया",
+    mr: "अपलोड केले",
+  },
 
   // ─── Success ───
   successTitle: {
