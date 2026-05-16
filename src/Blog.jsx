@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLang } from "./LangContext.jsx";
 
 // ─── Styles (shared with main app) ───
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
@@ -9,13 +10,14 @@ const labelStyle = { fontFamily: sansFont, fontSize: 13, fontWeight: 600, color:
 
 // ─── Blog List (Public) ───
 export function BlogPage({ posts, onSelectPost }) {
+  const { t } = useLang();
   const published = posts.filter(p => p.published);
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 36 }}>
-        <h2 style={{ fontFamily: font, fontSize: 30, color: C.maroon, margin: "0 0 8px" }}>📜 ब्लॉग</h2>
-        <p style={{ fontFamily: sansFont, fontSize: 15, color: C.light }}>दत्त संप्रदाय, अध्यात्म और पूजा विधि के बारे में पढ़ें</p>
+        <h2 style={{ fontFamily: font, fontSize: 30, color: C.maroon, margin: "0 0 8px" }}>{t("blogTitle")}</h2>
+        <p style={{ fontFamily: sansFont, fontSize: 15, color: C.light }}>{t("blogSubtitle")}</p>
       </div>
 
       {published.length === 0 ? (

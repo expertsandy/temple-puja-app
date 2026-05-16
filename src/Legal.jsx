@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLang } from "./LangContext.jsx";
 
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
@@ -319,14 +320,15 @@ export function ContactPage() {
 
 // ─── Footer Links Component ───
 export function LegalFooterLinks({ dispatch }) {
+  const { t } = useLang();
   const linkStyle = { fontFamily: sansFont, fontSize: 12, color: C.light, textDecoration: "none", cursor: "pointer", borderBottom: `1px dotted ${C.border}` };
   return (
     <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
-      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "privacy" })} style={linkStyle}>गोपनीयता नीति / Privacy</span>
+      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "privacy" })} style={linkStyle}>{t("privacy")}</span>
       <span style={{ color: C.border }}>|</span>
-      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "terms" })} style={linkStyle}>शर्तें / Terms</span>
+      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "terms" })} style={linkStyle}>{t("terms")}</span>
       <span style={{ color: C.border }}>|</span>
-      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "refund" })} style={linkStyle}>वापसी / Refund</span>
+      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "refund" })} style={linkStyle}>{t("refund")}</span>
     </div>
   );
 }
