@@ -3,12 +3,14 @@ import {
   fetchTemples, addTemple as dbAddTemple, updateTemple as dbUpdateTemple, deleteTemple as dbDeleteTemple,
   addPuja as dbAddPuja, deletePuja as dbDeletePuja,
   fetchRegistrations, addRegistration as dbAddRegistration, updateRegistrationStatus as dbUpdateStatus, deleteRegistration as dbDeleteRegistration,
+  fetchDevoteeBookings,
   fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
   fetchBlogPosts, addBlogPost as dbAddPost, updateBlogPost as dbUpdatePost, deleteBlogPost as dbDeletePost,
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
 import { BlogPage, BlogPostView, BlogAdmin } from "./Blog.jsx";
 import { PrivacyPolicyPage, TermsPage, RefundPolicyPage, LegalFooterLinks } from "./Legal.jsx";
+import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
 // ─── Logo ───
@@ -94,7 +96,7 @@ function Notification({ message, onClose }) {
 function Header({ state, dispatch, adminUser, onLogout }) {
   const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
-  const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
+  const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navMyBookings"), view: "my-bookings" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...publicNav, ...adminNav];
   return (
@@ -754,6 +756,7 @@ export default function App() {
       <main style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 24px 60px" }}>
         {state.view === "home" && <HomePage state={state} dispatch={dispatch} />}
         {state.view === "register" && <RegistrationForm state={state} dispatch={dispatch} onRefresh={refreshData} />}
+        {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}

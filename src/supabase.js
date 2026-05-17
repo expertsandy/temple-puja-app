@@ -223,6 +223,18 @@ export async function deleteRegistration(id) {
   if (error) throw error;
 }
 
+export async function fetchDevoteeBookings(phone) {
+  // Search by last 10 digits of phone
+  const { data, error } = await supabase
+    .from('registrations')
+    .select('*')
+    .like('phone', `%${phone}`)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
 // ─── Social Links Operations ───
 
 export async function fetchSocialLinks() {
