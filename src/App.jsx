@@ -6,11 +6,13 @@ import {
   fetchDevoteeBookings,
   fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
   fetchBlogPosts, addBlogPost as dbAddPost, updateBlogPost as dbUpdatePost, deleteBlogPost as dbDeletePost,
+  fetchPriests, addPriest as dbAddPriest, updatePriest as dbUpdatePriest, deletePriest as dbDeletePriest, assignPriestToRegistration as dbAssignPriest,
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
 import { BlogPage, BlogPostView, BlogAdmin } from "./Blog.jsx";
 import { PrivacyPolicyPage, TermsPage, RefundPolicyPage, LegalFooterLinks } from "./Legal.jsx";
 import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
+import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
 // ─── Logo ───
@@ -18,7 +20,7 @@ const LOGO_SRC = "/logo.png";
 
 // ─── State ───
 const initialState = {
-  temples: [], registrations: [], socialLinks: [], blogPosts: [],
+  temples: [], registrations: [], socialLinks: [], blogPosts: [], priests: [],
   view: "home", selectedTemple: null, selectedPujas: [],
   selectedPostId: null,
   adminTab: "registrations", editingTempleId: null,
@@ -27,7 +29,7 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "SET_DATA": return { ...state, temples: action.payload.temples, registrations: action.payload.registrations, socialLinks: action.payload.socialLinks || [], blogPosts: action.payload.blogPosts || [], loading: false };
+    case "SET_DATA": return { ...state, temples: action.payload.temples, registrations: action.payload.registrations, socialLinks: action.payload.socialLinks || [], blogPosts: action.payload.blogPosts || [], priests: action.payload.priests || [], loading: false };
     case "SET_LOADING": return { ...state, loading: action.payload };
     case "SET_ERROR": return { ...state, error: action.payload, loading: false };
     case "SET_VIEW": return { ...state, view: action.payload, selectedPostId: null };
@@ -396,16 +398,17 @@ function StatusBadge({ status }) {
 
 // ─── Admin ───
 function AdminPanel({ state, dispatch, onRefresh }) {
-  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }, { key: "blog", label: "📝 Blog", count: state.blogPosts.length }, { key: "social-links", label: "🔗 Social Links" }];
+  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }, { key: "priests", label: "👨‍🦱 Priests", count: state.priests.length }, { key: "blog", label: "📝 Blog", count: state.blogPosts.length }, { key: "social-links", label: "🔗 Social Links" }];
   return (
     <div>
       <h2 style={{ fontFamily: font, fontSize: 26, color: C.maroon, margin: "0 0 20px" }}>⚙️ Admin Dashboard</h2>
       <div style={{ display: "flex", gap: 6, marginBottom: 24, flexWrap: "wrap" }}>{tabs.map(t => <button key={t.key} onClick={() => dispatch({ type: "SET_ADMIN_TAB", payload: t.key })} style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 600, padding: "10px 18px", borderRadius: 10, border: `1.5px solid ${state.adminTab === t.key ? C.saffron : C.border}`, cursor: "pointer", background: state.adminTab === t.key ? C.saffronLight : "#fff", color: state.adminTab === t.key ? C.saffron : C.mid }}>{t.label} {t.count !== undefined && <span style={{ background: C.saffron, color: "#fff", borderRadius: 10, padding: "2px 8px", marginLeft: 6, fontSize: 11 }}>{t.count}</span>}</button>)}</div>
-      {state.adminTab === "registrations" && <RegistrationsList state={state} dispatch={dispatch} onRefresh={onRefresh} />}
+      {state.adminTab === "registrations" && <RegistrationsList state={state} dispatch={dispatch} onRefresh={onRefresh} dbAssignPriest={dbAssignPriest} />}
       {state.adminTab === "temples" && <TemplesList state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "add-temple" && <AddTempleForm dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "edit-temple" && <EditTempleForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "add-puja" && <AddPujaForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
+      {state.adminTab === "priests" && <PriestsAdmin priests={state.priests} temples={state.temples} registrations={state.registrations} onRefresh={onRefresh} dbAddPriest={dbAddPriest} dbUpdatePriest={dbUpdatePriest} dbDeletePriest={dbDeletePriest} dbAssignPriest={dbAssignPriest} dispatch={dispatch} />}
       {state.adminTab === "social-links" && <SocialLinksManager state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "blog" && <BlogAdmin posts={state.blogPosts} onRefresh={onRefresh} dbAddPost={dbAddPost} dbUpdatePost={dbUpdatePost} dbDeletePost={dbDeletePost} dispatch={dispatch} />}
     </div>
@@ -413,7 +416,7 @@ function AdminPanel({ state, dispatch, onRefresh }) {
 }
 
 // ─── Registrations List ───
-function RegistrationsList({ state, dispatch, onRefresh }) {
+function RegistrationsList({ state, dispatch, onRefresh, dbAssignPriest }) {
   const [exp, setExp] = useState(null);
   const handleStatus = async (id, status) => {
     try { await dbUpdateStatus(id, status); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: `Status: ${status}` }); }
@@ -436,6 +439,7 @@ function RegistrationsList({ state, dispatch, onRefresh }) {
           <div style={{ marginTop: 16, marginBottom: 16, padding: "14px 16px", background: C.saffronLight, borderRadius: 10, fontFamily: sansFont, fontSize: 13 }}><div style={{ fontWeight: 700, color: C.maroon, marginBottom: 8 }}>🪔 Booked Pujas</div>{bk.map(p => <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", color: C.mid }}><span>{p.name}</span><span>₹{p.price}</span></div>)}<div style={{ borderTop: `1px solid ${C.border}`, marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between" }}><span style={{ color: C.light }}>× {r.members || 1}</span><span style={{ fontWeight: 700, color: C.saffron }}>₹{amt}</span></div></div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 14 }}>{[{ l: "Phone", v: r.phone }, { l: "Email", v: r.email || "—" }, { l: "Gotra", v: r.gotra || "—" }, { l: "Time", v: r.time || "Flexible" }].map(i => <div key={i.l}><p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px", textTransform: "uppercase" }}>{i.l}</p><p style={{ fontFamily: sansFont, fontSize: 14, color: C.dark, margin: 0, fontWeight: 500 }}>{i.v}</p></div>)}</div>
           {r.paymentScreenshot && <div style={{ marginTop: 14 }}><img src={r.paymentScreenshot} alt="Payment" style={{ maxWidth: 240, borderRadius: 8, border: `1px solid ${C.border}` }} /></div>}
+          <PriestAssignment registration={r} priests={state.priests} temples={state.temples} onAssign={async (regId, priestId, notes) => { await dbAssignPriest(regId, priestId, notes); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: priestId ? "Priest assigned!" : "Priest unassigned" }); }} />
           <div style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>{["confirmed", "pending", "cancelled"].map(s => <button key={s} onClick={() => handleStatus(r.id, s)} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 16px", borderRadius: 8, cursor: "pointer", textTransform: "capitalize", border: r.status === s ? "none" : `1px solid ${C.border}`, background: r.status === s ? C.saffron : "#fff", color: r.status === s ? "#fff" : C.mid }}>{s}</button>)}<div style={{ flex: 1 }} /><button onClick={() => handleDelete(r.id)} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 16px", borderRadius: 8, cursor: "pointer", border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled }}>🗑️ Delete</button></div>
         </div>}
       </div>);
@@ -670,8 +674,8 @@ export default function App() {
 
   const refreshData = useCallback(async () => {
     try {
-      const [temples, registrations, socialLinks, blogPosts] = await Promise.all([fetchTemples(), fetchRegistrations(), fetchSocialLinks(), fetchBlogPosts()]);
-      dispatch({ type: "SET_DATA", payload: { temples, registrations, socialLinks, blogPosts } });
+      const [temples, registrations, socialLinks, blogPosts, priests] = await Promise.all([fetchTemples(), fetchRegistrations(), fetchSocialLinks(), fetchBlogPosts(), fetchPriests()]);
+      dispatch({ type: "SET_DATA", payload: { temples, registrations, socialLinks, blogPosts, priests } });
     } catch (e) {
       dispatch({ type: "SET_ERROR", payload: e.message });
     }

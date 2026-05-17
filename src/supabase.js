@@ -178,6 +178,8 @@ export async function fetchRegistrations() {
     paymentScreenshot: r.payment_screenshot,
     status: r.status,
     createdAt: r.created_at,
+    priestId: r.priest_id,
+    priestNotes: r.priest_notes,
   }));
 }
 
@@ -353,6 +355,76 @@ export async function deleteBlogPost(id) {
     .from('blog_posts')
     .delete()
     .eq('id', id);
+
+  if (error) throw error;
+}
+
+// ─── Priest Operations ───
+
+export async function fetchPriests() {
+  const { data, error } = await supabase
+    .from('priests')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addPriest(priest) {
+  const { data, error } = await supabase
+    .from('priests')
+    .insert({
+      id: priest.id,
+      name: priest.name,
+      phone: priest.phone || null,
+      email: priest.email || null,
+      specializations: priest.specializations || null,
+      temple_ids: priest.temple_ids || [],
+      notes: priest.notes || null,
+      active: priest.active ?? true,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updatePriest(priest) {
+  const { error } = await supabase
+    .from('priests')
+    .update({
+      name: priest.name,
+      phone: priest.phone || null,
+      email: priest.email || null,
+      specializations: priest.specializations || null,
+      temple_ids: priest.temple_ids || [],
+      notes: priest.notes || null,
+      active: priest.active ?? true,
+    })
+    .eq('id', priest.id);
+
+  if (error) throw error;
+}
+
+export async function deletePriest(id) {
+  const { error } = await supabase
+    .from('priests')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+export async function assignPriestToRegistration(registrationId, priestId, priestNotes) {
+  const { error } = await supabase
+    .from('registrations')
+    .update({
+      priest_id: priestId || null,
+      priest_notes: priestNotes || null,
+    })
+    .eq('id', registrationId);
 
   if (error) throw error;
 }
