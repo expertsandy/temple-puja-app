@@ -104,7 +104,7 @@ function Header({ state, dispatch, adminUser, onLogout }) {
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}>
-          <img src={LOGO_SRC} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: "contain", flexShrink: 0 }} />
+          <img src={LOGO_SRC} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: "contain", flexShrink: 0, background: "#fff", padding: 3 }} />
           <div>
             <h1 style={{ fontFamily: font, fontSize: 16, color: C.gold, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
             <p style={{ fontFamily: sansFont, fontSize: 9, color: "rgba(255,255,255,0.6)", margin: 0, letterSpacing: 1, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
