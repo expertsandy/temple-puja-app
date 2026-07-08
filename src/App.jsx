@@ -102,7 +102,7 @@ function Header({ state, dispatch, adminUser, onLogout }) {
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...publicNav, ...adminNav];
   return (
-    <header style={{ background: `linear-gradient(135deg, #f2d1a0 0%, #e8a54e 50%, #e8621e 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+    <header style={{ background: `linear-gradient(135deg, #fceabb 0%, #e8c840 50%, #e8621e 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}>
