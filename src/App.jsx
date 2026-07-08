@@ -102,24 +102,24 @@ function Header({ state, dispatch, adminUser, onLogout }) {
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...publicNav, ...adminNav];
   return (
-    <header style={{ background: `linear-gradient(135deg, ${C.maroon} 0%, ${C.saffronDark} 50%, ${C.saffron} 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+    <header style={{ background: `linear-gradient(135deg, #f2d1a0 0%, #e8a54e 50%, #e8621e 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}>
           <img src={LOGO_SRC} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: "contain", flexShrink: 0, background: "#fff", padding: 3 }} />
           <div>
-            <h1 style={{ fontFamily: font, fontSize: 16, color: C.gold, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
-            <p style={{ fontFamily: sansFont, fontSize: 9, color: "rgba(255,255,255,0.6)", margin: 0, letterSpacing: 1, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
+            <h1 style={{ fontFamily: font, fontSize: 16, color: C.maroon, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
+            <p style={{ fontFamily: sansFont, fontSize: 9, color: "rgba(100,40,20,0.6)", margin: 0, letterSpacing: 1, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
           </div>
         </div>
 
         {/* Desktop Nav */}
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {nav.map(n => <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); }} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(255,255,255,0.2)" : "transparent", color: state.view === n.view ? "#fff" : "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}>{n.label}</button>)}
+          {nav.map(n => <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); }} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>{n.label}</button>)}
           {!adminUser ? (
-            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "login" })} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)" }}>{t("navAdmin")}</button>
+            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "login" })} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navAdmin")}</button>
           ) : (
-            <button onClick={onLogout} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.6)" }}>{t("navLogout")}</button>
+            <button onClick={onLogout} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navLogout")}</button>
           )}
           <LangSwitcher style={{ marginLeft: 4 }} />
         </div>
@@ -128,7 +128,7 @@ function Header({ state, dispatch, adminUser, onLogout }) {
         <div className="mobile-nav-toggle" style={{ display: "none", alignItems: "center", gap: 6 }}>
           <LangSwitcher />
           <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", padding: 6 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#5c2d1a">
               {menuOpen
                 ? <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 : <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
@@ -140,17 +140,17 @@ function Header({ state, dispatch, adminUser, onLogout }) {
 
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
-        <div className="mobile-menu" style={{ padding: "8px 16px 16px", display: "none", flexDirection: "column", gap: 4, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+        <div className="mobile-menu" style={{ padding: "8px 16px 16px", display: "none", flexDirection: "column", gap: 4, borderTop: "1px solid rgba(123,26,44,0.15)" }}>
           {nav.map(n => (
             <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}
-              style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(255,255,255,0.2)" : "transparent", color: state.view === n.view ? "#fff" : "rgba(255,255,255,0.8)", textAlign: "left", width: "100%" }}>
+              style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", textAlign: "left", width: "100%" }}>
               {n.label}
             </button>
           ))}
           {!adminUser ? (
-            <button onClick={() => { dispatch({ type: "SET_VIEW", payload: "login" }); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.7)", textAlign: "left", width: "100%" }}>{t("navAdmin")}</button>
+            <button onClick={() => { dispatch({ type: "SET_VIEW", payload: "login" }); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a", textAlign: "left", width: "100%" }}>{t("navAdmin")}</button>
           ) : (
-            <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", background: "transparent", color: "rgba(255,255,255,0.7)", textAlign: "left", width: "100%" }}>{t("navLogout")}</button>
+            <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a", textAlign: "left", width: "100%" }}>{t("navLogout")}</button>
           )}
         </div>
       )}

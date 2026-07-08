@@ -48,8 +48,8 @@ export function LangSwitcher({ style }) {
     <select value={lang} onChange={e => setLang(e.target.value)}
       style={{
         fontFamily: sansFont, fontSize: 12, fontWeight: 700,
-        padding: "5px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.3)",
-        cursor: "pointer", background: "rgba(255,255,255,0.15)", color: "#fff",
+        padding: "5px 8px", borderRadius: 6, border: "1px solid rgba(123,26,44,0.3)",
+        cursor: "pointer", background: "rgba(255,255,255,0.5)", color: "#5c2d1a",
         outline: "none", appearance: "auto", ...style,
       }}>
       {langs.map(l => (
