@@ -154,6 +154,20 @@ export async function deletePuja(pujaId) {
   if (error) throw error;
 }
 
+export async function updatePuja(puja) {
+  const { error } = await supabase
+    .from('pujas')
+    .update({
+      name: puja.name,
+      price: puja.price,
+      duration: puja.duration || '30 min',
+      description: puja.description || null,
+    })
+    .eq('id', puja.id);
+
+  if (error) throw error;
+}
+
 // ─── Registration Operations ───
 
 export async function fetchRegistrations() {

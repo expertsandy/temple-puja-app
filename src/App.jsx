@@ -1,7 +1,7 @@
 import { useState, useEffect, useReducer, useCallback } from "react";
 import {
   fetchTemples, addTemple as dbAddTemple, updateTemple as dbUpdateTemple, deleteTemple as dbDeleteTemple,
-  addPuja as dbAddPuja, deletePuja as dbDeletePuja,
+  addPuja as dbAddPuja, deletePuja as dbDeletePuja, updatePuja as dbUpdatePuja,
   fetchRegistrations, addRegistration as dbAddRegistration, updateRegistrationStatus as dbUpdateStatus, deleteRegistration as dbDeleteRegistration,
   fetchDevoteeBookings,
   fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
@@ -449,6 +449,9 @@ function RegistrationsList({ state, dispatch, onRefresh, dbAssignPriest }) {
 
 // ─── Temples List ───
 function TemplesList({ state, dispatch, onRefresh }) {
+  const [editingPuja, setEditingPuja] = useState(null);
+  const [pujaForm, setPujaForm] = useState({ name: "", price: "", duration: "", description: "" });
+
   const handleDelete = async (id) => {
     const regCount = state.registrations.filter(r => r.templeId === id).length;
     const msg = regCount > 0
@@ -457,7 +460,14 @@ function TemplesList({ state, dispatch, onRefresh }) {
     if (!confirm(msg)) return;
     try { await dbDeleteTemple(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Temple removed" }); } catch (e) { alert(e.message); }
   };
-  const handleDeletePuja = async (id) => { try { await dbDeletePuja(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Puja removed" }); } catch (e) { alert(e.message); } };
+  const handleDeletePuja = async (id) => { if (!confirm("Remove this puja?")) return; try { await dbDeletePuja(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Puja removed" }); } catch (e) { alert(e.message); } };
+  const handleEditPuja = (puja) => { setEditingPuja(puja.id); setPujaForm({ name: puja.name, price: puja.price, duration: puja.duration || "", description: puja.description || "" }); };
+  const handleSavePuja = async () => {
+    if (!pujaForm.name || !pujaForm.price) { alert("Name and price required"); return; }
+    try { await dbUpdatePuja({ id: editingPuja, name: pujaForm.name, price: parseInt(pujaForm.price), duration: pujaForm.duration || "30 min", description: pujaForm.description }); await onRefresh(); setEditingPuja(null); dispatch({ type: "SET_NOTIFICATION", payload: "Puja updated!" }); }
+    catch (e) { alert(e.message); }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>{state.temples.map(t => (
       <div key={t.id} style={{ background: "#fff", borderRadius: 14, border: `1px solid ${C.border}`, overflow: "hidden" }}>
@@ -467,7 +477,35 @@ function TemplesList({ state, dispatch, onRefresh }) {
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>{!t.templePhoto && !t.deityPhoto && <span style={{ fontSize: 32 }}>{t.icon}</span>}<div><h3 style={{ fontFamily: font, fontSize: 17, color: C.dark, margin: 0 }}>{t.name}</h3><p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: 0 }}>📍 {t.location}</p></div></div>
             <div style={{ display: "flex", gap: 6 }}><button onClick={() => dispatch({ type: "SET_EDITING_TEMPLE", payload: t.id })} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.saffron}`, background: "transparent", color: C.saffron, cursor: "pointer" }}>✏️ Edit</button><button onClick={() => handleDelete(t.id)} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.cancelled}`, background: "transparent", color: C.cancelled, cursor: "pointer" }}>Remove</button></div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{t.pujas.map(p => <div key={p.id} style={{ fontFamily: sansFont, fontSize: 13, padding: "8px 14px", borderRadius: 8, background: C.cream, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10 }}><span>{p.name} — ₹{p.price}</span><button onClick={() => handleDeletePuja(p.id)} style={{ background: "none", border: "none", cursor: "pointer", color: C.cancelled, fontSize: 14 }}>✕</button></div>)}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{t.pujas.map(p => (
+            editingPuja === p.id ? (
+              <div key={p.id} style={{ padding: "14px 16px", borderRadius: 10, background: C.saffronLight, border: `1.5px solid ${C.saffron}` }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                  <div><label style={{ ...labelStyle, fontSize: 11 }}>Name *</label><input value={pujaForm.name} onChange={e => setPujaForm(x => ({ ...x, name: e.target.value }))} style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
+                  <div><label style={{ ...labelStyle, fontSize: 11 }}>Price (₹) *</label><input value={pujaForm.price} onChange={e => setPujaForm(x => ({ ...x, price: e.target.value }))} style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} type="number" /></div>
+                  <div><label style={{ ...labelStyle, fontSize: 11 }}>Duration</label><input value={pujaForm.duration} onChange={e => setPujaForm(x => ({ ...x, duration: e.target.value }))} placeholder="e.g. 45 min" style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
+                  <div><label style={{ ...labelStyle, fontSize: 11 }}>Description</label><input value={pujaForm.description} onChange={e => setPujaForm(x => ({ ...x, description: e.target.value }))} placeholder="Brief description" style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
+                </div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <button onClick={handleSavePuja} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer", background: C.saffron, color: "#fff" }}>💾 Save</button>
+                  <button onClick={() => setEditingPuja(null)} style={{ fontFamily: sansFont, fontSize: 12, padding: "7px 14px", borderRadius: 8, border: `1px solid ${C.border}`, cursor: "pointer", background: "#fff", color: C.mid }}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div key={p.id} style={{ fontFamily: sansFont, fontSize: 13, padding: "10px 14px", borderRadius: 8, background: C.cream, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <span style={{ fontWeight: 600, color: C.dark }}>{p.name}</span>
+                  <span style={{ color: C.saffron, fontWeight: 700, marginLeft: 8 }}>₹{p.price}</span>
+                  {p.duration && <span style={{ color: C.light, marginLeft: 8, fontSize: 12 }}>⏱ {p.duration}</span>}
+                  {p.description && <span style={{ color: C.light, marginLeft: 8, fontSize: 12 }}>— {p.description}</span>}
+                </div>
+                <div style={{ display: "flex", gap: 4 }}>
+                  <button onClick={() => handleEditPuja(p)} style={{ background: "none", border: "none", cursor: "pointer", color: C.saffron, fontSize: 14 }}>✏️</button>
+                  <button onClick={() => handleDeletePuja(p.id)} style={{ background: "none", border: "none", cursor: "pointer", color: C.cancelled, fontSize: 14 }}>✕</button>
+                </div>
+              </div>
+            )
+          ))}</div>
         </div>
       </div>
     ))}</div>
