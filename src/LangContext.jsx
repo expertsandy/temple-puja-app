@@ -39,24 +39,22 @@ export function LangSwitcher({ style }) {
   const { lang, setLang } = useLang();
   const langs = [
     { code: "en", label: "EN" },
-    { code: "hi", label: "हि" },
-    { code: "mr", label: "म" },
+    { code: "hi", label: "हिं" },
+    { code: "mr", label: "मरा" },
   ];
+  const current = langs.find(l => l.code === lang) || langs[1];
 
   return (
-    <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,0.15)", borderRadius: 6, padding: 2, ...style }}>
+    <select value={lang} onChange={e => setLang(e.target.value)}
+      style={{
+        fontFamily: sansFont, fontSize: 12, fontWeight: 700,
+        padding: "5px 8px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.3)",
+        cursor: "pointer", background: "rgba(255,255,255,0.15)", color: "#fff",
+        outline: "none", appearance: "auto", ...style,
+      }}>
       {langs.map(l => (
-        <button key={l.code} onClick={() => setLang(l.code)}
-          style={{
-            fontFamily: sansFont, fontSize: 11, fontWeight: 700,
-            padding: "4px 8px", borderRadius: 4, border: "none", cursor: "pointer",
-            background: lang === l.code ? "rgba(255,255,255,0.9)" : "transparent",
-            color: lang === l.code ? "#7b1a2c" : "rgba(255,255,255,0.7)",
-            transition: "all 0.15s",
-          }}>
-          {l.label}
-        </button>
+        <option key={l.code} value={l.code} style={{ color: "#333", background: "#fff" }}>{l.label}</option>
       ))}
-    </div>
+    </select>
   );
 }
