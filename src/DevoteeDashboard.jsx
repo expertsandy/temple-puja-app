@@ -135,7 +135,7 @@ function BookingCard({ reg, temples, lang, isUpcoming }) {
           {/* Other Details */}
           <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
             {reg.gotra && <div><p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px", textTransform: "uppercase" }}>📿 {lang === "hi" ? "गोत्र" : "Gotra"}</p><p style={{ fontFamily: sansFont, fontSize: 14, color: C.dark, margin: 0, fontWeight: 500 }}>{reg.gotra}</p></div>}
-            <div><p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px", textTransform: "uppercase" }}>{t("bookingId", lang)}</p><p style={{ fontFamily: sansFont, fontSize: 12, color: C.mid, margin: 0, fontFamily: "monospace" }}>{reg.id}</p></div>
+            <div><p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px", textTransform: "uppercase" }}>{t("bookingId", lang)}</p><p style={{ fontFamily: "monospace", fontSize: 12, color: C.mid, margin: 0 }}>{reg.id}</p></div>
           </div>
 
           {/* Payment Status */}
