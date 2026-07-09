@@ -462,7 +462,9 @@ function RegistrationsList({ state, dispatch, onRefresh, dbAssignPriest }) {
 // ─── Temples List ───
 function TemplesList({ state, dispatch, onRefresh }) {
   const [editingPuja, setEditingPuja] = useState(null);
-  const [pujaForm, setPujaForm] = useState({ name: "", price: "", duration: "", description: "" });
+  const [pujaForm, setPujaForm] = useState({ name: "", price: "", duration: "", description: "", nameHi: "", nameMr: "", descriptionHi: "", descriptionMr: "" });
+  const [pujaSourceLang, setPujaSourceLang] = useState("en");
+  const [pujaTranslating, setPujaTranslating] = useState(false);
 
   const handleDelete = async (id) => {
     const regCount = state.registrations.filter(r => r.templeId === id).length;
@@ -473,10 +475,32 @@ function TemplesList({ state, dispatch, onRefresh }) {
     try { await dbDeleteTemple(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Temple removed" }); } catch (e) { alert(e.message); }
   };
   const handleDeletePuja = async (id) => { if (!confirm("Remove this puja?")) return; try { await dbDeletePuja(id); await onRefresh(); dispatch({ type: "SET_NOTIFICATION", payload: "Puja removed" }); } catch (e) { alert(e.message); } };
-  const handleEditPuja = (puja) => { setEditingPuja(puja.id); setPujaForm({ name: puja.name, price: puja.price, duration: puja.duration || "", description: puja.description || "" }); };
+  const handleEditPuja = (puja) => { setEditingPuja(puja.id); setPujaForm({ name: puja.name, price: puja.price, duration: puja.duration || "", description: puja.description || "", nameHi: puja.nameHi || "", nameMr: puja.nameMr || "", descriptionHi: puja.descriptionHi || "", descriptionMr: puja.descriptionMr || "" }); };
+
+  const handleTranslatePuja = async () => {
+    if (!pujaForm.name) { alert("Enter puja name first"); return; }
+    setPujaTranslating(true);
+    try {
+      const fields = { name: pujaForm.name };
+      if (pujaForm.description) fields.description = pujaForm.description;
+      const result = await autoTranslate(fields, pujaSourceLang);
+      const updates = {};
+      if (pujaSourceLang !== "hi") { updates.nameHi = result.name_hi; if (result.description_hi) updates.descriptionHi = result.description_hi; }
+      if (pujaSourceLang !== "mr") { updates.nameMr = result.name_mr; if (result.description_mr) updates.descriptionMr = result.description_mr; }
+      if (pujaSourceLang !== "en" && result.name_en) {
+        if (pujaSourceLang === "hi") { updates.nameHi = pujaForm.name; if (pujaForm.description) updates.descriptionHi = pujaForm.description; }
+        if (pujaSourceLang === "mr") { updates.nameMr = pujaForm.name; if (pujaForm.description) updates.descriptionMr = pujaForm.description; }
+        updates.name = result.name_en;
+        if (result.description_en) updates.description = result.description_en;
+      }
+      setPujaForm(x => ({ ...x, ...updates }));
+    } catch (e) { alert("Translation failed: " + e.message); }
+    setPujaTranslating(false);
+  };
+
   const handleSavePuja = async () => {
     if (!pujaForm.name || !pujaForm.price) { alert("Name and price required"); return; }
-    try { await dbUpdatePuja({ id: editingPuja, name: pujaForm.name, price: parseInt(pujaForm.price), duration: pujaForm.duration || "30 min", description: pujaForm.description }); await onRefresh(); setEditingPuja(null); dispatch({ type: "SET_NOTIFICATION", payload: "Puja updated!" }); }
+    try { await dbUpdatePuja({ id: editingPuja, name: pujaForm.name, nameHi: pujaForm.nameHi, nameMr: pujaForm.nameMr, price: parseInt(pujaForm.price), duration: pujaForm.duration || "30 min", description: pujaForm.description, descriptionHi: pujaForm.descriptionHi, descriptionMr: pujaForm.descriptionMr }); await onRefresh(); setEditingPuja(null); dispatch({ type: "SET_NOTIFICATION", payload: "Puja updated!" }); }
     catch (e) { alert(e.message); }
   };
 
@@ -492,12 +516,23 @@ function TemplesList({ state, dispatch, onRefresh }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{t.pujas.map(p => (
             editingPuja === p.id ? (
               <div key={p.id} style={{ padding: "14px 16px", borderRadius: 10, background: C.saffronLight, border: `1.5px solid ${C.saffron}` }}>
+                <SourceLangPicker value={pujaSourceLang} onChange={setPujaSourceLang} />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                   <div><label style={{ ...labelStyle, fontSize: 11 }}>Name *</label><input value={pujaForm.name} onChange={e => setPujaForm(x => ({ ...x, name: e.target.value }))} style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
                   <div><label style={{ ...labelStyle, fontSize: 11 }}>Price (₹) *</label><input value={pujaForm.price} onChange={e => setPujaForm(x => ({ ...x, price: e.target.value }))} style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} type="number" /></div>
                   <div><label style={{ ...labelStyle, fontSize: 11 }}>Duration</label><input value={pujaForm.duration} onChange={e => setPujaForm(x => ({ ...x, duration: e.target.value }))} placeholder="e.g. 45 min" style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
                   <div><label style={{ ...labelStyle, fontSize: 11 }}>Description</label><input value={pujaForm.description} onChange={e => setPujaForm(x => ({ ...x, description: e.target.value }))} placeholder="Brief description" style={{ ...inputStyle, fontSize: 13, padding: "8px 12px" }} /></div>
                 </div>
+                <button onClick={handleTranslatePuja} disabled={pujaTranslating}
+                  style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${C.gold}`, cursor: "pointer", background: C.goldLight, color: C.maroon, marginBottom: 10, opacity: pujaTranslating ? 0.5 : 1 }}>
+                  {pujaTranslating ? "🔄 Translating..." : "🌐 Auto-Translate"}
+                </button>
+                {(pujaForm.nameHi || pujaForm.nameMr) && (
+                  <div style={{ marginBottom: 10, padding: "10px 14px", background: "#fff", borderRadius: 8, border: `1px solid ${C.border}`, fontFamily: sansFont, fontSize: 12 }}>
+                    {pujaForm.nameHi && <div style={{ marginBottom: 4 }}><span style={{ fontWeight: 700, color: C.saffron }}>हिंदी:</span> {pujaForm.nameHi}</div>}
+                    {pujaForm.nameMr && <div><span style={{ fontWeight: 700, color: C.saffron }}>मराठी:</span> {pujaForm.nameMr}</div>}
+                  </div>
+                )}
                 <div style={{ display: "flex", gap: 6 }}>
                   <button onClick={handleSavePuja} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer", background: C.saffron, color: "#fff" }}>💾 Save</button>
                   <button onClick={() => setEditingPuja(null)} style={{ fontFamily: sansFont, fontSize: 12, padding: "7px 14px", borderRadius: 8, border: `1px solid ${C.border}`, cursor: "pointer", background: "#fff", color: C.mid }}>Cancel</button>
@@ -510,6 +545,7 @@ function TemplesList({ state, dispatch, onRefresh }) {
                   <span style={{ color: C.saffron, fontWeight: 700, marginLeft: 8 }}>₹{p.price}</span>
                   {p.duration && <span style={{ color: C.light, marginLeft: 8, fontSize: 12 }}>⏱ {p.duration}</span>}
                   {p.description && <span style={{ color: C.light, marginLeft: 8, fontSize: 12 }}>— {p.description}</span>}
+                  {(p.nameHi || p.nameMr) && <span style={{ color: C.success, marginLeft: 8, fontSize: 11 }}>🌐</span>}
                 </div>
                 <div style={{ display: "flex", gap: 4 }}>
                   <button onClick={() => handleEditPuja(p)} style={{ background: "none", border: "none", cursor: "pointer", color: C.saffron, fontSize: 14 }}>✏️</button>
