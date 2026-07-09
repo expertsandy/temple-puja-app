@@ -57,6 +57,16 @@ const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10",
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 const labelStyle = { fontFamily: sansFont, fontSize: 13, fontWeight: 600, color: C.mid, marginBottom: 6, display: "block" };
 
+// ─── Helper: get localized field ───
+// Base fields (name, location, description) contain English
+// Hindi = nameHi, Marathi = nameMr
+function tField(obj, field, lang) {
+  if (!obj) return "";
+  if (lang === "hi" && obj[field + "Hi"]) return obj[field + "Hi"];
+  if (lang === "mr" && obj[field + "Mr"]) return obj[field + "Mr"];
+  return obj[field] || "";
+}
+
 function getPujaNames(t, ids) { return t ? t.pujas.filter(p => ids.includes(p.id)).map(p => p.name) : []; }
 
 // ─── Photo Upload ───
@@ -259,15 +269,16 @@ function AboutPage({ socialLinks = [] }) {
 // ─── Temple Card ───
 function TempleCard({ temple, onSelect }) {
   const [h, setH] = useState(false);
+  const { lang, t } = useLang();
   return (
     <div onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} onClick={() => onSelect(temple)}
       style={{ background: "#fff", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${h ? C.saffron : C.border}`, boxShadow: h ? "0 12px 36px rgba(232,98,30,0.12)" : "0 2px 12px rgba(0,0,0,0.04)", transition: "all 0.3s ease", transform: h ? "translateY(-4px)" : "none" }}>
       <TempleBanner temple={temple} height={140} />
       <div style={{ padding: "18px 20px" }}>
-        <h3 style={{ fontFamily: font, fontSize: 17, color: C.dark, margin: "0 0 4px" }}>{temple.name}</h3>
-        <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 4px" }}>📍 {temple.location}</p>
-        {temple.description && <p style={{ fontFamily: sansFont, fontSize: 12, color: C.mid, margin: "0 0 10px", lineHeight: 1.5 }}>{temple.description}</p>}
-        <div style={{ fontFamily: sansFont, fontSize: 12, color: C.saffron, fontWeight: 600, background: C.saffronLight, padding: "6px 12px", borderRadius: 20, display: "inline-block" }}>{temple.pujas.length} Puja{temple.pujas.length !== 1 ? "s" : ""}</div>
+        <h3 style={{ fontFamily: font, fontSize: 17, color: C.dark, margin: "0 0 4px" }}>{tField(temple, "name", lang)}</h3>
+        <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 4px" }}>📍 {tField(temple, "location", lang)}</p>
+        {(temple.description || temple.descriptionEn || temple.descriptionMr) && <p style={{ fontFamily: sansFont, fontSize: 12, color: C.mid, margin: "0 0 10px", lineHeight: 1.5 }}>{tField(temple, "description", lang)}</p>}
+        <div style={{ fontFamily: sansFont, fontSize: 12, color: C.saffron, fontWeight: 600, background: C.saffronLight, padding: "6px 12px", borderRadius: 20, display: "inline-block" }}>{temple.pujas.length} {t("puja")}</div>
       </div>
     </div>
   );
@@ -275,10 +286,11 @@ function TempleCard({ temple, onSelect }) {
 
 // ─── Puja Checkbox Card ───
 function PujaCheckCard({ puja, selected, onToggle }) {
+  const { lang } = useLang();
   return (
     <div onClick={onToggle} style={{ background: selected ? C.saffronLight : "#fff", borderRadius: 12, padding: "16px 20px", cursor: "pointer", border: `2px solid ${selected ? C.saffron : C.border}`, display: "flex", alignItems: "center", gap: 14, transition: "all 0.2s" }}>
       <div style={{ width: 24, height: 24, borderRadius: 7, flexShrink: 0, border: `2px solid ${selected ? C.saffron : C.border}`, background: selected ? C.saffron : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{selected && <span style={{ color: "#fff", fontSize: 15, fontWeight: 700 }}>✓</span>}</div>
-      <div style={{ flex: 1, minWidth: 0 }}><h4 style={{ fontFamily: font, fontSize: 15, color: C.dark, margin: "0 0 3px" }}>{puja.name}</h4><p style={{ fontFamily: sansFont, fontSize: 12, color: C.light, margin: 0 }}>{puja.description}</p></div>
+      <div style={{ flex: 1, minWidth: 0 }}><h4 style={{ fontFamily: font, fontSize: 15, color: C.dark, margin: "0 0 3px" }}>{tField(puja, "name", lang)}</h4><p style={{ fontFamily: sansFont, fontSize: 12, color: C.light, margin: 0 }}>{tField(puja, "description", lang)}</p></div>
       <div style={{ textAlign: "right", flexShrink: 0 }}><span style={{ fontFamily: sansFont, fontSize: 16, fontWeight: 700, color: C.saffron }}>₹{puja.price}</span><br /><span style={{ fontFamily: sansFont, fontSize: 11, color: C.light }}>⏱ {puja.duration}</span></div>
     </div>
   );
@@ -286,7 +298,7 @@ function PujaCheckCard({ puja, selected, onToggle }) {
 
 // ─── Home Page ───
 function HomePage({ state, dispatch }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const sel = state.selectedTemple ? state.temples.find(t => t.id === state.selectedTemple) : null;
   const cnt = state.selectedPujas.length;
   const total = sel ? sel.pujas.filter(p => state.selectedPujas.includes(p.id)).reduce((s, p) => s + p.price, 0) : 0;
@@ -298,7 +310,7 @@ function HomePage({ state, dispatch }) {
         {state.temples.length === 0 && !state.loading && <div style={{ textAlign: "center", padding: 60, color: C.light, fontFamily: sansFont }}><p style={{ fontSize: 48 }}>🛕</p><p>{t("noTemples")}</p></div>}
       </>) : (<>
         <button onClick={() => dispatch({ type: "SELECT_TEMPLE", payload: null })} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 16, padding: 0, fontWeight: 600 }}>{t("backToTemples")}</button>
-        <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 28 }}><TempleBanner temple={sel} height={180} /><div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, padding: "20px 32px", color: "#fff" }}><h2 style={{ fontFamily: font, fontSize: 26, margin: "0 0 4px" }}>{sel.name}</h2><p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.8, margin: 0 }}>📍 {sel.location}</p></div></div>
+        <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 28 }}><TempleBanner temple={sel} height={180} /><div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, padding: "20px 32px", color: "#fff" }}><h2 style={{ fontFamily: font, fontSize: 26, margin: "0 0 4px" }}>{tField(sel, "name", lang)}</h2><p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.8, margin: 0 }}>📍 {tField(sel, "location", lang)}</p></div></div>
         <h3 style={{ fontFamily: font, fontSize: 20, color: C.maroon, margin: "0 0 18px" }}>{t("selectPujasTitle")}</h3>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{sel.pujas.map(p => <PujaCheckCard key={p.id} puja={p} selected={state.selectedPujas.includes(p.id)} onToggle={() => dispatch({ type: "TOGGLE_PUJA", payload: p.id })} />)}</div>
         {cnt > 0 && <div style={{ position: "sticky", bottom: 16, marginTop: 24, background: "#fff", borderRadius: 14, padding: "16px 24px", border: `2px solid ${C.saffron}`, boxShadow: "0 -4px 24px rgba(232,98,30,0.12)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
@@ -345,7 +357,7 @@ function UpiQrCode({ amount, size = 200 }) {
 
 // ─── Registration Form ───
 function RegistrationForm({ state, dispatch, onRefresh }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [form, setForm] = useState({ devoteeName: "", phone: "", email: "", gotra: "", templeId: state.selectedTemple || "", pujaIds: [...state.selectedPujas], date: "", time: "", members: 1, paymentScreenshot: null, screenshotName: "" });
   const [saving, setSaving] = useState(false);
   const temple = state.temples.find(t => t.id === form.templeId);
@@ -372,9 +384,9 @@ function RegistrationForm({ state, dispatch, onRefresh }) {
       <div style={{ background: "#fff", borderRadius: 16, padding: 28, border: `1px solid ${C.border}` }}>
         <div style={{ marginBottom: 24, padding: "18px 20px", background: C.saffronLight, borderRadius: 12 }}>
           <h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>{t("templeAndPujas")}</h3>
-          <div style={{ marginBottom: 14 }}><label style={labelStyle}>{t("temple")} *</label><select value={form.templeId} onChange={e => setForm(f => ({ ...f, templeId: e.target.value, pujaIds: [] }))} style={{ ...inputStyle, cursor: "pointer" }}><option value="">{t("selectTemple")}</option>{state.temples.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
-          {temple && <div><label style={{ ...labelStyle, marginBottom: 10 }}>{t("selectPujas")} * <span style={{ fontWeight: 400, color: C.light }}>{t("pickOneOrMore")}</span></label><div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{temple.pujas.map(p => { const ck = form.pujaIds.includes(p.id); return (<div key={p.id} onClick={() => togglePuja(p.id)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 10, cursor: "pointer", background: ck ? "#fff" : "#fefcfa", border: `1.5px solid ${ck ? C.saffron : C.border}` }}><div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, border: `2px solid ${ck ? C.saffron : C.border}`, background: ck ? C.saffron : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{ck && <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>✓</span>}</div><div style={{ flex: 1 }}><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark }}>{p.name}</span></div><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, color: C.saffron }}>₹{p.price}</span></div>); })}</div></div>}
-          {selPujas.length > 0 && <div style={{ marginTop: 14, padding: "14px 16px", background: "#fff", borderRadius: 10, border: `1px solid ${C.gold}`, fontFamily: sansFont, fontSize: 13 }}><div style={{ fontWeight: 700, color: C.maroon, marginBottom: 6 }}>{t("bookingSummary")}</div>{selPujas.map(p => <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", color: C.mid }}><span>{p.name}</span><span>₹{p.price}</span></div>)}<div style={{ borderTop: `1px solid ${C.border}`, marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between" }}><span style={{ color: C.light }}>× {form.members} {t("member")}</span><span style={{ fontWeight: 700, fontSize: 16, color: C.saffron }}>{t("total")}: ₹{grandTotal}</span></div></div>}
+          <div style={{ marginBottom: 14 }}><label style={labelStyle}>{t("temple")} *</label><select value={form.templeId} onChange={e => setForm(f => ({ ...f, templeId: e.target.value, pujaIds: [] }))} style={{ ...inputStyle, cursor: "pointer" }}><option value="">{t("selectTemple")}</option>{state.temples.map(tm => <option key={tm.id} value={tm.id}>{tField(tm, "name", lang)}</option>)}</select></div>
+          {temple && <div><label style={{ ...labelStyle, marginBottom: 10 }}>{t("selectPujas")} * <span style={{ fontWeight: 400, color: C.light }}>{t("pickOneOrMore")}</span></label><div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{temple.pujas.map(p => { const ck = form.pujaIds.includes(p.id); return (<div key={p.id} onClick={() => togglePuja(p.id)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 10, cursor: "pointer", background: ck ? "#fff" : "#fefcfa", border: `1.5px solid ${ck ? C.saffron : C.border}` }}><div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, border: `2px solid ${ck ? C.saffron : C.border}`, background: ck ? C.saffron : "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{ck && <span style={{ color: "#fff", fontSize: 13, fontWeight: 700 }}>✓</span>}</div><div style={{ flex: 1 }}><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark }}>{tField(p, "name", lang)}</span></div><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, color: C.saffron }}>₹{p.price}</span></div>); })}</div></div>}
+          {selPujas.length > 0 && <div style={{ marginTop: 14, padding: "14px 16px", background: "#fff", borderRadius: 10, border: `1px solid ${C.gold}`, fontFamily: sansFont, fontSize: 13 }}><div style={{ fontWeight: 700, color: C.maroon, marginBottom: 6 }}>{t("bookingSummary")}</div>{selPujas.map(p => <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", color: C.mid }}><span>{tField(p, "name", lang)}</span><span>₹{p.price}</span></div>)}<div style={{ borderTop: `1px solid ${C.border}`, marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between" }}><span style={{ color: C.light }}>× {form.members} {t("member")}</span><span style={{ fontWeight: 700, fontSize: 16, color: C.saffron }}>{t("total")}: ₹{grandTotal}</span></div></div>}
         </div>
         <div style={{ marginBottom: 24 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>{t("devoteeDetails")}</h3><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}><div><label style={labelStyle}>{t("fullName")} *</label><input value={form.devoteeName} onChange={e => setForm(f => ({ ...f, devoteeName: e.target.value }))} placeholder={t("enterFullName")} style={inputStyle} /></div><div><label style={labelStyle}>{t("gotra")}</label><input value={form.gotra} onChange={e => setForm(f => ({ ...f, gotra: e.target.value }))} placeholder={t("egGotra")} style={inputStyle} /></div><div><label style={labelStyle}>{t("phone")} *</label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder={t("tenDigit")} style={inputStyle} type="tel" /></div><div><label style={labelStyle}>{t("email")}</label><input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" style={inputStyle} type="email" /></div></div></div>
         <div style={{ marginBottom: 24 }}><h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>{t("schedule")}</h3><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}><div><label style={labelStyle}>{t("date")} *</label><input value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={inputStyle} type="date" /></div><div><label style={labelStyle}>{t("time")}</label><input value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} style={inputStyle} type="time" /></div><div><label style={labelStyle}>{t("members")}</label><input value={form.members} onChange={e => setForm(f => ({ ...f, members: Math.max(1, parseInt(e.target.value) || 1) }))} style={inputStyle} type="number" min="1" /></div></div></div>
@@ -513,10 +525,99 @@ function TemplesList({ state, dispatch, onRefresh }) {
 }
 
 // ─── Add Temple ───
+// ─── Auto-Translate Helper ───
+async function autoTranslate(fields, sourceLang) {
+  const res = await fetch('/api/translate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields, sourceLang }),
+  });
+  if (!res.ok) throw new Error('Translation failed');
+  return res.json();
+}
+
+function SourceLangPicker({ value, onChange }) {
+  return (
+    <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 16 }}>
+      <span style={{ fontFamily: sansFont, fontSize: 12, color: C.light, marginRight: 6 }}>I'm entering in:</span>
+      {[{ code: "en", label: "English" }, { code: "hi", label: "हिंदी" }, { code: "mr", label: "मराठी" }].map(l => (
+        <button key={l.code} onClick={() => onChange(l.code)}
+          style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 6, cursor: "pointer", border: `1.5px solid ${value === l.code ? C.saffron : C.border}`, background: value === l.code ? C.saffronLight : "#fff", color: value === l.code ? C.saffron : C.mid }}>
+          {l.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function TranslateButton({ onClick, translating }) {
+  return (
+    <button onClick={onClick} disabled={translating}
+      style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 10, border: `2px solid ${C.gold}`, cursor: "pointer", background: C.goldLight, color: C.maroon, display: "flex", alignItems: "center", gap: 8, opacity: translating ? 0.5 : 1, marginBottom: 16 }}>
+      {translating ? "🔄 Translating..." : "🌐 Auto-Translate to all languages"}
+    </button>
+  );
+}
+
+function TranslationPreview({ f, sourceLang }) {
+  const langs = [
+    { code: "en", label: "English", nameKey: "nameEn", locKey: "locationEn", descKey: "descriptionEn" },
+    { code: "hi", label: "हिंदी", nameKey: "nameHi", locKey: "locationHi", descKey: "descriptionHi" },
+    { code: "mr", label: "मराठी", nameKey: "nameMr", locKey: "locationMr", descKey: "descriptionMr" },
+  ].filter(l => l.code !== sourceLang);
+
+  const hasTranslations = langs.some(l => f[l.nameKey]);
+  if (!hasTranslations) return null;
+
+  return (
+    <div style={{ marginBottom: 16, padding: "14px 18px", background: C.cream, borderRadius: 10, border: `1px solid ${C.border}` }}>
+      <p style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, color: C.mid, margin: "0 0 10px" }}>🌐 Translations (auto-generated, editable)</p>
+      {langs.map(l => (
+        <div key={l.code} style={{ marginBottom: 8 }}>
+          <span style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, color: C.saffron }}>{l.label}:</span>
+          <span style={{ fontFamily: sansFont, fontSize: 13, color: C.dark, marginLeft: 8 }}>{f[l.nameKey] || "—"}</span>
+          {f[l.locKey] && <span style={{ fontFamily: sansFont, fontSize: 12, color: C.light, marginLeft: 8 }}>📍 {f[l.locKey]}</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function AddTempleForm({ dispatch, onRefresh }) {
-  const [f, setF] = useState({ name: "", location: "", icon: "🛕", description: "", deityPhoto: null, templePhoto: null });
+  const [f, setF] = useState({ name: "", location: "", icon: "🛕", description: "", deityPhoto: null, templePhoto: null, nameHi: "", nameMr: "", locationHi: "", locationMr: "", descriptionHi: "", descriptionMr: "" });
   const [saving, setSaving] = useState(false);
+  const [sourceLang, setSourceLang] = useState("en");
+  const [translating, setTranslating] = useState(false);
   const emojis = ["🛕", "🕉️", "🪷", "🔱", "⛩️", "🙏", "🪔", "📿"];
+
+  const handleTranslate = async () => {
+    if (!f.name) { alert("Enter a name first"); return; }
+    setTranslating(true);
+    try {
+      const fields = { name: f.name };
+      if (f.location) fields.location = f.location;
+      if (f.description) fields.description = f.description;
+      const result = await autoTranslate(fields, sourceLang);
+      // Merge translations into form
+      const updates = {};
+      if (sourceLang !== "en") { updates.nameEn = result.name_en; updates.locationEn = result.location_en; updates.descriptionEn = result.description_en; }
+      if (sourceLang !== "hi") { updates.nameHi = result.name_hi; updates.locationHi = result.location_hi; updates.descriptionHi = result.description_hi; }
+      if (sourceLang !== "mr") { updates.nameMr = result.name_mr; updates.locationMr = result.location_mr; updates.descriptionMr = result.description_mr; }
+      // If source is not English, the base field should be English
+      if (sourceLang !== "en" && result.name_en) {
+        updates.nameOrig = f.name; // keep original
+        // Swap: base becomes English, original goes to its language field
+        if (sourceLang === "hi") { updates.nameHi = f.name; if (f.location) updates.locationHi = f.location; if (f.description) updates.descriptionHi = f.description; }
+        if (sourceLang === "mr") { updates.nameMr = f.name; if (f.location) updates.locationMr = f.location; if (f.description) updates.descriptionMr = f.description; }
+        updates.name = result.name_en;
+        if (result.location_en) updates.location = result.location_en;
+        if (result.description_en) updates.description = result.description_en;
+      }
+      setF(x => ({ ...x, ...updates }));
+    } catch (e) { alert("Translation failed: " + e.message); }
+    setTranslating(false);
+  };
+
   const handleSubmit = async () => {
     if (!f.name || !f.location) { alert("Fill name & location"); return; }
     setSaving(true);
@@ -525,11 +626,14 @@ function AddTempleForm({ dispatch, onRefresh }) {
     setSaving(false);
   };
   return (
-    <div style={{ maxWidth: 560, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
+    <div style={{ maxWidth: 600, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
       <h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: "0 0 18px" }}>➕ Add New Temple</h3>
-      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Name *</label><input value={f.name} onChange={e => setF(x => ({ ...x, name: e.target.value }))} placeholder="e.g. Shree Kashi Vishwanath" style={inputStyle} /></div>
-      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Location *</label><input value={f.location} onChange={e => setF(x => ({ ...x, location: e.target.value }))} placeholder="e.g. Varanasi, UP" style={inputStyle} /></div>
+      <SourceLangPicker value={sourceLang} onChange={setSourceLang} />
+      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Name * <span style={{ fontWeight: 400, color: C.light }}>(in {sourceLang === "en" ? "English" : sourceLang === "hi" ? "Hindi" : "Marathi"})</span></label><input value={f.name} onChange={e => setF(x => ({ ...x, name: e.target.value }))} placeholder={sourceLang === "en" ? "e.g. Shree Siddhivinayak Temple" : sourceLang === "hi" ? "उदा. श्री सिद्धिविनायक मंदिर" : "उदा. श्री सिद्धिविनायक मंदिर"} style={inputStyle} /></div>
+      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Location * <span style={{ fontWeight: 400, color: C.light }}>(in {sourceLang === "en" ? "English" : sourceLang === "hi" ? "Hindi" : "Marathi"})</span></label><input value={f.location} onChange={e => setF(x => ({ ...x, location: e.target.value }))} placeholder={sourceLang === "en" ? "e.g. Prabhadevi, Mumbai" : sourceLang === "hi" ? "उदा. प्रभादेवी, मुंबई" : "उदा. प्रभादेवी, मुंबई"} style={inputStyle} /></div>
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Description</label><textarea value={f.description} onChange={e => setF(x => ({ ...x, description: e.target.value }))} placeholder="Brief description" rows={2} style={{ ...inputStyle, resize: "vertical" }} /></div>
+      <TranslateButton onClick={handleTranslate} translating={translating} />
+      <TranslationPreview f={f} sourceLang={sourceLang} />
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Icon</label><div style={{ display: "flex", gap: 6 }}>{emojis.map(e => <button key={e} onClick={() => setF(x => ({ ...x, icon: e }))} style={{ fontSize: 24, padding: "6px 10px", borderRadius: 8, cursor: "pointer", border: f.icon === e ? `2px solid ${C.saffron}` : `1px solid ${C.border}`, background: f.icon === e ? C.saffronLight : "#fff" }}>{e}</button>)}</div></div>
       <div style={{ display: "flex", gap: 24, marginBottom: 20 }}><PhotoUpload label="Deity Photo" value={f.deityPhoto} onChange={v => setF(x => ({ ...x, deityPhoto: v }))} /><PhotoUpload label="Temple Photo" value={f.templePhoto} onChange={v => setF(x => ({ ...x, templePhoto: v }))} /></div>
       <button onClick={handleSubmit} disabled={saving} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 32px", borderRadius: 10, border: "none", cursor: "pointer", background: C.saffron, color: "#fff", opacity: saving ? 0.5 : 1 }}>{saving ? "Adding..." : "➕ Add Temple"}</button>
@@ -540,10 +644,37 @@ function AddTempleForm({ dispatch, onRefresh }) {
 // ─── Edit Temple ───
 function EditTempleForm({ state, dispatch, onRefresh }) {
   const temple = state.temples.find(t => t.id === state.editingTempleId);
-  const [f, setF] = useState(temple ? { name: temple.name, location: temple.location, icon: temple.icon, description: temple.description || "", deityPhoto: temple.deityPhoto, templePhoto: temple.templePhoto } : {});
+  const [f, setF] = useState(temple ? { name: temple.name, location: temple.location, icon: temple.icon, description: temple.description || "", deityPhoto: temple.deityPhoto, templePhoto: temple.templePhoto, nameHi: temple.nameHi || "", nameMr: temple.nameMr || "", locationHi: temple.locationHi || "", locationMr: temple.locationMr || "", descriptionHi: temple.descriptionHi || "", descriptionMr: temple.descriptionMr || "" } : {});
   const [saving, setSaving] = useState(false);
+  const [sourceLang, setSourceLang] = useState("en");
+  const [translating, setTranslating] = useState(false);
   const emojis = ["🛕", "🕉️", "🪷", "🔱", "⛩️", "🙏", "🪔", "📿"];
   if (!temple) return <p>Temple not found.</p>;
+
+  const handleTranslate = async () => {
+    if (!f.name) { alert("Enter a name first"); return; }
+    setTranslating(true);
+    try {
+      const fields = { name: f.name };
+      if (f.location) fields.location = f.location;
+      if (f.description) fields.description = f.description;
+      const result = await autoTranslate(fields, sourceLang);
+      const updates = {};
+      if (sourceLang !== "en") { updates.nameEn = result.name_en; updates.locationEn = result.location_en; updates.descriptionEn = result.description_en; }
+      if (sourceLang !== "hi") { updates.nameHi = result.name_hi; updates.locationHi = result.location_hi; updates.descriptionHi = result.description_hi; }
+      if (sourceLang !== "mr") { updates.nameMr = result.name_mr; updates.locationMr = result.location_mr; updates.descriptionMr = result.description_mr; }
+      if (sourceLang !== "en" && result.name_en) {
+        if (sourceLang === "hi") { updates.nameHi = f.name; if (f.location) updates.locationHi = f.location; if (f.description) updates.descriptionHi = f.description; }
+        if (sourceLang === "mr") { updates.nameMr = f.name; if (f.location) updates.locationMr = f.location; if (f.description) updates.descriptionMr = f.description; }
+        updates.name = result.name_en;
+        if (result.location_en) updates.location = result.location_en;
+        if (result.description_en) updates.description = result.description_en;
+      }
+      setF(x => ({ ...x, ...updates }));
+    } catch (e) { alert("Translation failed: " + e.message); }
+    setTranslating(false);
+  };
+
   const handleSave = async () => {
     if (!f.name || !f.location) { alert("Fill name & location"); return; }
     setSaving(true);
@@ -552,11 +683,14 @@ function EditTempleForm({ state, dispatch, onRefresh }) {
     setSaving(false);
   };
   return (
-    <div style={{ maxWidth: 560, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
+    <div style={{ maxWidth: 600, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}><h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: 0 }}>✏️ Edit Temple</h3><button onClick={() => dispatch({ type: "SET_EDITING_TEMPLE", payload: null })} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>← Back</button></div>
+      <SourceLangPicker value={sourceLang} onChange={setSourceLang} />
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Name *</label><input value={f.name} onChange={e => setF(x => ({ ...x, name: e.target.value }))} style={inputStyle} /></div>
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Location *</label><input value={f.location} onChange={e => setF(x => ({ ...x, location: e.target.value }))} style={inputStyle} /></div>
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Description</label><textarea value={f.description} onChange={e => setF(x => ({ ...x, description: e.target.value }))} rows={2} style={{ ...inputStyle, resize: "vertical" }} /></div>
+      <TranslateButton onClick={handleTranslate} translating={translating} />
+      <TranslationPreview f={f} sourceLang={sourceLang} />
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Icon</label><div style={{ display: "flex", gap: 6 }}>{emojis.map(e => <button key={e} onClick={() => setF(x => ({ ...x, icon: e }))} style={{ fontSize: 24, padding: "6px 10px", borderRadius: 8, cursor: "pointer", border: f.icon === e ? `2px solid ${C.saffron}` : `1px solid ${C.border}`, background: f.icon === e ? C.saffronLight : "#fff" }}>{e}</button>)}</div></div>
       <div style={{ display: "flex", gap: 24, marginBottom: 24 }}><PhotoUpload label="Deity Photo" value={f.deityPhoto} onChange={v => setF(x => ({ ...x, deityPhoto: v }))} /><PhotoUpload label="Temple Photo" value={f.templePhoto} onChange={v => setF(x => ({ ...x, templePhoto: v }))} /></div>
       <div style={{ display: "flex", gap: 10 }}>
@@ -569,22 +703,55 @@ function EditTempleForm({ state, dispatch, onRefresh }) {
 
 // ─── Add Puja ───
 function AddPujaForm({ state, dispatch, onRefresh }) {
-  const [f, setF] = useState({ templeId: "", name: "", price: "", duration: "", description: "" });
+  const [f, setF] = useState({ templeId: "", name: "", price: "", duration: "", description: "", nameHi: "", nameMr: "", descriptionHi: "", descriptionMr: "" });
   const [saving, setSaving] = useState(false);
+  const [sourceLang, setSourceLang] = useState("en");
+  const [translating, setTranslating] = useState(false);
+
+  const handleTranslate = async () => {
+    if (!f.name) { alert("Enter puja name first"); return; }
+    setTranslating(true);
+    try {
+      const fields = { name: f.name };
+      if (f.description) fields.description = f.description;
+      const result = await autoTranslate(fields, sourceLang);
+      const updates = {};
+      if (sourceLang !== "hi") { updates.nameHi = result.name_hi; if (result.description_hi) updates.descriptionHi = result.description_hi; }
+      if (sourceLang !== "mr") { updates.nameMr = result.name_mr; if (result.description_mr) updates.descriptionMr = result.description_mr; }
+      if (sourceLang !== "en" && result.name_en) {
+        if (sourceLang === "hi") { updates.nameHi = f.name; if (f.description) updates.descriptionHi = f.description; }
+        if (sourceLang === "mr") { updates.nameMr = f.name; if (f.description) updates.descriptionMr = f.description; }
+        updates.name = result.name_en;
+        if (result.description_en) updates.description = result.description_en;
+      }
+      setF(x => ({ ...x, ...updates }));
+    } catch (e) { alert("Translation failed: " + e.message); }
+    setTranslating(false);
+  };
+
   const handleSubmit = async () => {
     if (!f.templeId || !f.name || !f.price) { alert("Fill required fields"); return; }
     setSaving(true);
-    try { await dbAddPuja(f.templeId, { id: "p" + Date.now(), name: f.name, price: parseInt(f.price), duration: f.duration || "30 min", description: f.description }); await onRefresh(); dispatch({ type: "SET_ADMIN_TAB", payload: "temples" }); dispatch({ type: "SET_NOTIFICATION", payload: "Puja added!" }); }
+    try { await dbAddPuja(f.templeId, { id: "p" + Date.now(), name: f.name, nameHi: f.nameHi, nameMr: f.nameMr, price: parseInt(f.price), duration: f.duration || "30 min", description: f.description, descriptionHi: f.descriptionHi, descriptionMr: f.descriptionMr }); await onRefresh(); dispatch({ type: "SET_ADMIN_TAB", payload: "temples" }); dispatch({ type: "SET_NOTIFICATION", payload: "Puja added!" }); }
     catch (e) { alert(e.message); }
     setSaving(false);
   };
   return (
-    <div style={{ maxWidth: 480, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
+    <div style={{ maxWidth: 520, background: "#fff", borderRadius: 14, padding: 28, border: `1px solid ${C.border}` }}>
       <h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: "0 0 18px" }}>➕ Add Puja</h3>
       <div style={{ marginBottom: 16 }}><label style={labelStyle}>Temple *</label><select value={f.templeId} onChange={e => setF(x => ({ ...x, templeId: e.target.value }))} style={{ ...inputStyle, cursor: "pointer" }}><option value="">Select</option>{state.temples.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
-      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Puja Name *</label><input value={f.name} onChange={e => setF(x => ({ ...x, name: e.target.value }))} placeholder="e.g. Rudrabhishek" style={inputStyle} /></div>
+      <SourceLangPicker value={sourceLang} onChange={setSourceLang} />
+      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Puja Name * <span style={{ fontWeight: 400, color: C.light }}>(in {sourceLang === "en" ? "English" : sourceLang === "hi" ? "Hindi" : "Marathi"})</span></label><input value={f.name} onChange={e => setF(x => ({ ...x, name: e.target.value }))} placeholder={sourceLang === "en" ? "e.g. Rudrabhishek" : sourceLang === "hi" ? "उदा. रुद्राभिषेक" : "उदा. रुद्राभिषेक"} style={inputStyle} /></div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}><div><label style={labelStyle}>Price (₹) *</label><input value={f.price} onChange={e => setF(x => ({ ...x, price: e.target.value }))} placeholder="1100" style={inputStyle} type="number" /></div><div><label style={labelStyle}>Duration</label><input value={f.duration} onChange={e => setF(x => ({ ...x, duration: e.target.value }))} placeholder="1 hr" style={inputStyle} /></div></div>
-      <div style={{ marginBottom: 20 }}><label style={labelStyle}>Description</label><textarea value={f.description} onChange={e => setF(x => ({ ...x, description: e.target.value }))} placeholder="Brief description" rows={3} style={{ ...inputStyle, resize: "vertical" }} /></div>
+      <div style={{ marginBottom: 16 }}><label style={labelStyle}>Description</label><textarea value={f.description} onChange={e => setF(x => ({ ...x, description: e.target.value }))} placeholder="Brief description" rows={3} style={{ ...inputStyle, resize: "vertical" }} /></div>
+      <TranslateButton onClick={handleTranslate} translating={translating} />
+      {(f.nameHi || f.nameMr) && (
+        <div style={{ marginBottom: 16, padding: "14px 18px", background: C.cream, borderRadius: 10, border: `1px solid ${C.border}` }}>
+          <p style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, color: C.mid, margin: "0 0 8px" }}>🌐 Translations</p>
+          {f.nameHi && <div style={{ fontFamily: sansFont, fontSize: 13, marginBottom: 4 }}><span style={{ fontWeight: 700, color: C.saffron }}>हिंदी:</span> {f.nameHi}</div>}
+          {f.nameMr && <div style={{ fontFamily: sansFont, fontSize: 13 }}><span style={{ fontWeight: 700, color: C.saffron }}>मराठी:</span> {f.nameMr}</div>}
+        </div>
+      )}
       <button onClick={handleSubmit} disabled={saving} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 32px", borderRadius: 10, border: "none", cursor: "pointer", background: C.saffron, color: "#fff", opacity: saving ? 0.5 : 1 }}>{saving ? "Adding..." : "➕ Add Puja"}</button>
     </div>
   );

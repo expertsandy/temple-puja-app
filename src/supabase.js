@@ -62,14 +62,24 @@ export async function fetchTemples() {
     // Map snake_case DB columns to camelCase used in the app
     deityPhoto: t.deity_photo,
     templePhoto: t.temple_photo,
+    nameHi: t.name_hi,
+    nameMr: t.name_mr,
+    locationHi: t.location_hi,
+    locationMr: t.location_mr,
+    descriptionHi: t.description_hi,
+    descriptionMr: t.description_mr,
     pujas: pujas
       .filter(p => p.temple_id === t.id)
       .map(p => ({
         id: p.id,
         name: p.name,
+        nameHi: p.name_hi,
+        nameMr: p.name_mr,
         price: p.price,
         duration: p.duration,
         description: p.description,
+        descriptionHi: p.description_hi,
+        descriptionMr: p.description_mr,
       })),
   }));
 }
@@ -80,9 +90,15 @@ export async function addTemple(temple) {
     .insert({
       id: temple.id,
       name: temple.name,
+      name_hi: temple.nameHi || null,
+      name_mr: temple.nameMr || null,
       location: temple.location,
+      location_hi: temple.locationHi || null,
+      location_mr: temple.locationMr || null,
       icon: temple.icon,
       description: temple.description || null,
+      description_hi: temple.descriptionHi || null,
+      description_mr: temple.descriptionMr || null,
       deity_photo: temple.deityPhoto || null,
       temple_photo: temple.templePhoto || null,
     })
@@ -98,9 +114,15 @@ export async function updateTemple(temple) {
     .from('temples')
     .update({
       name: temple.name,
+      name_hi: temple.nameHi || null,
+      name_mr: temple.nameMr || null,
       location: temple.location,
+      location_hi: temple.locationHi || null,
+      location_mr: temple.locationMr || null,
       icon: temple.icon,
       description: temple.description || null,
+      description_hi: temple.descriptionHi || null,
+      description_mr: temple.descriptionMr || null,
       deity_photo: temple.deityPhoto || null,
       temple_photo: temple.templePhoto || null,
     })
@@ -134,9 +156,13 @@ export async function addPuja(templeId, puja) {
       id: puja.id,
       temple_id: templeId,
       name: puja.name,
+      name_hi: puja.nameHi || null,
+      name_mr: puja.nameMr || null,
       price: puja.price,
       duration: puja.duration || '30 min',
       description: puja.description || null,
+      description_hi: puja.descriptionHi || null,
+      description_mr: puja.descriptionMr || null,
     })
     .select()
     .single();
@@ -159,9 +185,13 @@ export async function updatePuja(puja) {
     .from('pujas')
     .update({
       name: puja.name,
+      name_hi: puja.nameHi || null,
+      name_mr: puja.nameMr || null,
       price: puja.price,
       duration: puja.duration || '30 min',
       description: puja.description || null,
+      description_hi: puja.descriptionHi || null,
+      description_mr: puja.descriptionMr || null,
     })
     .eq('id', puja.id);
 
