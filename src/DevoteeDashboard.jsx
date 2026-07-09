@@ -7,6 +7,14 @@ const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10",
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 const labelStyle = { fontFamily: sansFont, fontSize: 13, fontWeight: 600, color: C.mid, marginBottom: 6, display: "block" };
 
+// ─── Helper: get localized field ───
+function tField(obj, field, lang) {
+  if (!obj) return "";
+  if (lang === "hi" && obj[field + "Hi"]) return obj[field + "Hi"];
+  if (lang === "mr" && obj[field + "Mr"]) return obj[field + "Mr"];
+  return obj[field] || "";
+}
+
 // ─── Translations for devotee dashboard ───
 const dt = {
   myBookings: { en: "📋 My Bookings", hi: "📋 मेरी बुकिंग", mr: "📋 माझ्या बुकिंग्ज" },
@@ -78,10 +86,10 @@ function BookingCard({ reg, temples, lang, isUpcoming }) {
       <div onClick={() => setExpanded(!expanded)} style={{ padding: "16px 20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ flex: 1, minWidth: 200 }}>
           <h4 style={{ fontFamily: font, fontSize: 16, color: C.dark, margin: "0 0 4px" }}>
-            {temple?.name || "—"}
+            {tField(temple, "name", lang) || "—"}
           </h4>
           <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: 0 }}>
-            {bookedPujas.map(p => p.name).join(", ") || "—"}
+            {bookedPujas.map(p => tField(p, "name", lang)).join(", ") || "—"}
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
@@ -122,7 +130,7 @@ function BookingCard({ reg, temples, lang, isUpcoming }) {
             <div style={{ fontWeight: 700, color: C.maroon, marginBottom: 8 }}>🪔 {lang === "hi" ? "पूजाएं" : lang === "mr" ? "पूजा" : "Pujas"}</div>
             {bookedPujas.map(p => (
               <div key={p.id} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", color: C.mid }}>
-                <span>{p.name} <span style={{ color: C.light }}>({p.duration})</span></span>
+                <span>{tField(p, "name", lang)} <span style={{ color: C.light }}>({p.duration})</span></span>
                 <span style={{ fontWeight: 600 }}>₹{p.price}</span>
               </div>
             ))}

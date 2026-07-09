@@ -67,7 +67,7 @@ function tField(obj, field, lang) {
   return obj[field] || "";
 }
 
-function getPujaNames(t, ids) { return t ? t.pujas.filter(p => ids.includes(p.id)).map(p => p.name) : []; }
+function getPujaNames(t, ids, lang) { return t ? t.pujas.filter(p => ids.includes(p.id)).map(p => tField(p, "name", lang)) : []; }
 
 // ─── Photo Upload ───
 function PhotoUpload({ label, value, onChange, size = 120 }) {
@@ -314,8 +314,8 @@ function HomePage({ state, dispatch }) {
         <h3 style={{ fontFamily: font, fontSize: 20, color: C.maroon, margin: "0 0 18px" }}>{t("selectPujasTitle")}</h3>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>{sel.pujas.map(p => <PujaCheckCard key={p.id} puja={p} selected={state.selectedPujas.includes(p.id)} onToggle={() => dispatch({ type: "TOGGLE_PUJA", payload: p.id })} />)}</div>
         {cnt > 0 && <div style={{ position: "sticky", bottom: 16, marginTop: 24, background: "#fff", borderRadius: 14, padding: "16px 24px", border: `2px solid ${C.saffron}`, boxShadow: "0 -4px 24px rgba(232,98,30,0.12)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-          <div><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark }}>{cnt} Puja{cnt > 1 ? "s" : ""}</span><br /><span style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>{getPujaNames(sel, state.selectedPujas).join(", ")}</span></div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontFamily: sansFont, fontSize: 20, fontWeight: 700, color: C.saffron }}>₹{total}</span><button onClick={() => dispatch({ type: "SET_VIEW", payload: "register" })} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "11px 28px", borderRadius: 10, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff" }}>Proceed →</button></div>
+          <div><span style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, color: C.dark }}>{cnt} {t("pujaSelected")}</span><br /><span style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>{getPujaNames(sel, state.selectedPujas, lang).join(", ")}</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}><span style={{ fontFamily: sansFont, fontSize: 20, fontWeight: 700, color: C.saffron }}>₹{total}</span><button onClick={() => dispatch({ type: "SET_VIEW", payload: "register" })} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "11px 28px", borderRadius: 10, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff" }}>{t("proceed")}</button></div>
         </div>}
       </>)}
     </div>
