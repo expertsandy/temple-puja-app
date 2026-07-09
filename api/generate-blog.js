@@ -73,7 +73,7 @@ Article guidelines:
 - Marathi should use Devanagari script with proper Marathi vocabulary (not Hindi)`;
 
   const result = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4000,
     messages: [{ role: "user", content: prompt }],
   });
