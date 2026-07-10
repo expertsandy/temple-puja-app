@@ -270,14 +270,22 @@ function getPanchang(date) {
 // ─── Festivals ───
 const FESTIVALS_2026 = [
   { date: "2026-01-14", name: { en: "Makar Sankranti", hi: "मकर संक्रांति", mr: "मकर संक्रांती" }, type: "major", desc: { en: "Sun enters Capricorn.", hi: "सूर्य मकर राशि में।", mr: "सूर्य मकर राशीत." } },
-  { date: "2026-02-26", name: { en: "Maha Shivaratri", hi: "महा शिवरात्रि", mr: "महा शिवरात्री" }, type: "major", desc: { en: "Night of Lord Shiva.", hi: "शिव की रात्रि।", mr: "शिवाची रात्र." } },
-  { date: "2026-03-10", name: { en: "Holi", hi: "होली", mr: "होळी" }, type: "major", desc: { en: "Festival of colors.", hi: "रंगों का त्योहार।", mr: "रंगांचा सण." } },
-  { date: "2026-03-28", name: { en: "Gudi Padwa", hi: "गुड़ी पड़वा", mr: "गुढीपाडवा" }, type: "major", desc: { en: "Marathi New Year.", hi: "मराठी नववर्ष।", mr: "मराठी नववर्ष." } },
-  { date: "2026-07-11", name: { en: "Guru Purnima", hi: "गुरु पूर्णिमा", mr: "गुरू पौर्णिमा" }, type: "datta", desc: { en: "Honor the Guru. Datta Sampradaya.", hi: "गुरु सम्मान। दत्त संप्रदाय।", mr: "गुरू सन्मान. दत्त संप्रदाय." } },
-  { date: "2026-08-22", name: { en: "Ganesh Chaturthi", hi: "गणेश चतुर्थी", mr: "गणेश चतुर्थी" }, type: "major", desc: { en: "Lord Ganesha festival.", hi: "गणेश उत्सव।", mr: "गणेशोत्सव." } },
-  { date: "2026-10-02", name: { en: "Navratri", hi: "नवरात्रि", mr: "नवरात्री" }, type: "major", desc: { en: "Nine nights of worship.", hi: "नौ रातों की पूजा।", mr: "नऊ रात्रींची पूजा." } },
-  { date: "2026-10-31", name: { en: "Diwali", hi: "दीवाली", mr: "दिवाळी" }, type: "major", desc: { en: "Festival of lights.", hi: "दीपों का त्योहार।", mr: "दिव्यांचा सण." } },
-  { date: "2026-12-05", name: { en: "Datta Jayanti", hi: "दत्त जयंती", mr: "दत्त जयंती" }, type: "datta", desc: { en: "Birthday of Lord Dattatreya.", hi: "दत्तात्रेय जन्मदिन।", mr: "दत्तात्रेय जन्मदिवस." } },
+  { date: "2026-01-23", name: { en: "Vasant Panchami", hi: "वसंत पंचमी", mr: "वसंत पंचमी" }, type: "major", desc: { en: "Saraswati Puja, spring begins.", hi: "सरस्वती पूजा, वसंत ऋतु।", mr: "सरस्वती पूजा, वसंत ऋतू." } },
+  { date: "2026-02-15", name: { en: "Maha Shivaratri", hi: "महा शिवरात्रि", mr: "महा शिवरात्री" }, type: "major", desc: { en: "Night of Lord Shiva.", hi: "शिव की रात्रि।", mr: "शिवाची रात्र." } },
+  { date: "2026-02-28", name: { en: "Holi", hi: "होली", mr: "होळी" }, type: "major", desc: { en: "Festival of colors.", hi: "रंगों का त्योहार।", mr: "रंगांचा सण." } },
+  { date: "2026-03-18", name: { en: "Gudi Padwa / Ugadi", hi: "गुड़ी पड़वा / उगादी", mr: "गुढीपाडवा" }, type: "major", desc: { en: "Hindu New Year.", hi: "हिंदू नववर्ष।", mr: "हिंदू नववर्ष." } },
+  { date: "2026-03-26", name: { en: "Ram Navami", hi: "राम नवमी", mr: "राम नवमी" }, type: "major", desc: { en: "Birthday of Lord Rama.", hi: "भगवान राम जन्मदिन।", mr: "भगवान राम जन्मदिवस." } },
+  { date: "2026-05-12", name: { en: "Akshaya Tritiya", hi: "अक्षय तृतीया", mr: "अक्षय तृतीया" }, type: "major", desc: { en: "Most auspicious for new ventures.", hi: "नए कार्य के लिए शुभ।", mr: "नवीन कार्यासाठी शुभ." } },
+  { date: "2026-07-16", name: { en: "Rath Yatra", hi: "रथ यात्रा", mr: "रथ यात्रा" }, type: "major", desc: { en: "Jagannath Rath Yatra.", hi: "जगन्नाथ रथ यात्रा।", mr: "जगन्नाथ रथ यात्रा." } },
+  { date: "2026-07-29", name: { en: "Guru Purnima", hi: "गुरु पूर्णिमा", mr: "गुरू पौर्णिमा" }, type: "datta", desc: { en: "Honor the Guru. Datta Sampradaya.", hi: "गुरु सम्मान। दत्त संप्रदाय।", mr: "गुरू सन्मान. दत्त संप्रदाय." } },
+  { date: "2026-08-28", name: { en: "Raksha Bandhan", hi: "रक्षाबंधन", mr: "रक्षाबंधन" }, type: "major", desc: { en: "Brother-sister bond.", hi: "भाई-बहन का बंधन।", mr: "भाऊ-बहिणीचे नाते." } },
+  { date: "2026-09-04", name: { en: "Krishna Janmashtami", hi: "कृष्ण जन्माष्टमी", mr: "कृष्ण जन्माष्टमी" }, type: "major", desc: { en: "Birthday of Lord Krishna.", hi: "कृष्ण जन्मदिन।", mr: "कृष्ण जन्मदिवस." } },
+  { date: "2026-09-14", name: { en: "Ganesh Chaturthi", hi: "गणेश चतुर्थी", mr: "गणेश चतुर्थी" }, type: "major", desc: { en: "10-day Ganesh festival begins.", hi: "गणेशोत्सव प्रारंभ।", mr: "गणेशोत्सव सुरुवात." } },
+  { date: "2026-10-11", name: { en: "Sharad Navratri Begins", hi: "शारदीय नवरात्रि प्रारंभ", mr: "शारदीय नवरात्री सुरुवात" }, type: "major", desc: { en: "Nine nights of Durga worship.", hi: "दुर्गा पूजा की नौ रातें।", mr: "दुर्गा पूजेच्या नऊ रात्री." } },
+  { date: "2026-10-20", name: { en: "Vijayadashami / Dussehra", hi: "विजयादशमी / दशहरा", mr: "विजयादशमी / दसरा" }, type: "major", desc: { en: "Victory of good over evil.", hi: "बुराई पर अच्छाई की जीत।", mr: "वाईटावर चांगल्याचा विजय." } },
+  { date: "2026-11-06", name: { en: "Dhanteras", hi: "धनतेरस", mr: "धनत्रयोदशी" }, type: "major", desc: { en: "Worship of Lord Dhanvantari.", hi: "धन्वंतरि पूजा।", mr: "धन्वंतरी पूजा." } },
+  { date: "2026-11-08", name: { en: "Diwali", hi: "दीवाली", mr: "दिवाळी" }, type: "major", desc: { en: "Festival of lights, Lakshmi Puja.", hi: "दीपों का त्योहार, लक्ष्मी पूजा।", mr: "दिव्यांचा सण, लक्ष्मी पूजा." } },
+  { date: "2026-12-23", name: { en: "Datta Jayanti", hi: "दत्त जयंती", mr: "दत्त जयंती" }, type: "datta", desc: { en: "Birthday of Lord Dattatreya. Margashirsha Purnima.", hi: "दत्तात्रेय जन्मदिन। मार्गशीर्ष पूर्णिमा।", mr: "दत्तात्रेय जन्मदिवस. मार्गशीर्ष पौर्णिमा." } },
 ];
 
 // ─── Main Component ───
