@@ -250,24 +250,28 @@ function AboutPage({ socialLinks = [] }) {
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: 0 }}>{t("missionText2")}</p>
       </div>
 
-      {/* --- START OF VIDEO EMBED SECTION --- */}
-      <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}`, marginBottom: 20 }}>
-        <h3 style={{ fontFamily: font, fontSize: 20, color: C.saffron, margin: "0 0 14px" }}>
-          {t("videoTitle") || "Our Journey"}
+      {/* --- डिजिटल ई-सेवा वीडियो सेक्शन (Vertical Shorts Optimized) --- */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}`, marginBottom: 20, textAlign: "center" }}>
+        <h3 style={{ fontFamily: font, fontSize: 20, color: C.saffron, margin: "0 0 18px", textAlign: "left" }}>
+          {t("videoTitle") || "डिजिटल ई-सेवा परिचय"}
         </h3>
-        {/* Responsive 16:9 Aspect Ratio Wrapper */}
-        <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-          <iframe
-            src="https://youtube.com/embed/fMLm0BKctz0" 
-            title={t("videoTitle") || "Featured Video"}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-          />
+        
+        {/* वर्टिकल वीडियो को डेस्कटॉप पर बहुत बड़ा होने से रोकने के लिए कंटेनर */}
+        <div style={{ maxWidth: 340, margin: "0 auto" }}>
+          {/* 9:16 रेस्पॉन्सिव एस्पेक्ट रेशियो (Shorts के लिए परफेक्ट) */}
+          <div style={{ position: "relative", paddingBottom: "177.78%", height: 0, overflow: "hidden", borderRadius: 16, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}>
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/fMLm0BKctz0" 
+              title="Shree Dattaraj Gurumauli - Digital e-Seva"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+            />
+          </div>
         </div>
       </div>
-      {/* --- END OF VIDEO EMBED SECTION --- */}
+      {/* --- वीडियो सेक्शन समाप्त --- */}
 
       {socialLinks.length > 0 && (
         <div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, padding: "28px 32px", marginBottom: 20, color: "#fff", textAlign: "center" }}>
@@ -276,7 +280,7 @@ function AboutPage({ socialLinks = [] }) {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
             {socialLinks.map(link => (
               <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 24px", borderRadius: 12, background: "#fff", color: C.maroon, textDecoration: "none", boxShadow: "0 4px 16px rgba(0,0,0,0.2)", transition: "transform 0.2s" }}>
+                style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px 24px", borderRadius: 12, background: "#fff", color: C.maroon, textDecoration: "none", boxShadow: "0 4px 166px rgba(0,0,0,0.2)", transition: "transform 0.2s" }}>
                 <SocialIcon platform={link.platform} />
                 {link.label || link.platform.charAt(0).toUpperCase() + link.platform.slice(1)}
               </a>
@@ -287,7 +291,6 @@ function AboutPage({ socialLinks = [] }) {
     </div>
   );
 }
-
 // ─── Temple Card ───
 function TempleCard({ temple, onSelect }) {
   const [h, setH] = useState(false);
