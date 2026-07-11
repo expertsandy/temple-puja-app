@@ -234,7 +234,7 @@ function SocialIcon({ platform, size = 22 }) {
 
 // ─── About Page ───
 function AboutPage({ socialLinks = [] }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 36 }}>
@@ -248,6 +248,10 @@ function AboutPage({ socialLinks = [] }) {
         <h3 style={{ fontFamily: font, fontSize: 20, color: C.saffron, margin: "0 0 14px" }}>{t("missionTitle")}</h3>
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: "0 0 14px" }}>{t("missionText1")}</p>
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: 0 }}>{t("missionText2")}</p>
+      </div>
+      <div style={{ background: C.cream, borderRadius: 12, padding: "16px 24px", border: `1px solid ${C.border}`, marginBottom: 20 }}>
+        <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 600, color: C.mid, margin: "0 0 4px" }}>🏛️ {lang === "en" ? "Legal Information" : lang === "hi" ? "कानूनी जानकारी" : "कायदेशीर माहिती"}</p>
+        <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: 0 }}>Professional Tax Enrolment Certificate (PTEC) No.: <strong style={{ color: C.dark }}>99293192460P</strong></p>
       </div>
 
       {/* --- डिजिटल ई-सेवा वीडियो सेक्शन (Vertical Shorts Optimized) --- */}
@@ -1088,6 +1092,7 @@ export default function App() {
           )}
           <LegalFooterLinks dispatch={dispatch} />
           <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, marginTop: 10 }}>© {new Date().getFullYear()} Shree Dattaraj Gurumauli. All rights reserved.</p>
+          <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, marginTop: 4 }}>PTEC No.: 99293192460P</p>
         </div>
       </footer>
       <WhatsAppFloatingButton />

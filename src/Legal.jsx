@@ -5,6 +5,15 @@ const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
 const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10", maroon: "#7b1a2c", gold: "#c9a84c", goldLight: "#faf4e0", cream: "#fdf8f0", dark: "#2d1810", mid: "#5c3d2e", light: "#8a6e5e", border: "#e8d5c4" };
 
+function PTECBadge() {
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.cream, border: `1px solid ${C.border}`, borderRadius: 8, padding: "8px 14px", marginBottom: 20 }}>
+      <span style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>🏛️ Professional Tax Enrolment Certificate (PTEC) No.:</span>
+      <span style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, color: C.dark }}>99293192460P</span>
+    </div>
+  );
+}
+
 function LangToggle({ lang, setLang }) {
   return (
     <div style={{ display: "flex", gap: 4, background: C.cream, borderRadius: 8, padding: 3, marginBottom: 24, width: "fit-content" }}>
@@ -34,7 +43,8 @@ export function PrivacyPolicyPage() {
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 6px" }}>🔒 {lang === "hi" ? "गोपनीयता नीति" : "Privacy Policy"}</h2>
-      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 20px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 12px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <PTECBadge />
       <LangToggle lang={lang} setLang={setLang} />
 
       <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}` }}>
@@ -108,7 +118,8 @@ export function TermsPage() {
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 6px" }}>📋 {lang === "hi" ? "सेवा की शर्तें" : "Terms of Service"}</h2>
-      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 20px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 12px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <PTECBadge />
       <LangToggle lang={lang} setLang={setLang} />
 
       <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}` }}>
@@ -180,7 +191,8 @@ export function RefundPolicyPage() {
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
       <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 6px" }}>💰 {lang === "hi" ? "वापसी नीति" : "Refund Policy"}</h2>
-      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 20px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 12px" }}>Last updated / अंतिम अपडेट: {updated}</p>
+      <PTECBadge />
       <LangToggle lang={lang} setLang={setLang} />
 
       <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}` }}>
