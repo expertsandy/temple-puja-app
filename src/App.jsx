@@ -243,11 +243,32 @@ function AboutPage({ socialLinks = [] }) {
         <p style={{ fontFamily: font, fontSize: 18, color: C.gold, margin: "0 0 4px" }}>{t("aboutTitle")}</p>
         <p style={{ fontFamily: sansFont, fontSize: 14, color: C.light }}>{t("aboutSubtitle")}</p>
       </div>
+
       <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}`, marginBottom: 20 }}>
         <h3 style={{ fontFamily: font, fontSize: 20, color: C.saffron, margin: "0 0 14px" }}>{t("missionTitle")}</h3>
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: "0 0 14px" }}>{t("missionText1")}</p>
         <p style={{ fontFamily: sansFont, fontSize: 15, color: C.mid, lineHeight: 1.7, margin: 0 }}>{t("missionText2")}</p>
       </div>
+
+      {/* --- START OF VIDEO EMBED SECTION --- */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}`, marginBottom: 20 }}>
+        <h3 style={{ fontFamily: font, fontSize: 20, color: C.saffron, margin: "0 0 14px" }}>
+          {t("videoTitle") || "Our Journey"}
+        </h3>
+        {/* Responsive 16:9 Aspect Ratio Wrapper */}
+        <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+          <iframe
+            src="https://youtube.com/shorts/fMLm0BKctz0" 
+            title={t("videoTitle") || "Featured Video"}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+          />
+        </div>
+      </div>
+      {/* --- END OF VIDEO EMBED SECTION --- */}
+
       {socialLinks.length > 0 && (
         <div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, padding: "28px 32px", marginBottom: 20, color: "#fff", textAlign: "center" }}>
           <h3 style={{ fontFamily: font, fontSize: 20, margin: "0 0 12px", color: C.gold }}>{t("connectTitle")}</h3>
