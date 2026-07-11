@@ -932,11 +932,41 @@ function WhatsAppFloatingButton() {
 }
 
 // ─── App ───
+// ─── URL ↔ View mapping ───
+const VIEW_TO_PATH = {
+  home: "/", register: "/register", "my-bookings": "/my-bookings",
+  tools: "/tools", blog: "/blog", about: "/about",
+  privacy: "/privacy", terms: "/terms", refund: "/refund",
+  login: "/admin/login", admin: "/admin",
+};
+const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(([v, p]) => [p, v]));
+function getInitialView() {
+  return PATH_TO_VIEW[window.location.pathname] || "home";
+}
+
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, { ...initialState, view: getInitialView() });
   const [adminUser, setAdminUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const { t } = useLang();
+
+  // Sync URL when view changes
+  useEffect(() => {
+    const path = VIEW_TO_PATH[state.view] || "/";
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, "", path);
+    }
+  }, [state.view]);
+
+  // Handle browser back/forward
+  useEffect(() => {
+    const handlePop = () => {
+      const view = PATH_TO_VIEW[window.location.pathname] || "home";
+      dispatch({ type: "SET_VIEW", payload: view });
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, []);
 
   const refreshData = useCallback(async () => {
     try {
