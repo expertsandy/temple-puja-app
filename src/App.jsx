@@ -258,7 +258,7 @@ function AboutPage({ socialLinks = [] }) {
         {/* Responsive 16:9 Aspect Ratio Wrapper */}
         <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
           <iframe
-            src="https://youtube.com/shorts/fMLm0BKctz0" 
+            src="https://youtube.com/embed/fMLm0BKctz0" 
             title={t("videoTitle") || "Featured Video"}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
