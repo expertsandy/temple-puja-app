@@ -22,7 +22,7 @@ const translations = {
   navHome: { en: "🏠 Home", hi: "🏠 होम", mr: "🏠 मुख्यपृष्ठ" },
   navRegister: { en: "📋 Register", hi: "📋 पंजीकरण", mr: "📋 नोंदणी" },
   navMyBookings: { en: "📊 My Bookings", hi: "📊 मेरी बुकिंग", mr: "📊 माझ्या बुकिंग" },
-  navTools: { en: "🔮 Guides", hi: "🔮 निर्देशिका", mr: "🔮 मार्गदर्शिका" },
+  navTools: { en: "🔮 Tools", hi: "🔮 उपकरण", mr: "🔮 साधने" },
   navBlog: { en: "📜 Blog", hi: "📜 ब्लॉग", mr: "📜 ब्लॉग" },
   navAbout: { en: "ℹ️ About", hi: "ℹ️ परिचय", mr: "ℹ️ आमच्याबद्दल" },
   navAdmin: { en: "🔐 Admin", hi: "🔐 एडमिन", mr: "🔐 एडमिन" },
@@ -235,6 +235,11 @@ const translations = {
     en: "Puja",
     hi: "पूजा",
     mr: "पूजा",
+  },
+  noPujasAvailable: {
+    en: "Pujas for this temple are coming shortly. Please check back soon or contact us.",
+    hi: "इस मंदिर की पूजाएं जल्द ही उपलब्ध होंगी। कृपया जल्द वापस देखें या हमसे संपर्क करें।",
+    mr: "या मंदिराच्या पूजा लवकरच उपलब्ध होतील. कृपया लवकरच पुन्हा तपासा किंवा आमच्याशी संपर्क करा.",
   },
   pujas: {
     en: "Pujas",
