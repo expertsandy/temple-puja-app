@@ -9,7 +9,7 @@ const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", b
 // ─── Gemini API Call (Free Tier) ───
 const GEMINI_MODEL = "gemini-2.0-flash";
 
-async function askGemini(prompt, lang, retries = 2) {
+async function askGemini(prompt, lang, retries = 3) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error("no_key");
 
@@ -34,8 +34,8 @@ async function askGemini(prompt, lang, retries = 2) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     if (res.status === 429 && retries > 0) {
-      // Auto retry after 5 seconds
-      await new Promise(r => setTimeout(r, 5000));
+      // Wait 15 seconds before retry (free tier resets every minute)
+      await new Promise(r => setTimeout(r, 15000));
       return askGemini(prompt, lang, retries - 1);
     }
     if (res.status === 429) throw new Error("rate_limit");
@@ -50,11 +50,16 @@ async function askGemini(prompt, lang, retries = 2) {
 // ─── Shared UI ───
 function AskButton({ onClick, loading, lang }) {
   const labels = { en: "✨ Get Guidance", hi: "✨ मार्गदर्शन लें", mr: "✨ मार्गदर्शन घ्या" };
-  const loadingLabels = { en: "Seeking divine guidance... (may take a moment)", hi: "दिव्य मार्गदर्शन प्राप्त हो रहा है...", mr: "दिव्य मार्गदर्शन मिळत आहे..." };
+  const loadingLabels = { en: "🙏 Seeking divine guidance...", hi: "🙏 दिव्य मार्गदर्शन प्राप्त हो रहा है...", mr: "🙏 दिव्य मार्गदर्शन मिळत आहे..." };
   return (
     <button onClick={onClick} disabled={loading}
-      style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, padding: "13px 32px", borderRadius: 10, border: "none", cursor: loading ? "not-allowed" : "pointer", background: loading ? C.light : `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", width: "100%", marginTop: 12, opacity: loading ? 0.7 : 1 }}>
-      {loading ? (loadingLabels[lang] || loadingLabels.en) : (labels[lang] || labels.en)}
+      style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, padding: "13px 32px", borderRadius: 10, border: "none", cursor: loading ? "not-allowed" : "pointer", background: loading ? "#8a6e5e" : `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", width: "100%", marginTop: 12, opacity: loading ? 0.85 : 1 }}>
+      {loading ? (
+        <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <span style={{ display: "inline-block", animation: "spin 1s linear infinite", fontSize: 16 }}>🔄</span>
+          {loadingLabels[lang] || loadingLabels.en}
+        </span>
+      ) : (labels[lang] || labels.en)}
     </button>
   );
 }

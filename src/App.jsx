@@ -1037,6 +1037,7 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap');
         @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         * { box-sizing: border-box; }
         input:focus, select:focus, textarea:focus { border-color: #e8621e !important; box-shadow: 0 0 0 3px rgba(232,98,30,0.1); }
         button:hover { opacity: 0.92; }
