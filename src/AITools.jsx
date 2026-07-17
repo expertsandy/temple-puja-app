@@ -7,9 +7,9 @@ const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10",
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 
 // ─── Gemini API Call (Free Tier) ───
-const GEMINI_MODEL = "gemini-2.0-flash";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
-async function askGemini(prompt, lang) {
+async function askGemini(prompt, lang, retries = 2) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error("no_key");
 
@@ -33,6 +33,11 @@ async function askGemini(prompt, lang) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
+    if (res.status === 429 && retries > 0) {
+      // Auto retry after 5 seconds
+      await new Promise(r => setTimeout(r, 5000));
+      return askGemini(prompt, lang, retries - 1);
+    }
     if (res.status === 429) throw new Error("rate_limit");
     if (res.status === 400) throw new Error("invalid_key");
     throw new Error(err?.error?.message || `API error ${res.status}`);
@@ -45,7 +50,7 @@ async function askGemini(prompt, lang) {
 // ─── Shared UI ───
 function AskButton({ onClick, loading, lang }) {
   const labels = { en: "✨ Get Guidance", hi: "✨ मार्गदर्शन लें", mr: "✨ मार्गदर्शन घ्या" };
-  const loadingLabels = { en: "Seeking divine guidance...", hi: "दिव्य मार्गदर्शन मिळवत आहे...", mr: "दिव्य मार्गदर्शन मिळत आहे..." };
+  const loadingLabels = { en: "Seeking divine guidance... (may take a moment)", hi: "दिव्य मार्गदर्शन प्राप्त हो रहा है...", mr: "दिव्य मार्गदर्शन मिळत आहे..." };
   return (
     <button onClick={onClick} disabled={loading}
       style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, padding: "13px 32px", borderRadius: 10, border: "none", cursor: loading ? "not-allowed" : "pointer", background: loading ? C.light : `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", width: "100%", marginTop: 12, opacity: loading ? 0.7 : 1 }}>
