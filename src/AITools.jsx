@@ -6,45 +6,26 @@ const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
 const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10", maroon: "#7b1a2c", gold: "#c9a84c", goldLight: "#faf4e0", cream: "#fdf8f0", dark: "#2d1810", mid: "#5c3d2e", light: "#8a6e5e", border: "#e8d5c4" };
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 
-// ─── Gemini API Call (Free Tier) ───
-const GEMINI_MODEL = "gemini-2.0-flash";
-
+// ─── Call via our Vercel serverless function ───
 async function askGemini(prompt, lang, retries = 3) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("no_key");
-
-  const langInstruction = lang === "hi"
-    ? "Respond in Hindi (Devanagari script). Be warm, spiritual and authentic."
-    : lang === "mr"
-    ? "Respond in Marathi (Devanagari script). Be warm, spiritual and authentic."
-    : "Respond in English. Be warm, spiritual and authentic.";
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: `${langInstruction}\n\n${prompt}` }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1000 },
-      }),
-    }
-  );
+  const res = await fetch('/api/spiritual', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, lang }),
+  });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     if (res.status === 429 && retries > 0) {
-      // Wait 15 seconds before retry (free tier resets every minute)
       await new Promise(r => setTimeout(r, 15000));
       return askGemini(prompt, lang, retries - 1);
     }
     if (res.status === 429) throw new Error("rate_limit");
-    if (res.status === 400) throw new Error("invalid_key");
-    throw new Error(err?.error?.message || `API error ${res.status}`);
+    throw new Error(err?.error || `Error ${res.status}`);
   }
 
   const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received";
+  return data.text || "No response received";
 }
 
 // ─── Shared UI ───
