@@ -14,6 +14,7 @@ import { PrivacyPolicyPage, TermsPage, RefundPolicyPage, LegalFooterLinks } from
 import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
 import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { SpiritualTools } from "./SpiritualTools.jsx";
+import { AITools } from "./AITools.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
 // ─── Logo ───
@@ -1063,7 +1064,7 @@ export default function App() {
         {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
-        {state.view === "tools" && <SpiritualTools />}
+        {state.view === "tools" && <div><SpiritualTools /><div style={{ marginTop: 40 }}><AITools /></div></div>}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
         {showAdmin && <AdminPanel state={state} dispatch={dispatch} onRefresh={refreshData} />}
