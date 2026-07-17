@@ -15,6 +15,7 @@ import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
 import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { SpiritualTools } from "./SpiritualTools.jsx";
 import { AITools } from "./AITools.jsx";
+import { HomeBannerAd, BlogAd, FooterAd, ToolsAd, AIToolsAd } from "./AdSense.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
 // ─── Logo ───
@@ -337,6 +338,7 @@ function HomePage({ state, dispatch }) {
       {!sel ? (<>
         <div style={{ textAlign: "center", marginBottom: 32 }}><h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 8px" }}>{t("homeTitle")}</h2><p style={{ fontFamily: sansFont, fontSize: 15, color: C.light }}>{t("homeSubtitle")}</p></div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>{state.temples.map(t => <TempleCard key={t.id} temple={t} onSelect={() => dispatch({ type: "SELECT_TEMPLE", payload: t.id })} />)}</div>
+        <HomeBannerAd />
         {state.temples.length === 0 && !state.loading && <div style={{ textAlign: "center", padding: 60, color: C.light, fontFamily: sansFont }}><p style={{ fontSize: 48 }}>🛕</p><p>{t("noTemples")}</p></div>}
       </>) : (<>
         <button onClick={() => dispatch({ type: "SELECT_TEMPLE", payload: null })} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 16, padding: 0, fontWeight: 600 }}>{t("backToTemples")}</button>
@@ -1064,7 +1066,7 @@ export default function App() {
         {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
-        {state.view === "tools" && <div><SpiritualTools /><div style={{ marginTop: 40 }}><AITools /></div></div>}
+        {state.view === "tools" && <div><SpiritualTools /><ToolsAd /><div style={{ marginTop: 20 }}><AITools /></div></div>}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
         {showAdmin && <AdminPanel state={state} dispatch={dispatch} onRefresh={refreshData} />}
@@ -1073,6 +1075,7 @@ export default function App() {
         {state.view === "terms" && <TermsPage />}
         {state.view === "refund" && <RefundPolicyPage />}
       </main>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}><FooterAd /></div>
       <footer style={{ borderTop: `1px solid ${C.border}`, padding: "28px 24px 20px", textAlign: "center" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>

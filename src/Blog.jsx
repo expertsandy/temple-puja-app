@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLang } from "./LangContext.jsx";
+import { BlogAd } from "./AdSense.jsx";
 
 // ─── Styles ───
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
@@ -34,14 +35,15 @@ export function BlogPage({ posts, onSelectPost }) {
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {published.map(post => {
+          {published.map((post, index) => {
             const title = getField(post, "title", lang);
             const excerpt = getField(post, "excerpt", lang);
             return (
-              <article key={post.id} onClick={() => onSelectPost(post.id)}
-                style={{ background: "#fff", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${C.border}`, transition: "all 0.3s", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(232,98,30,0.1)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)"; }}>
+              <div key={post.id}>
+                <article onClick={() => onSelectPost(post.id)}
+                  style={{ background: "#fff", borderRadius: 16, overflow: "hidden", cursor: "pointer", border: `1px solid ${C.border}`, transition: "all 0.3s", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(232,98,30,0.1)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)"; }}>
                 <div style={{ display: "flex", gap: 0 }}>
                   {post.cover_image && (
                     <div style={{ width: 200, minHeight: 160, flexShrink: 0 }}>
@@ -66,7 +68,9 @@ export function BlogPage({ posts, onSelectPost }) {
                     </div>
                   </div>
                 </div>
-              </article>
+                </article>
+                {(index + 1) % 3 === 0 && <BlogAd />}
+              </div>
             );
           })}
         </div>
