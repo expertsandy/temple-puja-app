@@ -7,7 +7,7 @@ const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10",
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 
 // ─── Gemini API Call (Free Tier) ───
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-2.5-flash-preview-05-20";
 
 async function askGemini(prompt, lang, retries = 2) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
