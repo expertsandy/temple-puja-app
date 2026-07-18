@@ -17,7 +17,6 @@ import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { SpiritualTools } from "./SpiritualTools.jsx";
 import { AITools } from "./AITools.jsx";
 import { PrashnottariChatbot } from "./PrashnottariChatbot.jsx";
-import { SatsangForum } from "./SatsangForum.jsx";
 import { HomeBannerAd, BlogAd, FooterAd, ToolsAd, AIToolsAd } from "./AdSense.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
@@ -1150,7 +1149,6 @@ export default function App() {
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
         {state.view === "tools" && <div><SpiritualTools /><ToolsAd /><div style={{ marginTop: 20 }}><AITools /></div></div>}
         {state.view === "chat" && <PrashnottariChatbot />}
-        {state.view === "satsang" && <SatsangForum isAdmin={!!adminUser} />}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
         {showAdmin && <AdminPanel state={state} dispatch={dispatch} onRefresh={refreshData} />}
