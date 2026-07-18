@@ -472,3 +472,145 @@ export async function assignPriestToRegistration(registrationId, priestId, pries
 
   if (error) throw error;
 }
+
+// ─── Forum Operations ───
+
+export async function fetchForumPosts() {
+  const { data, error } = await supabase
+    .from('forum_posts')
+    .select('*')
+    .eq('published', true)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addForumPost(post) {
+  const { data, error } = await supabase
+    .from('forum_posts')
+    .insert({
+      id: 'fp_' + Date.now(),
+      author_name: post.authorName,
+      category: post.category || 'general',
+      content: post.content,
+      photo_url: post.photoUrl || null,
+      youtube_url: post.youtubeUrl || null,
+      lang: post.lang || 'hi',
+      pranam_count: 0,
+      published: true,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function incrementPranam(postId, currentCount) {
+  const { error } = await supabase
+    .from('forum_posts')
+    .update({ pranam_count: currentCount + 1 })
+    .eq('id', postId);
+  if (error) throw error;
+}
+
+export async function deleteForumPost(postId) {
+  const { error } = await supabase
+    .from('forum_posts')
+    .update({ published: false })
+    .eq('id', postId);
+  if (error) throw error;
+}
+
+export async function fetchForumComments(postId) {
+  const { data, error } = await supabase
+    .from('forum_comments')
+    .select('*')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addForumComment(postId, authorName, content) {
+  const { data, error } = await supabase
+    .from('forum_comments')
+    .insert({
+      id: 'fc_' + Date.now(),
+      post_id: postId,
+      author_name: authorName,
+      content,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// ─── Access Code Operations ───
+
+export async function verifyAccessCode(code) {
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await supabase
+    .from('access_codes')
+    .select('*')
+    .eq('code', code.toUpperCase().trim())
+    .eq('active', true)
+    .lte('valid_from', today)
+    .gte('valid_until', today)
+    .single();
+
+  if (error || !data) return null;
+  if (data.used_count >= data.max_uses) return null;
+
+  // Increment usage
+  await supabase
+    .from('access_codes')
+    .update({ used_count: data.used_count + 1 })
+    .eq('id', data.id);
+
+  return data;
+}
+
+export async function fetchAccessCodes() {
+  const { data, error } = await supabase
+    .from('access_codes')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addAccessCode(code) {
+  const { data, error } = await supabase
+    .from('access_codes')
+    .insert({
+      id: 'ac_' + Date.now(),
+      code: code.code.toUpperCase().trim(),
+      description: code.description || null,
+      valid_from: code.validFrom,
+      valid_until: code.validUntil,
+      max_uses: code.maxUses || 999,
+      used_count: 0,
+      active: true,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function toggleAccessCode(id, active) {
+  const { error } = await supabase
+    .from('access_codes')
+    .update({ active })
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteAccessCode(id) {
+  const { error } = await supabase
+    .from('access_codes')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}

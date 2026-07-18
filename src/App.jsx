@@ -7,6 +7,7 @@ import {
   fetchSocialLinks, addSocialLink as dbAddSocial, updateSocialLink as dbUpdateSocial, deleteSocialLink as dbDeleteSocial,
   fetchBlogPosts, addBlogPost as dbAddPost, updateBlogPost as dbUpdatePost, deleteBlogPost as dbDeletePost,
   fetchPriests, addPriest as dbAddPriest, updatePriest as dbUpdatePriest, deletePriest as dbDeletePriest, assignPriestToRegistration as dbAssignPriest,
+  fetchAccessCodes, addAccessCode as dbAddAccessCode, toggleAccessCode as dbToggleAccessCode, deleteAccessCode as dbDeleteAccessCode,
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
 import { BlogPage, BlogPostView, BlogAdmin } from "./Blog.jsx";
@@ -15,6 +16,8 @@ import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
 import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { SpiritualTools } from "./SpiritualTools.jsx";
 import { AITools } from "./AITools.jsx";
+import { PrashnottariChatbot } from "./PrashnottariChatbot.jsx";
+import { SatsangForum } from "./SatsangForum.jsx";
 import { HomeBannerAd, BlogAd, FooterAd, ToolsAd, AIToolsAd } from "./AdSense.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
@@ -111,7 +114,7 @@ function Notification({ message, onClose }) {
 function Header({ state, dispatch, adminUser, onLogout }) {
   const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
-  const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navMyBookings"), view: "my-bookings" }, { label: t("navTools"), view: "tools" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
+  const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navMyBookings"), view: "my-bookings" }, { label: t("navTools"), view: "tools" }, { label: t("navChat"), view: "chat" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...publicNav, ...adminNav];
   return (
@@ -442,7 +445,7 @@ function StatusBadge({ status }) {
 
 // ─── Admin ───
 function AdminPanel({ state, dispatch, onRefresh }) {
-  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }, { key: "priests", label: "👨‍🦱 Priests", count: state.priests.length }, { key: "blog", label: "📝 Blog", count: state.blogPosts.length }, { key: "social-links", label: "🔗 Social Links" }];
+  const tabs = [{ key: "registrations", label: "📋 Registrations", count: state.registrations.length }, { key: "temples", label: "🛕 Temples", count: state.temples.length }, { key: "add-temple", label: "➕ Add Temple" }, { key: "add-puja", label: "➕ Add Puja" }, { key: "priests", label: "👨‍🦱 Priests", count: state.priests.length }, { key: "access-codes", label: "🔑 Access Codes" }, { key: "blog", label: "📝 Blog", count: state.blogPosts.length }, { key: "social-links", label: "🔗 Social Links" }];
   return (
     <div>
       <h2 style={{ fontFamily: font, fontSize: 26, color: C.maroon, margin: "0 0 20px" }}>⚙️ Admin Dashboard</h2>
@@ -453,6 +456,7 @@ function AdminPanel({ state, dispatch, onRefresh }) {
       {state.adminTab === "edit-temple" && <EditTempleForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "add-puja" && <AddPujaForm state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "priests" && <PriestsAdmin priests={state.priests} temples={state.temples} registrations={state.registrations} onRefresh={onRefresh} dbAddPriest={dbAddPriest} dbUpdatePriest={dbUpdatePriest} dbDeletePriest={dbDeletePriest} dbAssignPriest={dbAssignPriest} dispatch={dispatch} />}
+      {state.adminTab === "access-codes" && <AccessCodesAdmin />}
       {state.adminTab === "social-links" && <SocialLinksManager state={state} dispatch={dispatch} onRefresh={onRefresh} />}
       {state.adminTab === "blog" && <BlogAdmin posts={state.blogPosts} onRefresh={onRefresh} dbAddPost={dbAddPost} dbUpdatePost={dbUpdatePost} dbDeletePost={dbDeletePost} dispatch={dispatch} />}
     </div>
@@ -939,10 +943,87 @@ function WhatsAppFloatingButton() {
 }
 
 // ─── App ───
+// ─── Access Codes Admin ───
+function AccessCodesAdmin() {
+  const [codes, setCodes] = useState([]);
+  const [form, setForm] = useState({ code: "", description: "", validFrom: new Date().toISOString().split('T')[0], validUntil: "", maxUses: 999 });
+  const [saving, setSaving] = useState(false);
+
+  const load = async () => {
+    try { setCodes(await fetchAccessCodes()); } catch (e) { console.error(e); }
+  };
+  useEffect(() => { load(); }, []);
+
+  const handleAdd = async () => {
+    if (!form.code || !form.validUntil) { alert("Enter code and valid until date"); return; }
+    setSaving(true);
+    try { await dbAddAccessCode(form); await load(); setForm(f => ({ ...f, code: "", description: "" })); }
+    catch (e) { alert(e.message); }
+    setSaving(false);
+  };
+
+  return (
+    <div>
+      <h3 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: "0 0 20px" }}>🔑 Access Codes — Chatbot Gating</h3>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 20px" }}>Create monthly codes for Facebook subscribers. Post the code on your Facebook page each month.</p>
+
+      {/* Add new code */}
+      <div style={{ background: "#fff", borderRadius: 14, padding: "20px 24px", border: `1px solid ${C.border}`, marginBottom: 24 }}>
+        <h4 style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, color: C.dark, margin: "0 0 16px" }}>➕ Create New Code</h4>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
+          <div>
+            <label style={{ ...labelStyle, fontSize: 11 }}>Code *</label>
+            <input value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))} placeholder="e.g. DATTA2026" style={{ ...inputStyle, fontWeight: 700, letterSpacing: 1 }} />
+          </div>
+          <div>
+            <label style={{ ...labelStyle, fontSize: 11 }}>Description</label>
+            <input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="e.g. July 2026 subscribers" style={inputStyle} />
+          </div>
+          <div>
+            <label style={{ ...labelStyle, fontSize: 11 }}>Valid Until *</label>
+            <input type="date" value={form.validUntil} onChange={e => setForm(f => ({ ...f, validUntil: e.target.value }))} style={inputStyle} />
+          </div>
+          <div>
+            <label style={{ ...labelStyle, fontSize: 11 }}>Max Uses</label>
+            <input type="number" value={form.maxUses} onChange={e => setForm(f => ({ ...f, maxUses: parseInt(e.target.value) }))} style={inputStyle} />
+          </div>
+        </div>
+        <button onClick={handleAdd} disabled={saving} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer", background: C.saffron, color: "#fff", opacity: saving ? 0.6 : 1 }}>
+          {saving ? "Creating..." : "🔑 Create Code"}
+        </button>
+      </div>
+
+      {/* Codes list */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {codes.map(c => (
+          <div key={c.id} style={{ background: "#fff", borderRadius: 12, padding: "14px 20px", border: `1px solid ${c.active ? C.border : "#eee"}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, opacity: c.active ? 1 : 0.5 }}>
+            <div>
+              <span style={{ fontFamily: sansFont, fontSize: 16, fontWeight: 700, color: C.maroon, letterSpacing: 1 }}>{c.code}</span>
+              <span style={{ fontFamily: sansFont, fontSize: 12, color: C.light, marginLeft: 12 }}>{c.description}</span>
+              <div style={{ fontFamily: sansFont, fontSize: 11, color: C.light, marginTop: 2 }}>
+                Valid: {c.valid_from} → {c.valid_until} • Used: {c.used_count}/{c.max_uses}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => { dbToggleAccessCode(c.id, !c.active); load(); }} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: `1px solid ${C.border}`, cursor: "pointer", background: "#fff", color: c.active ? C.pending : C.success }}>
+                {c.active ? "⏸ Disable" : "▶ Enable"}
+              </button>
+              <button onClick={() => { if (confirm("Delete this code?")) { dbDeleteAccessCode(c.id); load(); } }} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: `1px solid ${C.cancelled}`, cursor: "pointer", background: "#fff", color: C.cancelled }}>
+                🗑️
+              </button>
+            </div>
+          </div>
+        ))}
+        {codes.length === 0 && <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, textAlign: "center", padding: 20 }}>No codes yet. Create your first access code above.</p>}
+      </div>
+    </div>
+  );
+}
+
 // ─── URL ↔ View mapping ───
 const VIEW_TO_PATH = {
   home: "/", register: "/register", "my-bookings": "/my-bookings",
-  tools: "/tools", blog: "/blog", about: "/about",
+  tools: "/tools", chat: "/chat", blog: "/blog", about: "/about",
   privacy: "/privacy", terms: "/terms", refund: "/refund",
   login: "/admin/login", admin: "/admin",
 };
@@ -1068,6 +1149,8 @@ export default function App() {
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
         {state.view === "tools" && <div><SpiritualTools /><ToolsAd /><div style={{ marginTop: 20 }}><AITools /></div></div>}
+        {state.view === "chat" && <PrashnottariChatbot />}
+        {state.view === "satsang" && <SatsangForum isAdmin={!!adminUser} />}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
         {showAdmin && <AdminPanel state={state} dispatch={dispatch} onRefresh={refreshData} />}

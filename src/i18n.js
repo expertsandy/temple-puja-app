@@ -23,6 +23,7 @@ const translations = {
   navRegister: { en: "📋 Register", hi: "📋 पंजीकरण", mr: "📋 नोंदणी" },
   navMyBookings: { en: "📊 My Bookings", hi: "📊 मेरी बुकिंग", mr: "📊 माझ्या बुकिंग" },
   navTools: { en: "🔮 Tools", hi: "🔮 उपकरण", mr: "🔮 साधने" },
+  navChat: { en: "🤖 Gurudev", hi: "🤖 गुरुदेव", mr: "🤖 गुरुदेव" },
   navBlog: { en: "📜 Blog", hi: "📜 ब्लॉग", mr: "📜 ब्लॉग" },
   navAbout: { en: "ℹ️ About", hi: "ℹ️ परिचय", mr: "ℹ️ आमच्याबद्दल" },
   navAdmin: { en: "🔐 Admin", hi: "🔐 एडमिन", mr: "🔐 एडमिन" },
