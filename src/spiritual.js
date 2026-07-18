@@ -10,6 +10,10 @@ export default async function handler(req, res) {
 
   const { prompt, lang, messages } = req.body;
 
+  if (!messages && !prompt) {
+    return res.status(400).json({ error: 'Missing prompt or messages' });
+  }
+
   const langInstruction = lang === "hi"
     ? "Respond in Hindi (Devanagari script). Be warm, spiritual and authentic."
     : lang === "mr"
