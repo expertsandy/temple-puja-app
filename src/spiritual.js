@@ -16,14 +16,17 @@ export default async function handler(req, res) {
     ? "Respond in Marathi (Devanagari script). Be warm, spiritual and authentic."
     : "Respond in English. Be warm, spiritual and authentic.";
 
-  // Chat mode — full message history passed
-  const groqMessages = messages || [
-    {
-      role: "system",
-      content: `You are a knowledgeable Hindu spiritual advisor with deep expertise in Datta Sampradaya tradition, Vedic scriptures, and Sanskrit. ${langInstruction}`,
-    },
-    { role: "user", content: prompt },
-  ];
+  // Chat mode: full message history passed directly
+  // Single query mode: prompt + lang
+  const groqMessages = messages
+    ? messages  // use as-is, system prompt already included
+    : [
+        {
+          role: "system",
+          content: `You are a knowledgeable Hindu spiritual advisor with deep expertise in Datta Sampradaya tradition, Vedic scriptures, and Sanskrit. ${langInstruction}`,
+        },
+        { role: "user", content: prompt },
+      ];
 
   try {
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {

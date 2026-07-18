@@ -34,7 +34,6 @@ async function askGroq(messages, lang) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      prompt: "CHAT_MODE",
       lang,
       messages: [
         { role: "system", content: `${SYSTEM_PROMPT}\n\n${langInstruction}` },
