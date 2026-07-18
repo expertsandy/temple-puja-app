@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  // v3 - supports both prompt mode and chat messages mode
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -8,8 +9,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Groq API key not configured on server' });
   }
 
-  const { prompt, lang, messages } = req.body;
+  const body = req.body || {};
+  const { prompt, lang, messages } = body;
 
+  // Require either prompt (single query) or messages (chat mode)
   if (!messages && !prompt) {
     return res.status(400).json({ error: 'Missing prompt or messages' });
   }
