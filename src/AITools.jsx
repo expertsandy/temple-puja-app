@@ -386,7 +386,7 @@ function AIToolsGate({ lang, onUnlock }) {
       <div style={{ padding: "16px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, marginBottom: 16, color: "#fff", textAlign: "center" }}>
         <span style={{ fontSize: 48, display: "block", marginBottom: 10 }}>🤖</span>
         <h2 style={{ fontFamily: font, fontSize: 19, color: C.gold, margin: "0 0 6px" }}>
-          {lang === "hi" ? "AI आध्यात्मिक सहायक" : lang === "mr" ? "AI आध्यात्मिक सहाय्यक" : "AI Spiritual Assistant"}
+          {lang === "hi" ? "आध्यात्मिक सहायक" : lang === "mr" ? "आध्यात्मिक सहाय्यक" : "Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 13, opacity: 0.85, margin: 0 }}>
           {lang === "hi" ? "सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "सब्सक्रायबर एक्सक्लूसिव्ह" : "Subscriber Exclusive"}
@@ -489,7 +489,7 @@ export function AITools() {
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 24 }}>
         <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 8px" }}>
-          {lang === "hi" ? "🤖 AI आध्यात्मिक सहायक" : lang === "mr" ? "🤖 AI आध्यात्मिक सहाय्यक" : "🤖 AI Spiritual Assistant"}
+          {lang === "hi" ? "🤖 आध्यात्मिक सहायक" : lang === "mr" ? "🤖 आध्यात्मिक सहाय्यक" : "🤖 Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 14, color: C.light }}>
           {lang === "hi" ? "दत्त संप्रदाय परंपरा पर आधारित — निःशुल्क AI मार्गदर्शन"
