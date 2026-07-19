@@ -383,9 +383,9 @@ function AIToolsGate({ lang, onUnlock }) {
 
   return (
     <div style={{ maxWidth: 520, margin: "0 auto" }}>
-      <div style={{ padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 20, color: "#fff", textAlign: "center" }}>
+      <div style={{ padding: "16px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, marginBottom: 16, color: "#fff", textAlign: "center" }}>
         <span style={{ fontSize: 48, display: "block", marginBottom: 10 }}>🤖</span>
-        <h2 style={{ fontFamily: font, fontSize: 22, color: C.gold, margin: "0 0 8px" }}>
+        <h2 style={{ fontFamily: font, fontSize: 19, color: C.gold, margin: "0 0 6px" }}>
           {lang === "hi" ? "AI आध्यात्मिक सहायक" : lang === "mr" ? "AI आध्यात्मिक सहाय्यक" : "AI Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 13, opacity: 0.85, margin: 0 }}>

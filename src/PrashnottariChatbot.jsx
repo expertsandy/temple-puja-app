@@ -86,7 +86,7 @@ function AccessCodeGate({ lang, onUnlock }) {
     <div style={{ maxWidth: 520, margin: "0 auto" }}>
       {/* Hero */}
       <div style={{ textAlign: "center", padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 24, color: "#fff" }}>
-        <img src="/gurudev.png" alt="Gurudev" style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", marginBottom: 12, border: "3px solid #c9a84c" }} />
+        <img src="/gurudev.png" alt="Gurudev" style={{ width: 70, height: 70, borderRadius: "50%", objectFit: "cover", marginBottom: 8, border: "3px solid #c9a84c" }} />
         <h2 style={{ fontFamily: font, fontSize: 26, margin: "0 0 8px", color: C.gold }}>
           {lang === "hi" ? "गुरुदेव से बात करें" : lang === "mr" ? "गुरुदेवांशी बोला" : "Chat with Gurudev"}
         </h2>
