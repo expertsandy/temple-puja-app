@@ -104,24 +104,32 @@ Write the article in THREE languages. Respond ONLY in valid JSON with no other t
 }
 
 Article guidelines:
-- Each language version should be 400-600 words
-- Use ## for section headings and > for quotes/shlokas
+- Each language version should be 300-400 words (keep concise to fit JSON)
+- Use ## for section headings
 - Separate paragraphs with blank lines (\\n\\n)
-- Include relevant Sanskrit shlokas or mantras where appropriate (use > for these)
+- Include 1-2 relevant Sanskrit shlokas or mantras where appropriate
 - Be respectful and authentic to the Datta Sampradaya tradition
 - Include practical guidance where applicable
 - End with a mention of Shree Dattaraj Gurumauli's service to devotees
-- The content should be spiritually enriching and informative
 - Hindi should use Devanagari script
-- Marathi should use Devanagari script with proper Marathi vocabulary (not Hindi)`;
+- Marathi should use Devanagari script with proper Marathi vocabulary (not Hindi)
+- IMPORTANT: Keep content short enough that the entire JSON fits within response limit`;
 
   const result = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 4000,
+    max_tokens: 8000,
     messages: [{ role: "user", content: prompt }],
   });
 
-  const text = result.content[0].text.replace(/```json|```/g, '').trim();
+  let text = result.content[0].text.trim();
+  // Strip markdown code blocks if present
+  text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+  // Find the JSON object boundaries
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start !== -1 && end !== -1) {
+    text = text.substring(start, end + 1);
+  }
   return JSON.parse(text);
 }
 
