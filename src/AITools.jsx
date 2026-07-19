@@ -382,8 +382,8 @@ function AIToolsGate({ lang, onUnlock }) {
   };
 
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
-      <div style={{ padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 20, color: "#fff" }}>
+    <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div style={{ padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 20, color: "#fff", textAlign: "center" }}>
         <span style={{ fontSize: 48, display: "block", marginBottom: 10 }}>🤖</span>
         <h2 style={{ fontFamily: font, fontSize: 22, color: C.gold, margin: "0 0 8px" }}>
           {lang === "hi" ? "AI आध्यात्मिक सहायक" : lang === "mr" ? "AI आध्यात्मिक सहाय्यक" : "AI Spiritual Assistant"}
@@ -392,20 +392,36 @@ function AIToolsGate({ lang, onUnlock }) {
           {lang === "hi" ? "Facebook सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "Facebook सब्सक्रायबर एक्सक्लूसिव्ह" : "Facebook Subscriber Exclusive"}
         </p>
       </div>
+
+      {/* How to get code */}
+      <div style={{ background: "#f0f4ff", borderRadius: 14, padding: "18px 22px", marginBottom: 20, border: "1px solid #c5cae9" }}>
+        <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: "#3949ab", margin: "0 0 10px" }}>
+          📘 {lang === "hi" ? "एक्सेस कोड कैसे पाएं?" : lang === "mr" ? "ऍक्सेस कोड कसा मिळवायचा?" : "How to get access code?"}
+        </p>
+        <ol style={{ fontFamily: sansFont, fontSize: 13, color: "#3949ab", margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
+          <li>{lang === "hi" ? "श्री दत्तराज गुरुमाऊली Facebook पेज को सब्सक्राइब करें" : lang === "mr" ? "श्री दत्तराज गुरुमाऊली Facebook पेज सब्सक्राइब करा" : "Subscribe to Shree Dattaraj Gurumauli Facebook page"}</li>
+          <li>{lang === "hi" ? "हर महीने का एक्सेस कोड सब्सक्राइबर्स को भेजा जाता है" : lang === "mr" ? "दर महिन्याचा ऍक्सेस कोड सब्सक्रायबर्सना पाठवला जातो" : "Monthly access code is sent to subscribers"}</li>
+          <li>{lang === "hi" ? "कोड नीचे दर्ज करें और चैट शुरू करें" : lang === "mr" ? "खाली कोड प्रविष्ट करा आणि चॅट सुरू करा" : "Enter the code below and start chatting"}</li>
+        </ol>
+        <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
+          style={{ display: "inline-block", marginTop: 12, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "8px 18px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
+          📘 Subscribe Shree Dattaraj Gurumauli Page
+        </a>
+      </div>
+
+      {/* Code input */}
       <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: `1px solid ${C.border}` }}>
         {error && <div style={{ fontFamily: sansFont, fontSize: 13, color: "#c0392b", background: "#fde8e8", padding: "10px 14px", borderRadius: 8, marginBottom: 12 }}>⚠️ {error}</div>}
-        <label style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: C.mid, display: "block", marginBottom: 8 }}>🔑 {lang === "hi" ? "एक्सेस कोड दर्ज करें" : lang === "mr" ? "ऍक्सेस कोड प्रविष्ट करा" : "Enter Access Code"}</label>
+        <label style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: C.mid, display: "block", marginBottom: 8 }}>
+          🔑 {lang === "hi" ? "एक्सेस कोड दर्ज करें" : lang === "mr" ? "ऍक्सेस कोड प्रविष्ट करा" : "Enter Access Code"}
+        </label>
         <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} onKeyDown={e => e.key === "Enter" && handleVerify()}
           placeholder="e.g. DATTA2026"
           style={{ fontFamily: sansFont, fontSize: 16, fontWeight: 700, padding: "12px 16px", borderRadius: 10, border: `2px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", letterSpacing: 2, color: C.maroon, marginBottom: 12 }} />
         <button onClick={handleVerify} disabled={loading || !code.trim()}
-          style={{ width: "100%", fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", opacity: loading || !code.trim() ? 0.6 : 1, marginBottom: 14 }}>
-          {loading ? "🔄 Verifying..." : `🙏 ${lang === "hi" ? "अनलॉक करें" : lang === "mr" ? "अनलॉक करा" : "Unlock"}`}
+          style={{ width: "100%", fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", opacity: loading || !code.trim() ? 0.6 : 1 }}>
+          {loading ? "🔄 Verifying..." : `🙏 ${lang === "hi" ? "कोड सत्यापित करें" : lang === "mr" ? "कोड सत्यापित करा" : "Verify Code"}`}
         </button>
-        <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
-          style={{ display: "block", fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
-          📘 Subscribe Shree Dattaraj Gurumauli Page
-        </a>
       </div>
     </div>
   );
