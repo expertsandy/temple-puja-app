@@ -411,10 +411,10 @@ function AIToolsGate({ lang, onUnlock }) {
       {/* Option 2 - UPI */}
       <div style={{ background: C.goldLight, borderRadius: 14, padding: "18px 22px", marginBottom: 20, border: `1px solid ${C.gold}` }}>
         <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: C.maroon, margin: "0 0 10px" }}>
-          💳 {lang === "hi" ? "विकल्प २ — UPI भुगतान करें और कोड पाएं" : lang === "mr" ? "पर्याय २ — UPI पेमेंट करा आणि कोड मिळवा" : "Option 2 — Pay via UPI and get code"}
+          💳 {lang === "hi" ? "विकल्प २ — UPI भुगतान ₹51/माह और कोड पाएं" : lang === "mr" ? "पर्याय २ — UPI पेमेंट ₹51/महिना आणि कोड मिळवा" : "Option 2 — Pay ₹51/month via UPI and get code"}
         </p>
         <ol style={{ fontFamily: sansFont, fontSize: 13, color: C.mid, margin: "0 0 12px", paddingLeft: 20, lineHeight: 1.8 }}>
-          <li>{lang === "hi" ? "नीचे UPI ID पर भुगतान करें" : lang === "mr" ? "खाली UPI ID वर पेमेंट करा" : "Pay to the UPI ID below"}</li>
+          <li>{lang === "hi" ? "नीचे UPI ID पर ₹51 भुगतान करें (मासिक)" : lang === "mr" ? "खाली UPI ID वर ₹51 पेमेंट करा (मासिक)" : "Pay ₹51 to UPI ID below (monthly)"}</li>
           <li>{lang === "hi" ? "स्क्रीनशॉट WhatsApp पर भेजें: +91 9930576556" : lang === "mr" ? "स्क्रीनशॉट WhatsApp वर पाठवा: +91 9930576556" : "Send screenshot on WhatsApp: +91 9930576556"}</li>
           <li>{lang === "hi" ? "आपका एक्सेस कोड तुरंत भेजा जाएगा" : lang === "mr" ? "तुमचा ऍक्सेस कोड लगेच पाठवला जाईल" : "Your access code will be sent instantly"}</li>
         </ol>
