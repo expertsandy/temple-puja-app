@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext.jsx";
+import { verifyAccessCode } from "./supabase.js";
 
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
@@ -359,10 +360,64 @@ Provide:
   );
 }
 
+// ─── Access Gate for AI Tools ───
+function AIToolsGate({ lang, onUnlock }) {
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("aitools_unlocked") === "true") onUnlock();
+  }, []);
+
+  const handleVerify = async () => {
+    if (!code.trim()) return;
+    setLoading(true); setError("");
+    try {
+      const result = await verifyAccessCode(code);
+      if (result) { sessionStorage.setItem("aitools_unlocked", "true"); onUnlock(); }
+      else setError(lang === "hi" ? "अमान्य या समाप्त कोड। Facebook पेज से नया कोड प्राप्त करें।" : lang === "mr" ? "अवैध कोड. Facebook पेजवरून नवा कोड मिळवा." : "Invalid or expired code. Get the latest code from our Facebook page.");
+    } catch (e) { setError("An error occurred. Please try again."); }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
+      <div style={{ padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 20, color: "#fff" }}>
+        <span style={{ fontSize: 48, display: "block", marginBottom: 10 }}>🤖</span>
+        <h2 style={{ fontFamily: font, fontSize: 22, color: C.gold, margin: "0 0 8px" }}>
+          {lang === "hi" ? "AI आध्यात्मिक सहायक" : lang === "mr" ? "AI आध्यात्मिक सहाय्यक" : "AI Spiritual Assistant"}
+        </h2>
+        <p style={{ fontFamily: sansFont, fontSize: 13, opacity: 0.85, margin: 0 }}>
+          {lang === "hi" ? "Facebook सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "Facebook सब्सक्रायबर एक्सक्लूसिव्ह" : "Facebook Subscriber Exclusive"}
+        </p>
+      </div>
+      <div style={{ background: "#fff", borderRadius: 14, padding: 24, border: `1px solid ${C.border}` }}>
+        {error && <div style={{ fontFamily: sansFont, fontSize: 13, color: "#c0392b", background: "#fde8e8", padding: "10px 14px", borderRadius: 8, marginBottom: 12 }}>⚠️ {error}</div>}
+        <label style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: C.mid, display: "block", marginBottom: 8 }}>🔑 {lang === "hi" ? "एक्सेस कोड दर्ज करें" : lang === "mr" ? "ऍक्सेस कोड प्रविष्ट करा" : "Enter Access Code"}</label>
+        <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} onKeyDown={e => e.key === "Enter" && handleVerify()}
+          placeholder="e.g. DATTA2026"
+          style={{ fontFamily: sansFont, fontSize: 16, fontWeight: 700, padding: "12px 16px", borderRadius: 10, border: `2px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", letterSpacing: 2, color: C.maroon, marginBottom: 12 }} />
+        <button onClick={handleVerify} disabled={loading || !code.trim()}
+          style={{ width: "100%", fontFamily: sansFont, fontSize: 14, fontWeight: 700, padding: "12px", borderRadius: 10, border: "none", cursor: "pointer", background: `linear-gradient(135deg, ${C.saffron}, ${C.saffronDark})`, color: "#fff", opacity: loading || !code.trim() ? 0.6 : 1, marginBottom: 14 }}>
+          {loading ? "🔄 Verifying..." : `🙏 ${lang === "hi" ? "अनलॉक करें" : lang === "mr" ? "अनलॉक करा" : "Unlock"}`}
+        </button>
+        <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
+          style={{ display: "block", fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
+          📘 Subscribe Shree Dattaraj Gurumauli Page
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ───
 export function AITools() {
   const { lang } = useLang();
+  const [unlocked, setUnlocked] = useState(false);
   const [activeTab, setActiveTab] = useState("puja");
+
+  if (!unlocked) return <AIToolsGate lang={lang} onUnlock={() => setUnlocked(true)} />;
 
   const tabs = [
     { key: "puja", icon: "🪔", en: "Puja Advisor", hi: "पूजा सलाहकार", mr: "पूजा सल्लागार" },

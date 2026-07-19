@@ -113,14 +113,39 @@ function Notification({ message, onClose }) {
 function Header({ state, dispatch, adminUser, onLogout }) {
   const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
-  const publicNav = [{ label: t("navHome"), view: "home" }, { label: t("navRegister"), view: "register" }, { label: t("navMyBookings"), view: "my-bookings" }, { label: t("navTools"), view: "tools" }, { label: t("navChat"), view: "chat" }, { label: t("navBlog"), view: "blog" }, { label: t("navAbout"), view: "about" }];
+  const [utilitiesOpen, setUtilitiesOpen] = useState(false);
+  const utilityViews = ["tools", "ai-tools", "chat"];
+
+  const mainNav = [
+    { label: t("navHome"), view: "home" },
+    { label: t("navRegister"), view: "register" },
+    { label: t("navMyBookings"), view: "my-bookings" },
+    { label: t("navBlog"), view: "blog" },
+    { label: t("navAbout"), view: "about" },
+  ];
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
-  const nav = [...publicNav, ...adminNav];
+  const nav = [...mainNav, ...adminNav];
+
+  const utilities = [
+    { label: t("navTools"), view: "tools" },
+    { label: t("navAITools"), view: "ai-tools" },
+    { label: t("navChat"), view: "chat" },
+  ];
+
+  const isUtilityActive = utilityViews.includes(state.view);
+
+  const handleNav = (view) => {
+    dispatch({ type: "SET_VIEW", payload: view });
+    if (view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null });
+    setMenuOpen(false);
+    setUtilitiesOpen(false);
+  };
+
   return (
     <header style={{ background: `linear-gradient(135deg, #fceabb 0%, #e8c840 50%, #e8621e 100%)`, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => { dispatch({ type: "SET_VIEW", payload: "home" }); dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => handleNav("home")}>
           <img src={LOGO_SRC} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: "contain", flexShrink: 0, background: "#fff", padding: 3 }} />
           <div>
             <h1 style={{ fontFamily: font, fontSize: 16, color: C.maroon, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
@@ -130,9 +155,30 @@ function Header({ state, dispatch, adminUser, onLogout }) {
 
         {/* Desktop Nav */}
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {nav.map(n => <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); }} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>{n.label}</button>)}
+          {nav.map(n => (
+            <button key={n.view} onClick={() => handleNav(n.view)}
+              style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
+              {n.label}
+            </button>
+          ))}
+          {/* Utilities Dropdown */}
+          <div style={{ position: "relative" }} onMouseEnter={() => setUtilitiesOpen(true)} onMouseLeave={() => setUtilitiesOpen(false)}>
+            <button style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: isUtilityActive ? "rgba(123,26,44,0.12)" : "transparent", color: isUtilityActive ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
+              {t("navUtilities")} ▾
+            </button>
+            {utilitiesOpen && (
+              <div style={{ position: "absolute", top: "100%", right: 0, background: "#fff", borderRadius: 10, boxShadow: "0 8px 30px rgba(0,0,0,0.12)", border: `1px solid ${C.border}`, minWidth: 230, zIndex: 200, overflow: "hidden" }}>
+                {utilities.map((u, i) => (
+                  <button key={u.view} onClick={() => handleNav(u.view)}
+                    style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 600, padding: "12px 18px", border: "none", borderBottom: i < utilities.length-1 ? `1px solid ${C.border}` : "none", cursor: "pointer", background: state.view === u.view ? C.saffronLight : "#fff", color: state.view === u.view ? C.saffron : C.dark, textAlign: "left", width: "100%", display: "block" }}>
+                    {u.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {!adminUser ? (
-            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "login" })} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navAdmin")}</button>
+            <button onClick={() => handleNav("login")} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navAdmin")}</button>
           ) : (
             <button onClick={onLogout} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navLogout")}</button>
           )}
@@ -153,17 +199,26 @@ function Header({ state, dispatch, adminUser, onLogout }) {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="mobile-menu" style={{ padding: "8px 16px 16px", display: "none", flexDirection: "column", gap: 4, borderTop: "1px solid rgba(123,26,44,0.15)" }}>
           {nav.map(n => (
-            <button key={n.view} onClick={() => { dispatch({ type: "SET_VIEW", payload: n.view }); if (n.view === "home") dispatch({ type: "SELECT_TEMPLE", payload: null }); setMenuOpen(false); }}
+            <button key={n.view} onClick={() => handleNav(n.view)}
               style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", textAlign: "left", width: "100%" }}>
               {n.label}
             </button>
           ))}
+          <div style={{ paddingLeft: 8, borderLeft: `3px solid ${C.saffron}`, marginTop: 4 }}>
+            <p style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 700, color: C.saffron, margin: "8px 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>{t("navUtilities")}</p>
+            {utilities.map(u => (
+              <button key={u.view} onClick={() => handleNav(u.view)}
+                style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "10px 16px", borderRadius: 10, border: "none", cursor: "pointer", background: state.view === u.view ? C.saffronLight : "transparent", color: state.view === u.view ? C.saffron : "#5c2d1a", textAlign: "left", width: "100%", display: "block" }}>
+                {u.label}
+              </button>
+            ))}
+          </div>
           {!adminUser ? (
-            <button onClick={() => { dispatch({ type: "SET_VIEW", payload: "login" }); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a", textAlign: "left", width: "100%" }}>{t("navAdmin")}</button>
+            <button onClick={() => handleNav("login")} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a", textAlign: "left", width: "100%" }}>{t("navAdmin")}</button>
           ) : (
             <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 16px", borderRadius: 10, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a", textAlign: "left", width: "100%" }}>{t("navLogout")}</button>
           )}
@@ -1022,7 +1077,7 @@ function AccessCodesAdmin() {
 // ─── URL ↔ View mapping ───
 const VIEW_TO_PATH = {
   home: "/", register: "/register", "my-bookings": "/my-bookings",
-  tools: "/tools", chat: "/chat", blog: "/blog", about: "/about",
+  tools: "/tools", "ai-tools": "/ai-tools", chat: "/chat", blog: "/blog", about: "/about",
   privacy: "/privacy", terms: "/terms", refund: "/refund",
   login: "/admin/login", admin: "/admin",
 };
@@ -1147,7 +1202,8 @@ export default function App() {
         {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
-        {state.view === "tools" && <div><SpiritualTools /><ToolsAd /><div style={{ marginTop: 20 }}><AITools /></div></div>}
+        {state.view === "tools" && <div><SpiritualTools /><ToolsAd /></div>}
+        {state.view === "ai-tools" && <div><AITools /></div>}
         {state.view === "chat" && <PrashnottariChatbot />}
         {state.view === "about" && <AboutPage socialLinks={state.socialLinks} />}
         {showLogin && <AdminLogin dispatch={dispatch} onLogin={handleLoginSuccess} />}
