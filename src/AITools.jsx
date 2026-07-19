@@ -389,24 +389,50 @@ function AIToolsGate({ lang, onUnlock }) {
           {lang === "hi" ? "AI आध्यात्मिक सहायक" : lang === "mr" ? "AI आध्यात्मिक सहाय्यक" : "AI Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 13, opacity: 0.85, margin: 0 }}>
-          {lang === "hi" ? "Facebook सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "Facebook सब्सक्रायबर एक्सक्लूसिव्ह" : "Facebook Subscriber Exclusive"}
+          {lang === "hi" ? "सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "सब्सक्रायबर एक्सक्लूसिव्ह" : "Subscriber Exclusive"}
         </p>
       </div>
 
-      {/* How to get code */}
-      <div style={{ background: "#f0f4ff", borderRadius: 14, padding: "18px 22px", marginBottom: 20, border: "1px solid #c5cae9" }}>
+      {/* Option 1 - Facebook */}
+      <div style={{ background: "#f0f4ff", borderRadius: 14, padding: "18px 22px", marginBottom: 14, border: "1px solid #c5cae9" }}>
         <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: "#3949ab", margin: "0 0 10px" }}>
-          📘 {lang === "hi" ? "एक्सेस कोड कैसे पाएं?" : lang === "mr" ? "ऍक्सेस कोड कसा मिळवायचा?" : "How to get access code?"}
+          📘 {lang === "hi" ? "विकल्प १ — Facebook सब्सक्रिप्शन (निःशुल्क)" : lang === "mr" ? "पर्याय १ — Facebook सब्सक्रिप्शन (मोफत)" : "Option 1 — Facebook Subscription (Free)"}
         </p>
         <ol style={{ fontFamily: sansFont, fontSize: 13, color: "#3949ab", margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
           <li>{lang === "hi" ? "श्री दत्तराज गुरुमाऊली Facebook पेज को सब्सक्राइब करें" : lang === "mr" ? "श्री दत्तराज गुरुमाऊली Facebook पेज सब्सक्राइब करा" : "Subscribe to Shree Dattaraj Gurumauli Facebook page"}</li>
           <li>{lang === "hi" ? "हर महीने का एक्सेस कोड सब्सक्राइबर्स को भेजा जाता है" : lang === "mr" ? "दर महिन्याचा ऍक्सेस कोड सब्सक्रायबर्सना पाठवला जातो" : "Monthly access code is sent to subscribers"}</li>
-          <li>{lang === "hi" ? "कोड नीचे दर्ज करें और चैट शुरू करें" : lang === "mr" ? "खाली कोड प्रविष्ट करा आणि चॅट सुरू करा" : "Enter the code below and start chatting"}</li>
         </ol>
         <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
-          style={{ display: "inline-block", marginTop: 12, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "8px 18px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
+          style={{ display: "inline-block", marginTop: 10, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "8px 18px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
           📘 Subscribe Shree Dattaraj Gurumauli Page
         </a>
+      </div>
+
+      {/* Option 2 - UPI */}
+      <div style={{ background: C.goldLight, borderRadius: 14, padding: "18px 22px", marginBottom: 20, border: `1px solid ${C.gold}` }}>
+        <p style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, color: C.maroon, margin: "0 0 10px" }}>
+          💳 {lang === "hi" ? "विकल्प २ — UPI भुगतान करें और कोड पाएं" : lang === "mr" ? "पर्याय २ — UPI पेमेंट करा आणि कोड मिळवा" : "Option 2 — Pay via UPI and get code"}
+        </p>
+        <ol style={{ fontFamily: sansFont, fontSize: 13, color: C.mid, margin: "0 0 12px", paddingLeft: 20, lineHeight: 1.8 }}>
+          <li>{lang === "hi" ? "नीचे UPI ID पर भुगतान करें" : lang === "mr" ? "खाली UPI ID वर पेमेंट करा" : "Pay to the UPI ID below"}</li>
+          <li>{lang === "hi" ? "स्क्रीनशॉट WhatsApp पर भेजें: +91 9930576556" : lang === "mr" ? "स्क्रीनशॉट WhatsApp वर पाठवा: +91 9930576556" : "Send screenshot on WhatsApp: +91 9930576556"}</li>
+          <li>{lang === "hi" ? "आपका एक्सेस कोड तुरंत भेजा जाएगा" : lang === "mr" ? "तुमचा ऍक्सेस कोड लगेच पाठवला जाईल" : "Your access code will be sent instantly"}</li>
+        </ol>
+        <div style={{ background: "#fff", borderRadius: 10, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: "0 0 2px" }}>UPI ID</p>
+            <p style={{ fontFamily: sansFont, fontSize: 15, fontWeight: 700, color: C.maroon, margin: 0 }}>shreedattarajgurumauli@kotak</p>
+          </div>
+          <button onClick={() => { navigator.clipboard.writeText("shreedattarajgurumauli@kotak"); alert("Copied!"); }}
+            style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 700, padding: "6px 12px", borderRadius: 8, border: `1px solid ${C.gold}`, background: C.goldLight, color: C.maroon, cursor: "pointer" }}>
+            📋 {lang === "hi" ? "कॉपी करें" : lang === "mr" ? "कॉपी करा" : "Copy"}
+          </button>
+        </div>
+        <p style={{ fontFamily: sansFont, fontSize: 12, color: C.light, margin: "10px 0 0", textAlign: "center" }}>
+          <a href="https://wa.me/919930576556" target="_blank" rel="noopener noreferrer" style={{ color: C.saffron, fontWeight: 700, textDecoration: "none" }}>
+            📲 {lang === "hi" ? "WhatsApp पर स्क्रीनशॉट भेजें" : lang === "mr" ? "WhatsApp वर स्क्रीनशॉट पाठवा" : "Send screenshot on WhatsApp"}
+          </a>
+        </p>
       </div>
 
       {/* Code input */}
