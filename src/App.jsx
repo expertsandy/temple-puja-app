@@ -1092,8 +1092,23 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const { t } = useLang();
 
-  // Sync URL when view changes
+  // Update page title dynamically per view
   useEffect(() => {
+    const titles = {
+      home: "श्री दत्तराज गुरुमाऊली — ऑनलाइन पूजा बुकिंग | Datta Sampradaya",
+      register: "पूजा पंजीकरण | Puja Registration — श्री दत्तराज गुरुमाऊली",
+      "my-bookings": "मेरी बुकिंग | My Bookings — श्री दत्तराज गुरुमाऊली",
+      tools: "आध्यात्मिक उपकरण | Spiritual Tools — पंचांग, राशिफल, मुहूर्त",
+      "ai-tools": "आध्यात्मिक सहायक | Spiritual Assistant — श्री दत्तराज गुरुमाऊली",
+      chat: "गुरुदेव से बात करें | Chat with Gurudev — श्री दत्तराज गुरुमाऊली",
+      blog: "आध्यात्मिक ब्लॉग | Spiritual Blog — श्री दत्तराज गुरुमाऊली",
+      about: "हमारे बारे में | About Us — श्री दत्तराज गुरुमाऊली",
+      privacy: "गोपनीयता नीति | Privacy Policy — श्री दत्तराज गुरुमाऊली",
+      terms: "नियम और शर्तें | Terms — श्री दत्तराज गुरुमाऊली",
+      refund: "रिफंड नीति | Refund Policy — श्री दत्तराज गुरुमाऊली",
+    };
+    document.title = titles[state.view] || titles.home;
+  }, [state.view]);
     const path = VIEW_TO_PATH[state.view] || "/";
     if (window.location.pathname !== path) {
       window.history.pushState({}, "", path);
