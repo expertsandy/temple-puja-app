@@ -24,7 +24,7 @@ const translations = {
   navMyBookings: { en: "📊 My Bookings", hi: "📊 मेरी बुकिंग", mr: "📊 माझ्या बुकिंग" },
   navTools: { en: "🔮 Spiritual Tools", hi: "🔮 आध्यात्मिक उपकरण", mr: "🔮 आध्यात्मिक साधने" },
   navAITools: { en: "🤖 AI Spiritual Assistant", hi: "🤖 AI आध्यात्मिक सहायक", mr: "🤖 AI आध्यात्मिक सहाय्यक" },
-  navChat: { en: "💬 Gurudev AI Chat", hi: "💬 गुरुदेव — AI मार्गदर्शक", mr: "💬 गुरुदेव — AI मार्गदर्शक" },
+  navChat: { en: "💬 Chat with Gurudev", hi: "💬 गुरुदेव से बात करें", mr: "💬 गुरुदेवांशी बोला" },
   navUtilities: { en: "✨ Utilities", hi: "✨ उपयोगिताएं", mr: "✨ उपयुक्तता" },
   navBlog: { en: "📜 Blog", hi: "📜 ब्लॉग", mr: "📜 ब्लॉग" },
   navAbout: { en: "ℹ️ About", hi: "ℹ️ परिचय", mr: "ℹ️ आमच्याबद्दल" },

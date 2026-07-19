@@ -86,9 +86,9 @@ function AccessCodeGate({ lang, onUnlock }) {
     <div style={{ maxWidth: 520, margin: "0 auto" }}>
       {/* Hero */}
       <div style={{ textAlign: "center", padding: "32px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 20, marginBottom: 24, color: "#fff" }}>
-        <span style={{ fontSize: 52, display: "block", marginBottom: 12 }}>🤖</span>
+        <img src="/gurudev.png" alt="Gurudev" style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", marginBottom: 12, border: "3px solid #c9a84c" }} />
         <h2 style={{ fontFamily: font, fontSize: 26, margin: "0 0 8px", color: C.gold }}>
-          {lang === "hi" ? "AI प्रश्नोत्तरी — गुरुदेव से बात करें" : lang === "mr" ? "AI प्रश्नोत्तरी — गुरुदेवांशी बोला" : "AI Prashnottari — Chat with Gurudev"}
+          {lang === "hi" ? "गुरुदेव से बात करें" : lang === "mr" ? "गुरुदेवांशी बोला" : "Chat with Gurudev"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.85, margin: 0, lineHeight: 1.6 }}>
           {lang === "hi" ? "दत्त संप्रदाय के ज्ञान पर आधारित AI आध्यात्मिक गुरु से सीधे बात करें — जितने चाहें उतने प्रश्न पूछें"
@@ -167,7 +167,7 @@ function ChatBubble({ msg, lang }) {
   return (
     <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 12 }}>
       {!isUser && (
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: C.maroon, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0, marginRight: 8, alignSelf: "flex-end" }}>🕉️</div>
+        <img src="/gurudev.png" alt="Gurudev" style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover", flexShrink: 0, marginRight: 8, alignSelf: "flex-end", border: "1.5px solid #c9a84c" }} />
       )}
       <div style={{
         maxWidth: "75%",
@@ -242,7 +242,7 @@ function PrashnottariChat({ lang, onLock }) {
       {/* Header */}
       <div style={{ background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: "16px 16px 0 0", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>🕉️</div>
+          <img src="/gurudev.png" alt="Gurudev" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "2px solid #c9a84c" }} />
           <div>
             <h3 style={{ fontFamily: font, fontSize: 17, color: C.gold, margin: 0 }}>
               {lang === "hi" ? "गुरुदेव — AI आध्यात्मिक मार्गदर्शक" : lang === "mr" ? "गुरुदेव — AI आध्यात्मिक मार्गदर्शक" : "Gurudev — AI Spiritual Guide"}
@@ -271,7 +271,7 @@ function PrashnottariChat({ lang, onLock }) {
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px", background: C.cream, display: "flex", flexDirection: "column" }}>
         {messages.length === 0 && (
           <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <span style={{ fontSize: 48, display: "block", marginBottom: 12 }}>🙏</span>
+            <img src="/gurudev.png" alt="Gurudev" style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", marginBottom: 12, border: "3px solid #c9a84c" }} />
             <h4 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: "0 0 6px" }}>
               {lang === "hi" ? "नमस्कार! मैं गुरुदेव हूं।" : lang === "mr" ? "नमस्कार! मी गुरुदेव आहे." : "Namaste! I am Gurudev."}
             </h4>
