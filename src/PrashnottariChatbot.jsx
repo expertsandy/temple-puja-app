@@ -103,13 +103,13 @@ function AccessCodeGate({ lang, onUnlock }) {
           📘 {lang === "hi" ? "एक्सेस कोड कैसे पाएं?" : lang === "mr" ? "ऍक्सेस कोड कसा मिळवायचा?" : "How to get access code?"}
         </p>
         <ol style={{ fontFamily: sansFont, fontSize: 13, color: "#3949ab", margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
-          <li>{lang === "hi" ? "हमारे Facebook पेज को Like और Follow करें" : lang === "mr" ? "आमचे Facebook पेज Like आणि Follow करा" : "Like and Follow our Facebook page"}</li>
-          <li>{lang === "hi" ? "हर महीने का एक्सेस कोड पेज पर पोस्ट किया जाता है" : lang === "mr" ? "दर महिन्याचा ऍक्सेस कोड पेजवर पोस्ट केला जातो" : "Monthly access code is posted on the page"}</li>
+          <li>{lang === "hi" ? "श्री दत्तराज गुरुमाऊली Facebook पेज को सब्सक्राइब करें" : lang === "mr" ? "श्री दत्तराज गुरुमाऊली Facebook पेज सब्सक्राइब करा" : "Subscribe to Shree Dattaraj Gurumauli Facebook page"}</li>
+          <li>{lang === "hi" ? "हर महीने का एक्सेस कोड सब्सक्राइबर्स को भेजा जाता है" : lang === "mr" ? "दर महिन्याचा ऍक्सेस कोड सब्सक्रायबर्सना पाठवला जातो" : "Monthly access code is sent to subscribers"}</li>
           <li>{lang === "hi" ? "कोड नीचे दर्ज करें और चैट शुरू करें" : lang === "mr" ? "खाली कोड प्रविष्ट करा आणि चॅट सुरू करा" : "Enter the code below and start chatting"}</li>
         </ol>
-        <a href="https://www.facebook.com/shreedattarajgurumauli" target="_blank" rel="noopener noreferrer"
+        <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
           style={{ display: "inline-block", marginTop: 12, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "8px 18px", borderRadius: 8, background: "#1877F2", color: "#fff", textDecoration: "none" }}>
-          👍 {lang === "hi" ? "Facebook पेज पर जाएं" : lang === "mr" ? "Facebook पेजवर जा" : "Visit Facebook Page"}
+          📘 {lang === "hi" ? "Subscribe Shree Dattaraj Gurumauli Page" : lang === "mr" ? "Subscribe Shree Dattaraj Gurumauli Page" : "Subscribe Shree Dattaraj Gurumauli Page"}
         </a>
       </div>
 
