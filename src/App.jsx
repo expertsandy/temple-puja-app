@@ -1109,6 +1109,9 @@ export default function App() {
     };
     document.title = titles[state.view] || titles.home;
   }, [state.view]);
+
+  // Sync URL when view changes
+  useEffect(() => {
     const path = VIEW_TO_PATH[state.view] || "/";
     if (window.location.pathname !== path) {
       window.history.pushState({}, "", path);
