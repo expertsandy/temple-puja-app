@@ -1166,7 +1166,7 @@ export default function App() {
   // Update page title dynamically per view
   useEffect(() => {
     const titles = {
-      home: "श्री दत्तराज गुरुमाऊली — ऑनलाइन पूजा बुकिंग | Datta Sampradaya",
+      home: "श्री दत्तराज गुरुमाऊली — दिव्य दत्त सेवा केंद्र | Datta Sampradaya",
       register: "पूजा पंजीकरण | Puja Registration — श्री दत्तराज गुरुमाऊली",
       "my-bookings": "मेरी बुकिंग | My Bookings — श्री दत्तराज गुरुमाऊली",
       tools: "अध्यात्मिक उपकरण | Spiritual Tools — पंचांग, राशिफल, मुहूर्त",

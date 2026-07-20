@@ -8,9 +8,9 @@ const translations = {
     mr: "श्री दत्तराज गुरुमाऊली",
   },
   appSubtitle: {
-    en: "Temple Puja Registration",
-    hi: "मंदिर पूजा पंजीकरण",
-    mr: "मंदिर पूजा नोंदणी",
+    en: "Divya Datta Seva Kendra",
+    hi: "दिव्य दत्त सेवा केंद्र",
+    mr: "दिव्य दत्त सेवा केंद्र",
   },
   footerText: {
     en: "All rights reserved.",
