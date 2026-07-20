@@ -65,6 +65,7 @@ export function BlogPage({ posts, onSelectPost }) {
                     <div style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>
                       {post.author && <span>✍️ {post.author}</span>}
                       {post.created_at && <span style={{ marginLeft: 16 }}>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
+                      <span style={{ marginLeft: 16 }}>⏱️ {readingTime(getField(post, "content", lang), lang)}</span>
                     </div>
                   </div>
                 </div>
@@ -79,13 +80,38 @@ export function BlogPage({ posts, onSelectPost }) {
   );
 }
 
+// ─── Reading time calculator ───
+function readingTime(text, lang) {
+  const words = text?.split(/\s+/).length || 0;
+  const mins = Math.max(1, Math.ceil(words / 200));
+  return lang === "hi" ? `${mins} मिनट पढ़ें` : lang === "mr" ? `${mins} मिनिट वाचा` : `${mins} min read`;
+}
+
+// ─── WhatsApp Share ───
+function WhatsAppShare({ title, lang }) {
+  const msg = encodeURIComponent(`${title}\n\nपढ़ें श्री दत्तराज गुरुमाऊली के आध्यात्मिक ब्लॉग पर:\nhttps://shreedattarajgurumauli.com/blog`);
+  return (
+    <a href={`https://wa.me/?text=${msg}`} target="_blank" rel="noopener noreferrer"
+      style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 10, background: "#25D366", color: "#fff", textDecoration: "none" }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      {lang === "hi" ? "WhatsApp पर शेयर करें" : lang === "mr" ? "WhatsApp वर शेअर करा" : "Share on WhatsApp"}
+    </a>
+  );
+}
+
 // ─── Single Blog Post (Public) ───
-export function BlogPostView({ post, onBack }) {
+export function BlogPostView({ post, onBack, allPosts = [] }) {
   const { t, lang } = useLang();
   if (!post) return null;
 
   const title = getField(post, "title", lang);
   const content = getField(post, "content", lang);
+  const readTime = readingTime(content, lang);
+
+  // Related posts — same category, excluding current
+  const related = allPosts
+    .filter(p => p.published && p.id !== post.id && p.category === post.category)
+    .slice(0, 3);
 
   const renderContent = (text) => {
     return text.split('\n\n').map((para, i) => {
@@ -102,7 +128,7 @@ export function BlogPostView({ post, onBack }) {
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto" }}>
-      <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 20, padding: 0, fontWeight: 600 }}>{t("allArticles")}</button>
+      <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 20, padding: 0, fontWeight: 600 }}>← {t("allArticles")}</button>
 
       {post.cover_image && (
         <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 24 }}>
@@ -116,20 +142,51 @@ export function BlogPostView({ post, onBack }) {
         </span>
       )}
 
-      <h1 style={{ fontFamily: font, fontSize: 32, color: C.maroon, margin: "14px 0 12px", lineHeight: 1.3 }}>
-        {title}
-      </h1>
+      <h1 style={{ fontFamily: font, fontSize: 32, color: C.maroon, margin: "14px 0 12px", lineHeight: 1.3 }}>{title}</h1>
 
-      <div style={{ fontFamily: sansFont, fontSize: 13, color: C.light, marginBottom: 28, display: "flex", gap: 20 }}>
+      {/* Meta row — author, date, reading time */}
+      <div style={{ fontFamily: sansFont, fontSize: 13, color: C.light, marginBottom: 24, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
         {post.author && <span>✍️ {post.author}</span>}
         {post.created_at && <span>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
+        <span>⏱️ {readTime}</span>
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px", border: `1px solid ${C.border}` }}>
+      {/* Article content */}
+      <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px", border: `1px solid ${C.border}`, marginBottom: 24 }}>
         {renderContent(content)}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: 32 }}>
+      {/* WhatsApp share */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
+        <WhatsAppShare title={title} lang={lang} />
+      </div>
+
+      {/* Related posts */}
+      {related.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <h3 style={{ fontFamily: font, fontSize: 20, color: C.maroon, margin: "0 0 16px" }}>
+            {lang === "hi" ? "📖 इसी विषय पर और पढ़ें" : lang === "mr" ? "📖 याच विषयावर आणखी वाचा" : "📖 Related Articles"}
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {related.map(r => (
+              <div key={r.id} onClick={() => onBack(r.id)}
+                style={{ background: "#fff", borderRadius: 12, padding: "14px 18px", border: `1px solid ${C.border}`, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = C.saffron}
+                onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
+                <div>
+                  <p style={{ fontFamily: font, fontSize: 15, color: C.dark, margin: "0 0 4px" }}>{getField(r, "title", lang)}</p>
+                  <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: 0 }}>
+                    {r.category} · {readingTime(getField(r, "content", lang), lang)}
+                  </p>
+                </div>
+                <span style={{ color: C.saffron, fontSize: 18 }}>→</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ textAlign: "center" }}>
         <button onClick={onBack} style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 600, padding: "12px 28px", borderRadius: 10, border: `2px solid ${C.saffron}`, cursor: "pointer", background: "transparent", color: C.saffron }}>{t("readMore")}</button>
       </div>
     </div>

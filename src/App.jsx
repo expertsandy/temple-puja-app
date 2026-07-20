@@ -394,8 +394,33 @@ function HomePage({ state, dispatch }) {
     <div>
       {!sel ? (<>
         <div style={{ textAlign: "center", marginBottom: 32 }}><h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 8px" }}>{t("homeTitle")}</h2><p style={{ fontFamily: sansFont, fontSize: 15, color: C.light }}>{t("homeSubtitle")}</p></div>
+        <FestivalPromoBanner dispatch={dispatch} lang={lang} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>{state.temples.map(t => <TempleCard key={t.id} temple={t} onSelect={() => dispatch({ type: "SELECT_TEMPLE", payload: t.id })} />)}</div>
         <HomeBannerAd />
+        {/* SEO Content Section */}
+        <div style={{ marginTop: 40, padding: "32px 36px", background: "#fff", borderRadius: 20, border: `1px solid ${C.border}` }}>
+          <h2 style={{ fontFamily: font, fontSize: 24, color: C.maroon, margin: "0 0 16px", textAlign: "center" }}>
+            {lang === "en" ? "🕉️ About Shree Dattaraj Gurumauli" : lang === "hi" ? "🕉️ श्री दत्तराज गुरुमाऊली के बारे में" : "🕉️ श्री दत्तराज गुरुमाऊली बद्दल"}
+          </h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20, marginBottom: 24 }}>
+            {[
+              { icon: "🛕", title: lang === "en" ? "Datta Sampradaya" : lang === "hi" ? "दत्त संप्रदाय" : "दत्त संप्रदाय", desc: lang === "en" ? "Rooted in the ancient tradition of Lord Dattatreya — the divine trinity of Brahma, Vishnu and Mahesh." : lang === "hi" ? "भगवान दत्तात्रेय की प्राचीन परंपरा में निहित — ब्रह्मा, विष्णु और महेश की दिव्य त्रिमूर्ति।" : "भगवान दत्तात्रेयांच्या प्राचीन परंपरेत रुजलेले — ब्रह्मा, विष्णू आणि महेशची दिव्य त्रिमूर्ती." },
+              { icon: "🙏", title: lang === "en" ? "Online Puja Booking" : lang === "hi" ? "ऑनलाइन पूजा बुकिंग" : "ऑनलाइन पूजा बुकिंग", desc: lang === "en" ? "Book pujas and rituals at sacred temples from anywhere in the world. Experienced priests, authentic rituals." : lang === "hi" ? "दुनिया के किसी भी कोने से पवित्र मंदिरों में पूजा और अनुष्ठान बुक करें। अनुभवी पुजारी, प्रामाणिक विधि।" : "जगाच्या कोणत्याही कोपऱ्यातून पवित्र मंदिरांमध्ये पूजा आणि विधी बुक करा." },
+              { icon: "🤖", title: lang === "en" ? "AI Spiritual Guidance" : lang === "hi" ? "AI आध्यात्मिक मार्गदर्शन" : "AI आध्यात्मिक मार्गदर्शन", desc: lang === "en" ? "Get personalized puja recommendations, mantra meanings, dream interpretation and chat with Gurudev AI." : lang === "hi" ? "व्यक्तिगत पूजा सुझाव, मंत्र अर्थ, स्वप्न फल और गुरुदेव AI से बात करें।" : "वैयक्तिक पूजा सुचना, मंत्र अर्थ, स्वप्न फल आणि गुरुदेव AI शी बोला." },
+            ].map(item => (
+              <div key={item.icon} style={{ textAlign: "center", padding: "16px 12px" }}>
+                <span style={{ fontSize: 36, display: "block", marginBottom: 10 }}>{item.icon}</span>
+                <h3 style={{ fontFamily: font, fontSize: 16, color: C.maroon, margin: "0 0 8px" }}>{item.title}</h3>
+                <p style={{ fontFamily: sansFont, fontSize: 13, color: C.mid, margin: 0, lineHeight: 1.6 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, textAlign: "center", lineHeight: 1.8, margin: 0 }}>
+            {lang === "en" ? "Shree Dattaraj Gurumauli is a digital platform dedicated to serving devotees of the Datta Sampradaya tradition. We offer online puja booking, spiritual tools including Panchang, Rashi and Muhurat guidance, AI-powered spiritual assistance and the Gurudev chatbot — all in Hindi, Marathi and English. Our mission is to make authentic Datta Sampradaya spirituality accessible to devotees everywhere."
+            : lang === "hi" ? "श्री दत्तराज गुरुमाऊली दत्त संप्रदाय परंपरा के भक्तों की सेवा के लिए समर्पित एक डिजिटल मंच है। हम ऑनलाइन पूजा बुकिंग, पंचांग, राशि और मुहूर्त मार्गदर्शन सहित आध्यात्मिक उपकरण, AI-संचालित आध्यात्मिक सहायता और गुरुदेव चैटबॉट — हिंदी, मराठी और English में प्रदान करते हैं।"
+            : "श्री दत्तराज गुरुमाऊली हे दत्त संप्रदाय परंपरेच्या भक्तांची सेवा करण्यासाठी समर्पित एक डिजिटल व्यासपीठ आहे. आम्ही ऑनलाइन पूजा बुकिंग, पंचांग, राशी आणि मुहूर्त मार्गदर्शन, AI आध्यात्मिक सहाय्य आणि गुरुदेव चॅटबॉट — हिंदी, मराठी आणि English मध्ये प्रदान करतो."}
+          </p>
+        </div>
         {state.temples.length === 0 && !state.loading && <div style={{ textAlign: "center", padding: 60, color: C.light, fontFamily: sansFont }}><p style={{ fontSize: 48 }}>🛕</p><p>{t("noTemples")}</p></div>}
       </>) : (<>
         <button onClick={() => dispatch({ type: "SELECT_TEMPLE", payload: null })} style={{ fontFamily: sansFont, fontSize: 13, color: C.saffron, background: "none", border: "none", cursor: "pointer", marginBottom: 16, padding: 0, fontWeight: 600 }}>{t("backToTemples")}</button>
@@ -997,7 +1022,45 @@ function WhatsAppFloatingButton() {
 }
 
 // ─── App ───
-// ─── Access Codes Admin ───
+// ─── Festival Promo Banner ───
+function FestivalPromoBanner({ dispatch, lang }) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = [
+    { date: "2026-07-29", name: { en: "Guru Purnima", hi: "गुरु पूर्णिमा", mr: "गुरू पौर्णिमा" }, puja: { en: "Book special Guru Purnima puja", hi: "गुरु पूर्णिमा की विशेष पूजा बुक करें", mr: "गुरू पौर्णिमेची विशेष पूजा बुक करा" } },
+    { date: "2026-09-14", name: { en: "Ganesh Chaturthi", hi: "गणेश चतुर्थी", mr: "गणेश चतुर्थी" }, puja: { en: "Book Ganesh Chaturthi puja now", hi: "गणेश चतुर्थी पूजा अभी बुक करें", mr: "गणेश चतुर्थी पूजा आत्ताच बुक करा" } },
+    { date: "2026-10-11", name: { en: "Navratri", hi: "नवरात्रि", mr: "नवरात्री" }, puja: { en: "Book Navratri special puja", hi: "नवरात्रि विशेष पूजा बुक करें", mr: "नवरात्री विशेष पूजा बुक करा" } },
+    { date: "2026-11-08", name: { en: "Diwali", hi: "दीवाली", mr: "दिवाळी" }, puja: { en: "Book Lakshmi Puja for Diwali", hi: "दिवाली के लिए लक्ष्मी पूजा बुक करें", mr: "दिवाळीसाठी लक्ष्मी पूजा बुक करा" } },
+    { date: "2026-12-23", name: { en: "Datta Jayanti", hi: "दत्त जयंती", mr: "दत्त जयंती" }, puja: { en: "Book Datta Jayanti special puja", hi: "दत्त जयंती विशेष पूजा बुक करें", mr: "दत्त जयंती विशेष पूजा बुक करा" } },
+  ];
+
+  // Find festival within next 30 days
+  const festival = upcoming.find(f => {
+    const fd = new Date(f.date);
+    const diff = Math.ceil((fd - today) / 86400000);
+    return diff >= 0 && diff <= 30;
+  });
+
+  if (!festival) return null;
+
+  const fd = new Date(festival.date);
+  const daysLeft = Math.ceil((fd - today) / 86400000);
+
+  return (
+    <div style={{ marginBottom: 24, padding: "16px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+      <div>
+        <p style={{ fontFamily: sansFont, fontSize: 12, color: "rgba(255,255,255,0.7)", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 1 }}>
+          🎉 {daysLeft === 0 ? (lang === "hi" ? "आज है!" : lang === "mr" ? "आज आहे!" : "Today!") : `${daysLeft} ${lang === "hi" ? "दिन बाकी" : lang === "mr" ? "दिवस बाकी" : "days to go"}`}
+        </p>
+        <h3 style={{ fontFamily: font, fontSize: 20, color: C.gold, margin: "0 0 4px" }}>{festival.name[lang] || festival.name.en}</h3>
+        <p style={{ fontFamily: sansFont, fontSize: 13, color: "rgba(255,255,255,0.85)", margin: 0 }}>{festival.puja[lang] || festival.puja.en}</p>
+      </div>
+      <button onClick={() => dispatch({ type: "SET_VIEW", payload: "register" })}
+        style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 22px", borderRadius: 10, border: "2px solid #fff", cursor: "pointer", background: "transparent", color: "#fff", whiteSpace: "nowrap", flexShrink: 0 }}>
+        🙏 {lang === "hi" ? "अभी बुक करें" : lang === "mr" ? "आत्ताच बुक करा" : "Book Now"}
+      </button>
+    </div>
+  );
+}
 function AccessCodesAdmin() {
   const [codes, setCodes] = useState([]);
   const [form, setForm] = useState({ code: "", description: "", validFrom: new Date().toISOString().split('T')[0], validUntil: "", maxUses: 999 });
@@ -1219,7 +1282,7 @@ export default function App() {
         {state.view === "register" && <RegistrationForm state={state} dispatch={dispatch} onRefresh={refreshData} />}
         {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
-        {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={() => dispatch({ type: "SELECT_POST", payload: null })} />}
+        {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={(id) => id ? dispatch({ type: "SELECT_POST", payload: id }) : dispatch({ type: "SELECT_POST", payload: null })} allPosts={state.blogPosts} />}
         {state.view === "tools" && <div><SpiritualTools /><ToolsAd /></div>}
         {state.view === "ai-tools" && <div><AITools /></div>}
         {state.view === "chat" && <PrashnottariChatbot />}
