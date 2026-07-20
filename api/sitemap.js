@@ -27,15 +27,17 @@ export default async function handler(req, res) {
   // Fetch published blog posts with slugs
   let blogPosts = [];
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("blog_posts")
       .select("slug, created_at, updated_at")
       .eq("published", true)
       .not("slug", "is", null)
       .order("created_at", { ascending: false });
+    if (error) console.error("Supabase error:", JSON.stringify(error));
     blogPosts = data || [];
+    console.log(`Found ${blogPosts.length} blog posts with slugs`);
   } catch (e) {
-    console.error("Failed to fetch blog posts:", e);
+    console.error("Failed to fetch blog posts:", e.message);
   }
 
   // Build XML
