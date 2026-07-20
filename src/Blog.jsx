@@ -95,8 +95,9 @@ function readingTime(text, lang) {
 }
 
 // ─── WhatsApp Share ───
-function WhatsAppShare({ title, lang }) {
-  const msg = encodeURIComponent(`${title}\n\nपढ़ें श्री दत्तराज गुरुमाऊली के अध्यात्मिक ब्लॉग पर:\nhttps://shreedattarajgurumauli.com/blog`);
+function WhatsAppShare({ title, slug, lang }) {
+  const url = `https://shreedattarajgurumauli.com/blog/${slug || ''}`;
+  const msg = encodeURIComponent(`${title}\n\nपढ़ें श्री दत्तराज गुरुमाऊली के अध्यात्मिक ब्लॉग पर:\n${url}`);
   return (
     <a href={`https://wa.me/?text=${msg}`} target="_blank" rel="noopener noreferrer"
       style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 10, background: "#25D366", color: "#fff", textDecoration: "none" }}>
@@ -186,7 +187,7 @@ export function BlogPostView({ post, onBack, allPosts = [] }) {
 
       {/* WhatsApp share */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
-        <WhatsAppShare title={title} lang={lang} />
+        <WhatsAppShare title={title} slug={post.slug} lang={lang} />
       </div>
 
       {/* Related posts */}

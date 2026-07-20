@@ -1146,11 +1146,19 @@ const VIEW_TO_PATH = {
 };
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(([v, p]) => [p, v]));
 function getInitialView() {
-  return PATH_TO_VIEW[window.location.pathname] || "home";
+  const path = window.location.pathname;
+  if (path.startsWith('/blog/')) return "blog";
+  return PATH_TO_VIEW[path] || "home";
+}
+function getInitialPostSlug() {
+  const path = window.location.pathname;
+  if (path.startsWith('/blog/')) return path.replace('/blog/', '');
+  return null;
 }
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, view: getInitialView() });
+  const initialSlug = getInitialPostSlug();
+  const [state, dispatch] = useReducer(reducer, { ...initialState, view: getInitialView(), _pendingSlug: initialSlug });
   const [adminUser, setAdminUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const { t } = useLang();
@@ -1176,20 +1184,43 @@ export default function App() {
   // Sync URL when view changes
   useEffect(() => {
     const path = VIEW_TO_PATH[state.view] || "/";
-    if (window.location.pathname !== path) {
+    // For blog posts, use slug URL
+    if (state.view === "blog" && state.selectedPostId) {
+      const post = state.blogPosts.find(p => p.id === state.selectedPostId);
+      const slug = post?.slug || state.selectedPostId;
+      if (window.location.pathname !== `/blog/${slug}`) {
+        window.history.pushState({}, "", `/blog/${slug}`);
+      }
+    } else if (window.location.pathname !== path) {
       window.history.pushState({}, "", path);
     }
-  }, [state.view]);
+  }, [state.view, state.selectedPostId, state.blogPosts]);
 
-  // Handle browser back/forward
+  // Resolve direct blog post URL on load
+  useEffect(() => {
+    if (state._pendingSlug && state.blogPosts.length > 0) {
+      const post = state.blogPosts.find(p => p.slug === state._pendingSlug || p.id === state._pendingSlug);
+      if (post) dispatch({ type: "SELECT_POST", payload: post.id });
+    }
+  }, [state.blogPosts, state._pendingSlug]);
   useEffect(() => {
     const handlePop = () => {
-      const view = PATH_TO_VIEW[window.location.pathname] || "home";
-      dispatch({ type: "SET_VIEW", payload: view });
+      const path = window.location.pathname;
+      if (path.startsWith('/blog/')) {
+        const slug = path.replace('/blog/', '');
+        dispatch({ type: "SET_VIEW", payload: "blog" });
+        const post = state.blogPosts.find(p => p.slug === slug || p.id === slug);
+        if (post) dispatch({ type: "SELECT_POST", payload: post.id });
+        else dispatch({ type: "SELECT_POST", payload: null });
+      } else {
+        const view = PATH_TO_VIEW[path] || "home";
+        dispatch({ type: "SET_VIEW", payload: view });
+        dispatch({ type: "SELECT_POST", payload: null });
+      }
     };
     window.addEventListener("popstate", handlePop);
     return () => window.removeEventListener("popstate", handlePop);
-  }, []);
+  }, [state.blogPosts]);
 
   const refreshData = useCallback(async () => {
     try {

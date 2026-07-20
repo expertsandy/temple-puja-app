@@ -163,9 +163,14 @@ export default async function handler(req, res) {
     // Generate the article
     const article = await generateBlogPost(selected.topic, selected.category);
 
+    const postId = "blog_auto_" + Date.now();
+    const slug = (article.title_en || article.title_hi || "")
+      .toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 80)
+      + '-' + postId.slice(-6);
+
     // Save to database
     const { error } = await supabase.from('blog_posts').insert({
-      id: "blog_auto_" + Date.now(),
+      id: postId,
       title: article.title_hi,
       title_en: article.title_en,
       title_mr: article.title_mr,
@@ -180,6 +185,7 @@ export default async function handler(req, res) {
       published: true,
       cover_image: null,
       tags: article.tags || [],
+      slug: slug,
     });
 
     if (error) throw error;
