@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   try {
     const { data, error } = await supabase
       .from("blog_posts")
-      .select("slug, created_at, updated_at")
+      .select("slug, created_at")
       .eq("published", true)
       .not("slug", "is", null)
       .order("created_at", { ascending: false });
@@ -49,10 +49,10 @@ export default async function handler(req, res) {
     <priority>${p.priority}</priority>
   </url>`).join("");
 
-  const blogUrls = blogPosts.map(p => `
+    const blogUrls = blogPosts.map(p => `
   <url>
     <loc>${baseUrl}/blog/${p.slug}</loc>
-    <lastmod>${(p.updated_at || p.created_at || today).split("T")[0]}</lastmod>
+    <lastmod>${(p.created_at || today).split("T")[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`).join("");
