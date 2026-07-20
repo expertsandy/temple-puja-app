@@ -53,15 +53,6 @@ Rules:
   return JSON.parse(text);
 }
 
-function slugify(text) {
-  return (text || "")
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .substring(0, 80);
-}
-
 export default async function handler(req, res) {
   if (req.query.secret !== process.env.CRON_SECRET) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -92,8 +83,14 @@ export default async function handler(req, res) {
         console.log(`Processing: ${post.title_en || post.title}`);
         const improved = await reformatPost(post);
 
-        // Generate slug from English title
-        const slug = slugify(post.title_en || post.title) + '-' + post.id.slice(-6);
+        // Generate clean slug from English title
+        const slugSource = post.title_en || post.title || "";
+        const slug = slugSource
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/[\s_-]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .substring(0, 100);
 
         await supabase
           .from('blog_posts')

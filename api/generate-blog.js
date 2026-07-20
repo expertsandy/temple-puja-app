@@ -164,9 +164,15 @@ export default async function handler(req, res) {
     const article = await generateBlogPost(selected.topic, selected.category);
 
     const postId = "blog_auto_" + Date.now();
-    const slug = (article.title_en || article.title_hi || "")
-      .toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 80)
-      + '-' + postId.slice(-6);
+
+    // Generate clean slug from English title or topic
+    const slugSource = article.title_en || selected.topic || "";
+    const slug = slugSource
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 100);
 
     // Save to database
     const { error } = await supabase.from('blog_posts').insert({
