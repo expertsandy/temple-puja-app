@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLang } from "./LangContext.jsx";
 import { BlogAd } from "./AdSense.jsx";
 
@@ -62,11 +62,18 @@ export function BlogPage({ posts, onSelectPost }) {
                     <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, margin: "0 0 12px", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {excerpt}
                     </p>
-                    <div style={{ fontFamily: sansFont, fontSize: 12, color: C.light }}>
+                    <div style={{ fontFamily: sansFont, fontSize: 12, color: C.light, marginBottom: 8 }}>
                       {post.author && <span>✍️ {post.author}</span>}
                       {post.created_at && <span style={{ marginLeft: 16 }}>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
                       <span style={{ marginLeft: 16 }}>⏱️ {readingTime(getField(post, "content", lang), lang)}</span>
                     </div>
+                    {post.tags?.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {post.tags.slice(0, 4).map(tag => (
+                          <span key={tag} style={{ fontFamily: sansFont, fontSize: 10, padding: "2px 8px", borderRadius: 20, background: C.cream, color: C.mid, border: `1px solid ${C.border}` }}>#{tag}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 </article>
@@ -89,7 +96,7 @@ function readingTime(text, lang) {
 
 // ─── WhatsApp Share ───
 function WhatsAppShare({ title, lang }) {
-  const msg = encodeURIComponent(`${title}\n\nपढ़ें श्री दत्तराज गुरुमाऊली के आध्यात्मिक ब्लॉग पर:\nhttps://shreedattarajgurumauli.com/blog`);
+  const msg = encodeURIComponent(`${title}\n\nपढ़ें श्री दत्तराज गुरुमाऊली के अध्यात्मिक ब्लॉग पर:\nhttps://shreedattarajgurumauli.com/blog`);
   return (
     <a href={`https://wa.me/?text=${msg}`} target="_blank" rel="noopener noreferrer"
       style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 10, background: "#25D366", color: "#fff", textDecoration: "none" }}>
@@ -107,6 +114,18 @@ export function BlogPostView({ post, onBack, allPosts = [] }) {
   const title = getField(post, "title", lang);
   const content = getField(post, "content", lang);
   const readTime = readingTime(content, lang);
+
+  // Update page title and meta for SEO
+  useEffect(() => {
+    document.title = `${title} — श्री दत्तराज गुरुमाऊली`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', getField(post, "excerpt", lang) || title);
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords && post.tags?.length) metaKeywords.setAttribute('content', post.tags.join(', ') + ', Datta Sampradaya, पूजा बुकिंग, shreedattarajgurumauli');
+    return () => {
+      document.title = "श्री दत्तराज गुरुमाऊली — ऑनलाइन पूजा बुकिंग | Datta Sampradaya";
+    };
+  }, [post, lang]);
 
   // Related posts — same category, excluding current
   const related = allPosts
@@ -145,11 +164,20 @@ export function BlogPostView({ post, onBack, allPosts = [] }) {
       <h1 style={{ fontFamily: font, fontSize: 32, color: C.maroon, margin: "14px 0 12px", lineHeight: 1.3 }}>{title}</h1>
 
       {/* Meta row — author, date, reading time */}
-      <div style={{ fontFamily: sansFont, fontSize: 13, color: C.light, marginBottom: 24, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ fontFamily: sansFont, fontSize: 13, color: C.light, marginBottom: 16, display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
         {post.author && <span>✍️ {post.author}</span>}
         {post.created_at && <span>📅 {new Date(post.created_at).toLocaleDateString(lang === "en" ? "en-IN" : "hi-IN", { year: "numeric", month: "long", day: "numeric" })}</span>}
         <span>⏱️ {readTime}</span>
       </div>
+
+      {/* Tags */}
+      {post.tags?.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 24 }}>
+          {post.tags.map(tag => (
+            <span key={tag} style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 20, background: C.saffronLight, color: C.saffron, border: `1px solid ${C.border}` }}>#{tag}</span>
+          ))}
+        </div>
+      )}
 
       {/* Article content */}
       <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px", border: `1px solid ${C.border}`, marginBottom: 24 }}>
@@ -271,6 +299,8 @@ function BlogEditor({ post, onSave, onCancel }) {
     author: post?.author || "श्री दत्तराज गुरुमाऊली",
     cover_image: post?.cover_image || null,
     published: post?.published ?? true,
+    tags: post?.tags || [],
+    tagsInput: (post?.tags || []).join(', '),
   });
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -329,8 +359,25 @@ function BlogEditor({ post, onSave, onCancel }) {
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <label style={labelStyle}>Cover Image</label>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+          {/* Tags */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>🏷️ Tags (comma separated, for SEO)</label>
+            <input
+              value={f.tagsInput}
+              onChange={e => setF(x => ({ ...x, tagsInput: e.target.value, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) }))}
+              placeholder="e.g. Dattatreya, Puja, Datta Sampradaya, Mantra, Ganagapur"
+              style={inputStyle}
+            />
+            {f.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
+                {f.tags.map(tag => (
+                  <span key={tag} style={{ fontFamily: sansFont, fontSize: 11, padding: "3px 10px", borderRadius: 20, background: C.saffronLight, color: C.saffron, border: `1px solid ${C.border}` }}>#{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <label style={labelStyle}>Cover Image</label>          <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
             {f.cover_image && <img src={f.cover_image} alt="" style={{ width: 120, height: 80, objectFit: "cover", borderRadius: 8, border: `1px solid ${C.border}` }} />}
             <div>
               <input type="file" accept="image/*" onChange={handleCoverUpload} style={{ fontFamily: sansFont, fontSize: 13 }} />

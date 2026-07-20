@@ -100,7 +100,8 @@ Write the article in THREE languages. Respond ONLY in valid JSON with no other t
   "excerpt_mr": "Marathi excerpt (2-3 sentences)",
   "content_hi": "Full Hindi article",
   "content_en": "Full English article",
-  "content_mr": "Full Marathi article"
+  "content_mr": "Full Marathi article",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
 Article guidelines:
@@ -113,6 +114,7 @@ Article guidelines:
 - End with a mention of Shree Dattaraj Gurumauli's service to devotees
 - Hindi should use Devanagari script
 - Marathi should use Devanagari script with proper Marathi vocabulary (not Hindi)
+- Tags should be 5-8 relevant keywords in English (e.g. "Dattatreya", "Puja", "Datta Sampradaya", "Mantra", "Ganagapur")
 - IMPORTANT: Keep content short enough that the entire JSON fits within response limit`;
 
   const result = await anthropic.messages.create({
@@ -177,6 +179,7 @@ export default async function handler(req, res) {
       author: "श्री दत्तराज गुरुमाऊली",
       published: true,
       cover_image: null,
+      tags: article.tags || [],
     });
 
     if (error) throw error;

@@ -363,6 +363,7 @@ export async function addBlogPost(post) {
       author: post.author || null,
       cover_image: post.cover_image || null,
       published: post.published ?? true,
+      tags: post.tags || [],
     })
     .select()
     .single();
@@ -388,6 +389,7 @@ export async function updateBlogPost(post) {
       author: post.author || null,
       cover_image: post.cover_image || null,
       published: post.published ?? true,
+      tags: post.tags || [],
     })
     .eq('id', post.id);
 

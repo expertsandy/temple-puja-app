@@ -7,8 +7,8 @@ const C = { saffron: "#e8621e", saffronLight: "#fff3eb", saffronDark: "#c04d10",
 const inputStyle = { fontFamily: sansFont, fontSize: 14, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${C.border}`, width: "100%", boxSizing: "border-box", outline: "none", color: C.dark, background: "#fff" };
 
 const st = {
-  toolsTitle: { en: "🔮 Spiritual Tools", hi: "🔮 आध्यात्मिक उपकरण", mr: "🔮 आध्यात्मिक साधने" },
-  toolsSubtitle: { en: "Explore your spiritual journey with these tools", hi: "इन उपकरणों से अपनी आध्यात्मिक यात्रा का अन्वेषण करें", mr: "या साधनांनी तुमचा आध्यात्मिक प्रवास शोधा" },
+  toolsTitle: { en: "🔮 Spiritual Tools", hi: "🔮 अध्यात्मिक उपकरण", mr: "🔮 अध्यात्मिक साधने" },
+  toolsSubtitle: { en: "Explore your spiritual journey with these tools", hi: "इन उपकरणों से अपनी अध्यात्मिक यात्रा का अन्वेषण करें", mr: "या साधनांनी तुमचा अध्यात्मिक प्रवास शोधा" },
   panchang: { en: "📅 Panchang", hi: "📅 पंचांग", mr: "📅 पंचांग" },
   rashi: { en: "♈ Rashi & Puja", hi: "♈ राशि और पूजा", mr: "♈ राशी आणि पूजा" },
   festivals: { en: "🎪 Festivals", hi: "🎪 त्योहार", mr: "🎪 सण" },
@@ -455,7 +455,7 @@ function RashiView({ lang }) {
               </div>
             </div>
             <div style={{ padding: "14px 18px", background: C.goldLight, borderRadius: 10 }}>
-              <h4 style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, color: C.maroon, margin: "0 0 6px" }}>💡 {lang === "en" ? "Spiritual Advice" : lang === "hi" ? "आध्यात्मिक सलाह" : "आध्यात्मिक सल्ला"}</h4>
+              <h4 style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 700, color: C.maroon, margin: "0 0 6px" }}>💡 {lang === "en" ? "Spiritual Advice" : lang === "hi" ? "अध्यात्मिक सलाह" : "अध्यात्मिक सल्ला"}</h4>
               <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, margin: 0, lineHeight: 1.6 }}>{activeRashi.advice[lang] || activeRashi.advice.en}</p>
             </div>
           </div>

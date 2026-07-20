@@ -406,7 +406,7 @@ function HomePage({ state, dispatch }) {
             {[
               { icon: "🛕", title: lang === "en" ? "Datta Sampradaya" : lang === "hi" ? "दत्त संप्रदाय" : "दत्त संप्रदाय", desc: lang === "en" ? "Rooted in the ancient tradition of Lord Dattatreya — the divine trinity of Brahma, Vishnu and Mahesh." : lang === "hi" ? "भगवान दत्तात्रेय की प्राचीन परंपरा में निहित — ब्रह्मा, विष्णु और महेश की दिव्य त्रिमूर्ति।" : "भगवान दत्तात्रेयांच्या प्राचीन परंपरेत रुजलेले — ब्रह्मा, विष्णू आणि महेशची दिव्य त्रिमूर्ती." },
               { icon: "🙏", title: lang === "en" ? "Online Puja Booking" : lang === "hi" ? "ऑनलाइन पूजा बुकिंग" : "ऑनलाइन पूजा बुकिंग", desc: lang === "en" ? "Book pujas and rituals at sacred temples from anywhere in the world. Experienced priests, authentic rituals." : lang === "hi" ? "दुनिया के किसी भी कोने से पवित्र मंदिरों में पूजा और अनुष्ठान बुक करें। अनुभवी पुजारी, प्रामाणिक विधि।" : "जगाच्या कोणत्याही कोपऱ्यातून पवित्र मंदिरांमध्ये पूजा आणि विधी बुक करा." },
-              { icon: "🤖", title: lang === "en" ? "AI Spiritual Guidance" : lang === "hi" ? "AI आध्यात्मिक मार्गदर्शन" : "AI आध्यात्मिक मार्गदर्शन", desc: lang === "en" ? "Get personalized puja recommendations, mantra meanings, dream interpretation and chat with Gurudev AI." : lang === "hi" ? "व्यक्तिगत पूजा सुझाव, मंत्र अर्थ, स्वप्न फल और गुरुदेव AI से बात करें।" : "वैयक्तिक पूजा सुचना, मंत्र अर्थ, स्वप्न फल आणि गुरुदेव AI शी बोला." },
+              { icon: "🤖", title: lang === "en" ? "AI Spiritual Guidance" : lang === "hi" ? "AI अध्यात्मिक मार्गदर्शन" : "AI अध्यात्मिक मार्गदर्शन", desc: lang === "en" ? "Get personalized puja recommendations, mantra meanings, dream interpretation and chat with Gurudev AI." : lang === "hi" ? "व्यक्तिगत पूजा सुझाव, मंत्र अर्थ, स्वप्न फल और गुरुदेव AI से बात करें।" : "वैयक्तिक पूजा सुचना, मंत्र अर्थ, स्वप्न फल आणि गुरुदेव AI शी बोला." },
             ].map(item => (
               <div key={item.icon} style={{ textAlign: "center", padding: "16px 12px" }}>
                 <span style={{ fontSize: 36, display: "block", marginBottom: 10 }}>{item.icon}</span>
@@ -417,8 +417,8 @@ function HomePage({ state, dispatch }) {
           </div>
           <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, textAlign: "center", lineHeight: 1.8, margin: 0 }}>
             {lang === "en" ? "Shree Dattaraj Gurumauli is a digital platform dedicated to serving devotees of the Datta Sampradaya tradition. We offer online puja booking, spiritual tools including Panchang, Rashi and Muhurat guidance, AI-powered spiritual assistance and the Gurudev chatbot — all in Hindi, Marathi and English. Our mission is to make authentic Datta Sampradaya spirituality accessible to devotees everywhere."
-            : lang === "hi" ? "श्री दत्तराज गुरुमाऊली दत्त संप्रदाय परंपरा के भक्तों की सेवा के लिए समर्पित एक डिजिटल मंच है। हम ऑनलाइन पूजा बुकिंग, पंचांग, राशि और मुहूर्त मार्गदर्शन सहित आध्यात्मिक उपकरण, AI-संचालित आध्यात्मिक सहायता और गुरुदेव चैटबॉट — हिंदी, मराठी और English में प्रदान करते हैं।"
-            : "श्री दत्तराज गुरुमाऊली हे दत्त संप्रदाय परंपरेच्या भक्तांची सेवा करण्यासाठी समर्पित एक डिजिटल व्यासपीठ आहे. आम्ही ऑनलाइन पूजा बुकिंग, पंचांग, राशी आणि मुहूर्त मार्गदर्शन, AI आध्यात्मिक सहाय्य आणि गुरुदेव चॅटबॉट — हिंदी, मराठी आणि English मध्ये प्रदान करतो."}
+            : lang === "hi" ? "श्री दत्तराज गुरुमाऊली दत्त संप्रदाय परंपरा के भक्तों की सेवा के लिए समर्पित एक डिजिटल मंच है। हम ऑनलाइन पूजा बुकिंग, पंचांग, राशि और मुहूर्त मार्गदर्शन सहित अध्यात्मिक उपकरण, AI-संचालित अध्यात्मिक सहायता और गुरुदेव चैटबॉट — हिंदी, मराठी और English में प्रदान करते हैं।"
+            : "श्री दत्तराज गुरुमाऊली हे दत्त संप्रदाय परंपरेच्या भक्तांची सेवा करण्यासाठी समर्पित एक डिजिटल व्यासपीठ आहे. आम्ही ऑनलाइन पूजा बुकिंग, पंचांग, राशी आणि मुहूर्त मार्गदर्शन, AI अध्यात्मिक सहाय्य आणि गुरुदेव चॅटबॉट — हिंदी, मराठी आणि English मध्ये प्रदान करतो."}
           </p>
         </div>
         {state.temples.length === 0 && !state.loading && <div style={{ textAlign: "center", padding: 60, color: C.light, fontFamily: sansFont }}><p style={{ fontSize: 48 }}>🛕</p><p>{t("noTemples")}</p></div>}
@@ -1161,10 +1161,10 @@ export default function App() {
       home: "श्री दत्तराज गुरुमाऊली — ऑनलाइन पूजा बुकिंग | Datta Sampradaya",
       register: "पूजा पंजीकरण | Puja Registration — श्री दत्तराज गुरुमाऊली",
       "my-bookings": "मेरी बुकिंग | My Bookings — श्री दत्तराज गुरुमाऊली",
-      tools: "आध्यात्मिक उपकरण | Spiritual Tools — पंचांग, राशिफल, मुहूर्त",
-      "ai-tools": "आध्यात्मिक सहायक | Spiritual Assistant — श्री दत्तराज गुरुमाऊली",
+      tools: "अध्यात्मिक उपकरण | Spiritual Tools — पंचांग, राशिफल, मुहूर्त",
+      "ai-tools": "अध्यात्मिक सहायक | Spiritual Assistant — श्री दत्तराज गुरुमाऊली",
       chat: "गुरुदेव से बात करें | Chat with Gurudev — श्री दत्तराज गुरुमाऊली",
-      blog: "आध्यात्मिक ब्लॉग | Spiritual Blog — श्री दत्तराज गुरुमाऊली",
+      blog: "अध्यात्मिक ब्लॉग | Spiritual Blog — श्री दत्तराज गुरुमाऊली",
       about: "हमारे बारे में | About Us — श्री दत्तराज गुरुमाऊली",
       privacy: "गोपनीयता नीति | Privacy Policy — श्री दत्तराज गुरुमाऊली",
       terms: "नियम और शर्तें | Terms — श्री दत्तराज गुरुमाऊली",

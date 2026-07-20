@@ -174,7 +174,7 @@ Focus on Datta Sampradaya tradition where relevant.`;
         </div>
       </div>
       <textarea value={question} onChange={e => setQuestion(e.target.value)}
-        placeholder={lang === "hi" ? "कोई भी आध्यात्मिक प्रश्न पूछें..." : lang === "mr" ? "कोणताही आध्यात्मिक प्रश्न विचारा..." : "Ask any spiritual question..."}
+        placeholder={lang === "hi" ? "कोई भी अध्यात्मिक प्रश्न पूछें..." : lang === "mr" ? "कोणताही अध्यात्मिक प्रश्न विचारा..." : "Ask any spiritual question..."}
         rows={3} style={{ ...inputStyle, resize: "vertical" }} />
       <AskButton onClick={handleAsk} loading={loading} lang={lang} />
       <ErrorBox error={error} lang={lang} />
@@ -386,7 +386,7 @@ function AIToolsGate({ lang, onUnlock }) {
       <div style={{ padding: "16px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, marginBottom: 16, color: "#fff", textAlign: "center" }}>
         <span style={{ fontSize: 48, display: "block", marginBottom: 10 }}>🤖</span>
         <h2 style={{ fontFamily: font, fontSize: 19, color: C.gold, margin: "0 0 6px" }}>
-          {lang === "hi" ? "आध्यात्मिक सहायक" : lang === "mr" ? "आध्यात्मिक सहाय्यक" : "Spiritual Assistant"}
+          {lang === "hi" ? "अध्यात्मिक सहायक" : lang === "mr" ? "अध्यात्मिक सहाय्यक" : "Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 13, opacity: 0.85, margin: 0 }}>
           {lang === "hi" ? "सब्सक्राइबर एक्सक्लूसिव" : lang === "mr" ? "सब्सक्रायबर एक्सक्लूसिव्ह" : "Subscriber Exclusive"}
@@ -471,7 +471,7 @@ export function AITools() {
 
   const titles = {
     puja: { en: "🪔 AI Puja Recommender", hi: "🪔 AI पूजा सलाहकार", mr: "🪔 AI पूजा सल्लागार" },
-    prashn: { en: "🕉️ Spiritual Q&A", hi: "🕉️ आध्यात्मिक प्रश्नोत्तरी", mr: "🕉️ आध्यात्मिक प्रश्नोत्तरी" },
+    prashn: { en: "🕉️ Spiritual Q&A", hi: "🕉️ अध्यात्मिक प्रश्नोत्तरी", mr: "🕉️ अध्यात्मिक प्रश्नोत्तरी" },
     mantra: { en: "📿 Mantra & Stotra Explainer", hi: "📿 मंत्र और स्तोत्र व्याख्या", mr: "📿 मंत्र आणि स्तोत्र स्पष्टीकरण" },
     swapna: { en: "🌙 Dream Interpretation", hi: "🌙 स्वप्न फल व्याख्या", mr: "🌙 स्वप्न फल विवेचन" },
     kundli: { en: "⭐ Kundli Spiritual Guidance", hi: "⭐ कुंडली आधारित मार्गदर्शन", mr: "⭐ कुंडली आधारित मार्गदर्शन" },
@@ -482,14 +482,14 @@ export function AITools() {
     prashn: { en: "Ask about spirituality, rituals, Datta Sampradaya", hi: "अध्यात्म, अनुष्ठान, दत्त संप्रदाय के बारे में पूछें", mr: "अध्यात्म, विधी, दत्त संप्रदायाबद्दल विचारा" },
     mantra: { en: "Get word-by-word meaning of any mantra or stotra", hi: "किसी भी मंत्र या स्तोत्र का अर्थ जानें", mr: "कोणत्याही मंत्राचा अर्थ जाणा" },
     swapna: { en: "Dream interpretation per Hindu Swapna Shastra", hi: "हिंदू स्वप्न शास्त्र अनुसार स्वप्न फल", mr: "हिंदू स्वप्न शास्त्रानुसार स्वप्न फल" },
-    kundli: { en: "Spiritual guidance based on moon sign and dasha", hi: "राशि और दशा आधारित आध्यात्मिक मार्गदर्शन", mr: "राशी आणि दशा आधारित मार्गदर्शन" },
+    kundli: { en: "Spiritual guidance based on moon sign and dasha", hi: "राशि और दशा आधारित अध्यात्मिक मार्गदर्शन", mr: "राशी आणि दशा आधारित मार्गदर्शन" },
   };
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 24 }}>
         <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 8px" }}>
-          {lang === "hi" ? "🤖 आध्यात्मिक सहायक" : lang === "mr" ? "🤖 आध्यात्मिक सहाय्यक" : "🤖 Spiritual Assistant"}
+          {lang === "hi" ? "🤖 अध्यात्मिक सहायक" : lang === "mr" ? "🤖 अध्यात्मिक सहाय्यक" : "🤖 Spiritual Assistant"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 14, color: C.light }}>
           {lang === "hi" ? "दत्त संप्रदाय परंपरा पर आधारित — निःशुल्क AI मार्गदर्शन"

@@ -91,8 +91,8 @@ function AccessCodeGate({ lang, onUnlock }) {
           {lang === "hi" ? "गुरुदेव से बात करें" : lang === "mr" ? "गुरुदेवांशी बोला" : "Chat with Gurudev"}
         </h2>
         <p style={{ fontFamily: sansFont, fontSize: 14, opacity: 0.85, margin: 0, lineHeight: 1.6 }}>
-          {lang === "hi" ? "दत्त संप्रदाय के ज्ञान पर आधारित AI आध्यात्मिक गुरु से सीधे बात करें — जितने चाहें उतने प्रश्न पूछें"
-            : lang === "mr" ? "दत्त संप्रदायाच्या ज्ञानावर आधारित AI आध्यात्मिक गुरूशी थेट बोला — हवे तितके प्रश्न विचारा"
+          {lang === "hi" ? "दत्त संप्रदाय के ज्ञान पर आधारित AI अध्यात्मिक गुरु से सीधे बात करें — जितने चाहें उतने प्रश्न पूछें"
+            : lang === "mr" ? "दत्त संप्रदायाच्या ज्ञानावर आधारित AI अध्यात्मिक गुरूशी थेट बोला — हवे तितके प्रश्न विचारा"
             : "Have a real conversation with an AI spiritual guide rooted in Datta Sampradaya — ask as many questions as you want"}
         </p>
       </div>
@@ -245,7 +245,7 @@ function PrashnottariChat({ lang, onLock }) {
           <img src="/gurudev.png" alt="Gurudev" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "2px solid #c9a84c" }} />
           <div>
             <h3 style={{ fontFamily: font, fontSize: 17, color: C.gold, margin: 0 }}>
-              {lang === "hi" ? "गुरुदेव — AI आध्यात्मिक मार्गदर्शक" : lang === "mr" ? "गुरुदेव — AI आध्यात्मिक मार्गदर्शक" : "Gurudev — AI Spiritual Guide"}
+              {lang === "hi" ? "गुरुदेव — AI अध्यात्मिक मार्गदर्शक" : lang === "mr" ? "गुरुदेव — AI अध्यात्मिक मार्गदर्शक" : "Gurudev — AI Spiritual Guide"}
             </h3>
             <p style={{ fontFamily: sansFont, fontSize: 11, color: "rgba(255,255,255,0.7)", margin: 0 }}>
               {lang === "hi" ? "दत्त संप्रदाय परंपरा पर आधारित • Facebook सदस्य एक्सक्लूसिव"
