@@ -148,8 +148,8 @@ function Header({ state, dispatch, adminUser, onLogout }) {
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => handleNav("home")}>
           <img src={LOGO_SRC} alt="Logo" style={{ width: 48, height: 48, borderRadius: 12, objectFit: "contain", flexShrink: 0, background: "#fff", padding: 3 }} />
           <div>
-            <h1 style={{ fontFamily: font, fontSize: 16, color: C.maroon, margin: 0, whiteSpace: "nowrap" }}>{t("appName")}</h1>
-            <p style={{ fontFamily: sansFont, fontSize: 9, color: "rgba(100,40,20,0.6)", margin: 0, letterSpacing: 1, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
+            <h1 style={{ fontFamily: font, fontSize: 18, color: C.maroon, margin: 0, whiteSpace: "nowrap", fontWeight: 700, letterSpacing: 0.3 }}>{t("appName")}</h1>
+            <p style={{ fontFamily: sansFont, fontSize: 11, color: C.saffronDark, margin: 0, letterSpacing: 0.5, fontWeight: 800, textTransform: "uppercase" }}>{t("appSubtitle")}</p>
           </div>
         </div>
 
@@ -1026,14 +1026,13 @@ function WhatsAppFloatingButton() {
 function FestivalPromoBanner({ dispatch, lang }) {
   const today = new Date(); today.setHours(0,0,0,0);
   const upcoming = [
-    { date: "2026-07-29", name: { en: "Guru Purnima", hi: "गुरु पूर्णिमा", mr: "गुरू पौर्णिमा" }, puja: { en: "Book special Guru Purnima puja", hi: "गुरु पूर्णिमा की विशेष पूजा बुक करें", mr: "गुरू पौर्णिमेची विशेष पूजा बुक करा" } },
-    { date: "2026-09-14", name: { en: "Ganesh Chaturthi", hi: "गणेश चतुर्थी", mr: "गणेश चतुर्थी" }, puja: { en: "Book Ganesh Chaturthi puja now", hi: "गणेश चतुर्थी पूजा अभी बुक करें", mr: "गणेश चतुर्थी पूजा आत्ताच बुक करा" } },
-    { date: "2026-10-11", name: { en: "Navratri", hi: "नवरात्रि", mr: "नवरात्री" }, puja: { en: "Book Navratri special puja", hi: "नवरात्रि विशेष पूजा बुक करें", mr: "नवरात्री विशेष पूजा बुक करा" } },
-    { date: "2026-11-08", name: { en: "Diwali", hi: "दीवाली", mr: "दिवाळी" }, puja: { en: "Book Lakshmi Puja for Diwali", hi: "दिवाली के लिए लक्ष्मी पूजा बुक करें", mr: "दिवाळीसाठी लक्ष्मी पूजा बुक करा" } },
-    { date: "2026-12-23", name: { en: "Datta Jayanti", hi: "दत्त जयंती", mr: "दत्त जयंती" }, puja: { en: "Book Datta Jayanti special puja", hi: "दत्त जयंती विशेष पूजा बुक करें", mr: "दत्त जयंती विशेष पूजा बुक करा" } },
+    { date: "2026-07-29", name: { en: "Guru Purnima", hi: "गुरु पूर्णिमा", mr: "गुरू पौर्णिमा" }, emoji: "🌕", puja: { en: "Most sacred day for Guru worship! Book your special Guru Purnima puja now — limited slots!", hi: "गुरु पूजा का सबसे पवित्र दिन! अभी बुक करें — सीमित स्थान!", mr: "गुरू पूजेचा सर्वात पवित्र दिवस! आत्ताच बुक करा — मर्यादित जागा!" }, urgency: true },
+    { date: "2026-09-14", name: { en: "Ganesh Chaturthi", hi: "गणेश चतुर्थी", mr: "गणेश चतुर्थी" }, emoji: "🐘", puja: { en: "Celebrate Ganpati Bappa's arrival! Book your Ganesh Chaturthi puja — slots filling fast!", hi: "गणपति बप्पा के स्वागत के लिए पूजा बुक करें — जल्दी करें!", mr: "गणपती बाप्पांच्या स्वागतासाठी पूजा बुक करा — जागा भरत आहेत!" }, urgency: true },
+    { date: "2026-10-11", name: { en: "Navratri", hi: "नवरात्रि", mr: "नवरात्री" }, emoji: "🪔", puja: { en: "Nine nights of divine energy! Book Navratri special puja — early booking recommended!", hi: "नौ रातों की दिव्य शक्ति! नवरात्रि पूजा बुक करें — जल्दी बुकिंग करें!", mr: "नऊ रात्रींची दिव्य शक्ती! नवरात्री पूजा बुक करा!" }, urgency: false },
+    { date: "2026-11-08", name: { en: "Diwali", hi: "दीवाली", mr: "दिवाळी" }, emoji: "✨", puja: { en: "Invite Goddess Lakshmi home! Book Lakshmi Puja for Diwali — auspicious slots available!", hi: "मां लक्ष्मी को घर बुलाएं! दिवाली पूजा बुक करें!", mr: "लक्ष्मी मातेला घरी बोलवा! दिवाळी पूजा बुक करा!" }, urgency: false },
+    { date: "2026-12-23", name: { en: "Datta Jayanti", hi: "दत्त जयंती", mr: "दत्त जयंती" }, emoji: "🙏", puja: { en: "The holiest day in Datta Sampradaya! Book your Datta Jayanti puja — very limited slots!", hi: "दत्त संप्रदाय का सबसे पवित्र दिन! दत्त जयंती पूजा बुक करें — बहुत सीमित!", mr: "दत्त संप्रदायातील सर्वात पवित्र दिवस! दत्त जयंती पूजा बुक करा!" }, urgency: true },
   ];
 
-  // Find festival within next 30 days
   const festival = upcoming.find(f => {
     const fd = new Date(f.date);
     const diff = Math.ceil((fd - today) / 86400000);
@@ -1044,20 +1043,63 @@ function FestivalPromoBanner({ dispatch, lang }) {
 
   const fd = new Date(festival.date);
   const daysLeft = Math.ceil((fd - today) / 86400000);
+  const isUrgent = daysLeft <= 7 || festival.urgency;
 
   return (
-    <div style={{ marginBottom: 24, padding: "16px 24px", background: `linear-gradient(135deg, ${C.maroon}, ${C.saffronDark})`, borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-      <div>
-        <p style={{ fontFamily: sansFont, fontSize: 12, color: "rgba(255,255,255,0.7)", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: 1 }}>
-          🎉 {daysLeft === 0 ? (lang === "hi" ? "आज है!" : lang === "mr" ? "आज आहे!" : "Today!") : `${daysLeft} ${lang === "hi" ? "दिन बाकी" : lang === "mr" ? "दिवस बाकी" : "days to go"}`}
-        </p>
-        <h3 style={{ fontFamily: font, fontSize: 20, color: C.gold, margin: "0 0 4px" }}>{festival.name[lang] || festival.name.en}</h3>
-        <p style={{ fontFamily: sansFont, fontSize: 13, color: "rgba(255,255,255,0.85)", margin: 0 }}>{festival.puja[lang] || festival.puja.en}</p>
+    <div style={{ marginBottom: 24, borderRadius: 18, overflow: "hidden", boxShadow: "0 8px 32px rgba(232,98,30,0.25)", position: "relative" }}>
+      {/* Animated gradient background */}
+      <div style={{ background: isUrgent ? `linear-gradient(135deg, #7b1a2c 0%, #e8621e 50%, #c9a84c 100%)` : `linear-gradient(135deg, #c04d10 0%, #7b1a2c 100%)`, padding: "20px 24px" }}>
+
+        {/* Sparkle decoration */}
+        <div style={{ position: "absolute", top: 10, right: 80, fontSize: 20, opacity: 0.4 }}>✨</div>
+        <div style={{ position: "absolute", top: 20, right: 40, fontSize: 14, opacity: 0.3 }}>🌟</div>
+        <div style={{ position: "absolute", bottom: 10, left: 20, fontSize: 16, opacity: 0.3 }}>✨</div>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {/* Festival emoji with glow */}
+            <div style={{ fontSize: 48, filter: "drop-shadow(0 0 10px rgba(201,168,76,0.8))", flexShrink: 0 }}>{festival.emoji}</div>
+            <div>
+              {/* Countdown badge */}
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.2)", borderRadius: 20, padding: "3px 12px", marginBottom: 6 }}>
+                <span style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 800, color: "#fff", textTransform: "uppercase", letterSpacing: 1 }}>
+                  {daysLeft === 0 ? (lang === "hi" ? "🔥 आज है!" : lang === "mr" ? "🔥 आज आहे!" : "🔥 Today!") :
+                   daysLeft === 1 ? (lang === "hi" ? "⚡ कल है!" : lang === "mr" ? "⚡ उद्या आहे!" : "⚡ Tomorrow!") :
+                   `⏰ ${daysLeft} ${lang === "hi" ? "दिन बाकी" : lang === "mr" ? "दिवस बाकी" : "days left"}`}
+                </span>
+              </div>
+              {/* Festival name */}
+              <h3 style={{ fontFamily: font, fontSize: 22, color: "#ffd700", margin: "0 0 4px", textShadow: "0 2px 8px rgba(0,0,0,0.3)", lineHeight: 1.2 }}>
+                {festival.name[lang] || festival.name.en}
+              </h3>
+              {/* Description */}
+              <p style={{ fontFamily: sansFont, fontSize: 13, color: "rgba(255,255,255,0.9)", margin: 0, lineHeight: 1.5, maxWidth: 380 }}>
+                {festival.puja[lang] || festival.puja.en}
+              </p>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div style={{ flexShrink: 0, textAlign: "center" }}>
+            <button onClick={() => dispatch({ type: "SET_VIEW", payload: "register" })}
+              style={{ fontFamily: sansFont, fontSize: 14, fontWeight: 800, padding: "14px 28px", borderRadius: 12, border: "2px solid #ffd700", cursor: "pointer", background: "#ffd700", color: C.maroon, display: "block", marginBottom: 6, boxShadow: "0 4px 15px rgba(255,215,0,0.4)", letterSpacing: 0.5 }}>
+              🙏 {lang === "hi" ? "अभी बुक करें!" : lang === "mr" ? "आत्ताच बुक करा!" : "Book Now!"}
+            </button>
+            {isUrgent && (
+              <p style={{ fontFamily: sansFont, fontSize: 10, color: "rgba(255,255,255,0.7)", margin: 0, fontWeight: 600 }}>
+                {lang === "hi" ? "⚠️ सीमित स्थान उपलब्ध" : lang === "mr" ? "⚠️ मर्यादित जागा उपलब्ध" : "⚠️ Limited slots available"}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
-      <button onClick={() => dispatch({ type: "SET_VIEW", payload: "register" })}
-        style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 22px", borderRadius: 10, border: "2px solid #fff", cursor: "pointer", background: "transparent", color: "#fff", whiteSpace: "nowrap", flexShrink: 0 }}>
-        🙏 {lang === "hi" ? "अभी बुक करें" : lang === "mr" ? "आत्ताच बुक करा" : "Book Now"}
-      </button>
+
+      {/* Bottom strip */}
+      <div style={{ background: "#ffd700", padding: "6px 24px", display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 800, color: C.maroon }}>
+          🛕 {lang === "hi" ? "श्री दत्तराज गुरुमाऊली — दिव्य दत्त सेवा केंद्र" : lang === "mr" ? "श्री दत्तराज गुरुमाऊली — दिव्य दत्त सेवा केंद्र" : "Shree Dattaraj Gurumauli — Divya Datta Seva Kendra"}
+        </span>
+      </div>
     </div>
   );
 }
