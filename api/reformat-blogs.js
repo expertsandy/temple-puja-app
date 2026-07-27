@@ -2,7 +2,33 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY);
+const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY);
+
+const CATEGORY_PHOTOS = {
+  "पूजा विधि": ["hindu puja ritual", "temple worship diya", "indian puja ceremony", "oil lamp worship"],
+  "तीर्थ क्षेत्र": ["indian temple architecture", "hindu pilgrimage temple", "ancient indian temple", "temple river india"],
+  "अध्यात्म": ["meditation spiritual india", "lotus flower spiritual", "yoga meditation", "indian spiritual"],
+  "गुरु परंपरा": ["indian sage guru", "spiritual teacher india", "monk meditation india", "hindu sadhu"],
+  "दत्त संप्रदाय": ["hindu temple india", "sacred temple india", "indian religious ceremony", "temple prayer india"],
+};
+
+async function fetchPexelsPhoto(category, topic) {
+  const apiKey = process.env.PEXELS_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const queries = CATEGORY_PHOTOS[category] || ["hindu temple spiritual india"];
+    const query = queries[topic.length % queries.length];
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=landscape`,
+      { headers: { Authorization: apiKey } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.photos?.length) return null;
+    const photo = data.photos[Math.floor(Math.random() * data.photos.length)];
+    return photo.src.large;
+  } catch (e) { return null; }
+}
 
 async function reformatPost(post) {
   const prompt = `You are a blog editor for a Hindu spiritual platform (Datta Sampradaya tradition).
@@ -92,6 +118,12 @@ export default async function handler(req, res) {
           .replace(/^-+|-+$/g, '')
           .substring(0, 100);
 
+        // Fetch photo if post doesn't have one
+        let coverImage = post.cover_image;
+        if (!coverImage) {
+          coverImage = await fetchPexelsPhoto(post.category, post.title_en || post.title || "");
+        }
+
         await supabase
           .from('blog_posts')
           .update({
@@ -103,6 +135,7 @@ export default async function handler(req, res) {
             content_mr: improved.content_mr || post.content_mr,
             tags: improved.tags || [],
             slug: slug,
+            cover_image: coverImage,
           })
           .eq('id', post.id);
 

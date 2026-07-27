@@ -4,6 +4,44 @@ import Anthropic from '@anthropic-ai/sdk';
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY);
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// ─── Category to Pexels search query mapping ───
+const CATEGORY_PHOTOS = {
+  "पूजा विधि": ["hindu puja ritual", "temple worship diya", "indian puja ceremony", "oil lamp worship"],
+  "तीर्थ क्षेत्र": ["indian temple architecture", "hindu pilgrimage temple", "ancient indian temple", "temple river india"],
+  "अध्यात्म": ["meditation spiritual india", "lotus flower spiritual", "yoga meditation", "indian spiritual"],
+  "गुरु परंपरा": ["indian sage guru", "spiritual teacher india", "monk meditation india", "hindu sadhu"],
+  "दत्त संप्रदाय": ["hindu temple india", "sacred temple india", "indian religious ceremony", "temple prayer india"],
+};
+
+async function fetchPexelsPhoto(category, topic) {
+  const apiKey = process.env.PEXELS_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    // Get queries for this category
+    const queries = CATEGORY_PHOTOS[category] || ["hindu temple spiritual india"];
+    // Pick a query based on topic length (simple variation)
+    const query = queries[topic.length % queries.length];
+
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=15&orientation=landscape`,
+      { headers: { Authorization: apiKey } }
+    );
+
+    if (!res.ok) return null;
+    const data = await res.json();
+
+    if (!data.photos || data.photos.length === 0) return null;
+
+    // Pick a random photo from results
+    const photo = data.photos[Math.floor(Math.random() * data.photos.length)];
+    return photo.src.large; // 940x627 approx
+  } catch (e) {
+    console.error("Pexels fetch error:", e.message);
+    return null;
+  }
+}
+
 // ─── Blog Topics Pool ───
 const TOPICS = [
   { topic: "Importance of Guru Purnima in Datta Sampradaya", category: "दत्त संप्रदाय" },
@@ -174,6 +212,10 @@ export default async function handler(req, res) {
       .replace(/^-+|-+$/g, '')
       .substring(0, 100);
 
+    // Fetch relevant photo from Pexels
+    const coverImage = await fetchPexelsPhoto(selected.category, selected.topic);
+    console.log(`Photo: ${coverImage ? 'found' : 'not found'}`);
+
     // Save to database
     const { error } = await supabase.from('blog_posts').insert({
       id: postId,
@@ -189,7 +231,7 @@ export default async function handler(req, res) {
       category: selected.category,
       author: "श्री दत्तराज गुरुमाऊली",
       published: true,
-      cover_image: null,
+      cover_image: coverImage,
       tags: article.tags || [],
       slug: slug,
     });
