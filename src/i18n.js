@@ -22,7 +22,7 @@ const translations = {
   navHome: { en: "🏠 Home", hi: "🏠 होम", mr: "🏠 मुख्यपृष्ठ" },
   navRegister: { en: "📋 Register", hi: "📋 पंजीकरण", mr: "📋 नोंदणी" },
   navMyBookings: { en: "📊 My Bookings", hi: "📊 मेरी बुकिंग", mr: "📊 माझ्या बुकिंग" },
-  navTools: { en: "🔮 Spiritual Tools", hi: "🔮 अध्यात्मिक उपकरण", mr: "🔮 अध्यात्मिक साधने" },
+  navVideos: { en: "▶️ Videos", hi: "▶️ वीडियो", mr: "▶️ व्हिडिओ" },
   navAITools: { en: "🤖 Spiritual Assistant", hi: "🤖 अध्यात्मिक सहायक", mr: "🤖 अध्यात्मिक सहाय्यक" },
   navChat: { en: "💬 Chat with Gurudev", hi: "💬 गुरुदेव से बात करें", mr: "💬 गुरुदेवांशी बोला" },
   navUtilities: { en: "✨ Utilities", hi: "✨ उपयोगिताएं", mr: "✨ उपयुक्तता" },
