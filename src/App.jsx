@@ -11,7 +11,7 @@ import {
   signIn, signOut, getSession, onAuthChange,
 } from "./supabase.js";
 import { BlogPage, BlogPostView, BlogAdmin } from "./Blog.jsx";
-import { PrivacyPolicyPage, TermsPage, RefundPolicyPage, LegalFooterLinks } from "./Legal.jsx";
+import { PrivacyPolicyPage, TermsPage, RefundPolicyPage, LegalFooterLinks, DisclaimerPage } from "./Legal.jsx";
 import { DevoteeDashboard } from "./DevoteeDashboard.jsx";
 import { PriestsAdmin, PriestAssignment } from "./Priests.jsx";
 import { SpiritualTools } from "./SpiritualTools.jsx";
@@ -1219,7 +1219,7 @@ const VIEW_TO_PATH = {
   home: "/", register: "/register", "my-bookings": "/my-bookings",
   tools: "/tools", "ai-tools": "/ai-tools", chat: "/chat",
   videos: "/videos", blog: "/blog", about: "/about",
-  privacy: "/privacy", terms: "/terms", refund: "/refund",
+  privacy: "/privacy", terms: "/terms", refund: "/refund", disclaimer: "/disclaimer",
   login: "/admin/login", admin: "/admin",
 };
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(([v, p]) => [p, v]));
@@ -1403,6 +1403,7 @@ export default function App() {
         {state.view === "privacy" && <PrivacyPolicyPage />}
         {state.view === "terms" && <TermsPage />}
         {state.view === "refund" && <RefundPolicyPage />}
+        {state.view === "disclaimer" && <DisclaimerPage />}
       </main>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}><FooterAd /></div>
       <footer style={{ borderTop: `1px solid ${C.border}`, padding: "28px 24px 20px", textAlign: "center" }}>

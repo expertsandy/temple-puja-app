@@ -380,6 +380,7 @@ const translations = {
     hi: "वापसी",
     mr: "परतावा",
   },
+  disclaimer: { en: "Disclaimer", hi: "अस्वीकरण", mr: "अस्वीकरण" },
 
   // ─── Admin Login ───
   loginTitle: {

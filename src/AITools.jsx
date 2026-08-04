@@ -522,13 +522,7 @@ export function AITools() {
         </div>
       </div>
 
-      <div style={{ marginTop: 16, padding: "12px 18px", background: C.cream, borderRadius: 10, textAlign: "center" }}>
-        <p style={{ fontFamily: sansFont, fontSize: 11, color: C.light, margin: 0 }}>
-          🙏 {lang === "hi" ? "यह सेवा Google Gemini AI द्वारा निःशुल्क संचालित है। गंभीर विषयों के लिए योग्य पंडित जी से परामर्श लें।"
-            : lang === "mr" ? "ही सेवा Google Gemini AI द्वारे मोफत चालवली जाते. गंभीर विषयांसाठी पंडितजींचा सल्ला घ्या."
-            : "This service is powered by Google Gemini AI — completely free. For serious matters, consult a qualified priest."}
-        </p>
-      </div>
+
     </div>
   );
 }

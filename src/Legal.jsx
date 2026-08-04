@@ -330,17 +330,146 @@ export function ContactPage() {
   );
 }
 
+// ─── Disclaimer Page ───
+export function DisclaimerPage() {
+  const { lang } = useLang();
+  const updated = "20 July 2026";
+
+  const content = {
+    en: {
+      title: "⚠️ Disclaimer",
+      sections: [
+        {
+          heading: "AI-Powered Services",
+          text: "The Spiritual Tools, Spiritual Assistant (Puja Advisor, Mantra Guide, Dream Interpretation, Rashi Guidance) and Gurudev Chat on this platform are powered by Artificial Intelligence (AI) technology. While we strive to provide spiritually authentic and helpful guidance, the responses generated are AI-driven and may not always be perfectly accurate or complete."
+        },
+        {
+          heading: "Not a Substitute for Professional Guidance",
+          text: "The AI-generated content on this platform is intended for general spiritual guidance and informational purposes only. It should not be treated as a substitute for advice from a qualified Guru, Vedic astrologer, pandit or other spiritual expert. For serious life decisions, medical, legal or financial matters, please consult a qualified professional."
+        },
+        {
+          heading: "Puja Recommendations",
+          text: "Puja recommendations provided by the AI Spiritual Assistant are based on general Vedic and Datta Sampradaya traditions. Individual circumstances may vary. For accurate kundli preparation, muhurat selection or sankalp, please consult our priests directly."
+        },
+        {
+          heading: "Accuracy of Panchang & Rashi",
+          text: "The Panchang, Rashi (Moon Sign) and Nakshatra calculations use standard astronomical algorithms (Meeus algorithm with Lahiri ayanamsa). These are approximate and may differ slightly from traditional panchang publications. For precise calculations, please consult an authorized panchang or priest."
+        },
+        {
+          heading: "Online Puja Booking",
+          text: "Shree Dattaraj Gurumauli makes every effort to ensure pujas are performed as booked. However, in exceptional circumstances beyond our control, we reserve the right to reschedule. In such cases, devotees will be informed promptly."
+        },
+        {
+          heading: "Content Accuracy",
+          text: "Blog articles and spiritual content on this platform are auto-generated or manually written for informational purposes. While rooted in authentic Datta Sampradaya tradition, they should be verified with qualified priests for ritual or scriptural accuracy."
+        },
+        {
+          heading: "Contact Us",
+          text: "For any concerns about the content or services on this platform, please contact us on WhatsApp at +91 9930576556 or visit shreedattarajgurumauli.com."
+        }
+      ]
+    },
+    hi: {
+      title: "⚠️ अस्वीकरण (Disclaimer)",
+      sections: [
+        {
+          heading: "AI-संचालित सेवाएं",
+          text: "इस प्लेटफॉर्म पर अध्यात्मिक उपकरण, अध्यात्मिक सहायक (पूजा सलाहकार, मंत्र मार्गदर्शन, स्वप्न फल, राशि मार्गदर्शन) और गुरुदेव चैट — ये सभी सेवाएं Artificial Intelligence (AI) तकनीक द्वारा संचालित हैं। हम प्रामाणिक और सहायक मार्गदर्शन प्रदान करने का प्रयास करते हैं, परंतु AI-उत्पन्न उत्तर हमेशा पूर्णतः सटीक नहीं हो सकते।"
+        },
+        {
+          heading: "विशेषज्ञ मार्गदर्शन का विकल्प नहीं",
+          text: "इस प्लेटफॉर्म पर AI-उत्पन्न सामग्री केवल सामान्य अध्यात्मिक मार्गदर्शन और जानकारी के लिए है। यह किसी योग्य गुरु, वैदिक ज्योतिषी, पंडित जी या अन्य अध्यात्मिक विशेषज्ञ की सलाह का विकल्प नहीं है। गंभीर जीवन निर्णयों के लिए कृपया योग्य विशेषज्ञ से परामर्श लें।"
+        },
+        {
+          heading: "पूजा सुझाव",
+          text: "AI अध्यात्मिक सहायक द्वारा दिए गए पूजा सुझाव सामान्य वैदिक और दत्त संप्रदाय परंपराओं पर आधारित हैं। व्यक्तिगत परिस्थितियां भिन्न हो सकती हैं। सटीक कुंडली, मुहूर्त या संकल्प के लिए कृपया हमारे पुजारी से सीधे संपर्क करें।"
+        },
+        {
+          heading: "पंचांग और राशि की सटीकता",
+          text: "पंचांग, राशि (चंद्र राशि) और नक्षत्र गणना मानक खगोलीय एल्गोरिदम (मीयस एल्गोरिदम, लाहिरी अयनांश) का उपयोग करती है। ये अनुमानित हैं और पारंपरिक पंचांग से थोड़ा भिन्न हो सकते हैं।"
+        },
+        {
+          heading: "ऑनलाइन पूजा बुकिंग",
+          text: "श्री दत्तराज गुरुमाऊली हर संभव प्रयास करते हैं कि पूजाएं बुकिंग के अनुसार संपन्न हों। असाधारण परिस्थितियों में पुनर्निर्धारण का अधिकार सुरक्षित है और भक्तों को तुरंत सूचित किया जाएगा।"
+        },
+        {
+          heading: "सामग्री की सटीकता",
+          text: "इस प्लेटफॉर्म पर ब्लॉग लेख और अध्यात्मिक सामग्री जानकारी के उद्देश्य से है। अनुष्ठान या शास्त्रीय सटीकता के लिए कृपया योग्य पुजारी से सत्यापन करें।"
+        },
+        {
+          heading: "संपर्क करें",
+          text: "इस प्लेटफॉर्म की सामग्री या सेवाओं के बारे में किसी भी चिंता के लिए, कृपया WhatsApp पर संपर्क करें: +91 9930576556"
+        }
+      ]
+    },
+    mr: {
+      title: "⚠️ अस्वीकरण (Disclaimer)",
+      sections: [
+        {
+          heading: "AI-चालित सेवा",
+          text: "या प्लॅटफॉर्मवरील अध्यात्मिक साधने, अध्यात्मिक सहाय्यक (पूजा सल्लागार, मंत्र मार्गदर्शन, स्वप्न फल, राशी मार्गदर्शन) आणि गुरुदेव चॅट — या सर्व सेवा Artificial Intelligence (AI) तंत्रज्ञानाद्वारे चालवल्या जातात. आम्ही प्रामाणिक मार्गदर्शन देण्याचा प्रयत्न करतो, परंतु AI-उत्पन्न उत्तरे नेहमीच पूर्णपणे अचूक नसू शकतात."
+        },
+        {
+          heading: "तज्ञ मार्गदर्शनाचा पर्याय नाही",
+          text: "या प्लॅटफॉर्मवरील AI-उत्पन्न सामग्री केवळ सामान्य अध्यात्मिक मार्गदर्शन आणि माहितीसाठी आहे. हे योग्य गुरू, वैदिक ज्योतिषी, पंडितजी किंवा इतर अध्यात्मिक तज्ञांच्या सल्ल्याचा पर्याय नाही."
+        },
+        {
+          heading: "पूजा सुचना",
+          text: "AI अध्यात्मिक सहाय्यकाने दिलेल्या पूजा सुचना सामान्य वैदिक आणि दत्त संप्रदाय परंपरांवर आधारित आहेत. अचूक कुंडली, मुहूर्त किंवा संकल्पासाठी कृपया आमच्या पुजाऱ्यांशी थेट संपर्क करा."
+        },
+        {
+          heading: "पंचांग आणि राशीची अचूकता",
+          text: "पंचांग, राशी (चंद्र राशी) आणि नक्षत्र गणना मानक खगोलशास्त्रीय अल्गोरिदम (मीयस अल्गोरिदम, लाहिरी अयनांश) वापरते. हे अंदाजे आहेत आणि पारंपारिक पंचांगापेक्षा थोडे वेगळे असू शकतात."
+        },
+        {
+          heading: "ऑनलाइन पूजा बुकिंग",
+          text: "श्री दत्तराज गुरुमाऊली प्रत्येक प्रयत्न करते की पूजा बुकिंगनुसार पार पडाव्यात. अपवादात्मक परिस्थितीत पुनर्नियोजनाचा अधिकार राखीव आहे आणि भक्तांना त्वरित कळवले जाईल."
+        },
+        {
+          heading: "सामग्रीची अचूकता",
+          text: "या प्लॅटफॉर्मवरील ब्लॉग लेख आणि अध्यात्मिक सामग्री माहितीच्या उद्देशाने आहे. विधी किंवा शास्त्रीय अचूकतेसाठी कृपया योग्य पुजाऱ्यांकडून सत्यापन करा."
+        },
+        {
+          heading: "संपर्क करा",
+          text: "या प्लॅटफॉर्मच्या सामग्री किंवा सेवांबद्दल कोणत्याही चिंतेसाठी, कृपया WhatsApp वर संपर्क करा: +91 9930576556"
+        }
+      ]
+    }
+  };
+
+  const c = content[lang] || content.en;
+
+  return (
+    <div style={{ maxWidth: 720, margin: "0 auto" }}>
+      <h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 6px" }}>{c.title}</h2>
+      <p style={{ fontFamily: sansFont, fontSize: 13, color: C.light, margin: "0 0 12px" }}>Last updated: {updated}</p>
+      <PTECBadge />
+      <div style={{ background: "#fff", borderRadius: 16, padding: "28px 32px", border: `1px solid ${C.border}` }}>
+        {c.sections.map((s, i) => (
+          <div key={i} style={{ marginBottom: i < c.sections.length - 1 ? 24 : 0 }}>
+            <h3 style={{ fontFamily: font, fontSize: 18, color: C.saffron, margin: "0 0 8px" }}>{s.heading}</h3>
+            <p style={{ fontFamily: sansFont, fontSize: 14, color: C.mid, lineHeight: 1.8, margin: 0 }}>{s.text}</p>
+            {i < c.sections.length - 1 && <hr style={{ border: "none", borderTop: `1px solid ${C.border}`, margin: "20px 0 0" }} />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Footer Links Component ───
 export function LegalFooterLinks({ dispatch }) {
   const { t } = useLang();
   const linkStyle = { fontFamily: sansFont, fontSize: 12, color: C.light, textDecoration: "none", cursor: "pointer", borderBottom: `1px dotted ${C.border}` };
   return (
-    <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8 }}>
+    <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 8, flexWrap: "wrap" }}>
       <span onClick={() => dispatch({ type: "SET_VIEW", payload: "privacy" })} style={linkStyle}>{t("privacy")}</span>
       <span style={{ color: C.border }}>|</span>
       <span onClick={() => dispatch({ type: "SET_VIEW", payload: "terms" })} style={linkStyle}>{t("terms")}</span>
       <span style={{ color: C.border }}>|</span>
       <span onClick={() => dispatch({ type: "SET_VIEW", payload: "refund" })} style={linkStyle}>{t("refund")}</span>
+      <span style={{ color: C.border }}>|</span>
+      <span onClick={() => dispatch({ type: "SET_VIEW", payload: "disclaimer" })} style={linkStyle}>{t("disclaimer") || "Disclaimer"}</span>
     </div>
   );
 }

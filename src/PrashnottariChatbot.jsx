@@ -250,7 +250,7 @@ function PrashnottariChat({ lang, onLock }) {
           <img src="/gurudev.png" alt="Gurudev" style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "2px solid #c9a84c" }} />
           <div>
             <h3 style={{ fontFamily: font, fontSize: 17, color: C.gold, margin: 0 }}>
-              {lang === "hi" ? "गुरुदेव — AI अध्यात्मिक मार्गदर्शक" : lang === "mr" ? "गुरुदेव — AI अध्यात्मिक मार्गदर्शक" : "Gurudev — AI Spiritual Guide"}
+              {lang === "hi" ? "गुरुदेव — अध्यात्मिक मार्गदर्शक" : lang === "mr" ? "गुरुदेव — अध्यात्मिक मार्गदर्शक" : "Gurudev — Spiritual Guide"}
             </h3>
             <p style={{ fontFamily: sansFont, fontSize: 11, color: "rgba(255,255,255,0.7)", margin: 0 }}>
               {lang === "hi" ? "दत्त संप्रदाय परंपरा पर आधारित • Facebook सदस्य एक्सक्लूसिव"
