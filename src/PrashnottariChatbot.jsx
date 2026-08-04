@@ -262,13 +262,9 @@ function PrashnottariChat({ lang, onLock }) {
         <div style={{ display: "flex", gap: 8 }}>
           {messages.length > 0 && (
             <button onClick={clearChat} style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", background: "transparent", color: "rgba(255,255,255,0.7)", cursor: "pointer" }}>
-              🗑️ Clear
+              🗑️ {lang === "hi" ? "साफ करें" : lang === "mr" ? "साफ करा" : "Clear"}
             </button>
           )}
-          <button onClick={() => { onLock(); }}
-            style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", background: "transparent", color: "rgba(255,255,255,0.7)", cursor: "pointer" }}>
-            🔒 Lock
-          </button>
         </div>
       </div>
 
