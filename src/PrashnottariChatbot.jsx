@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext.jsx";
 import { verifyAccessCode } from "./supabase.js";
+import { saveAccessCode, getAccessCode, accessCodeDaysLeft, saveChatHistory, getChatHistory } from "./DevoteeStorage.js";
 
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
@@ -59,8 +60,7 @@ function AccessCodeGate({ lang, onUnlock }) {
 
   // Check if already unlocked in session
   useEffect(() => {
-    const saved = sessionStorage.getItem("chatbot_unlocked");
-    if (saved === "true") onUnlock();
+    if (getAccessCode()) onUnlock();
   }, []);
 
   const handleVerify = async () => {
@@ -69,7 +69,7 @@ function AccessCodeGate({ lang, onUnlock }) {
     try {
       const result = await verifyAccessCode(code);
       if (result) {
-        sessionStorage.setItem("chatbot_unlocked", "true");
+        saveAccessCode(code, result.description || "");
         onUnlock();
       } else {
         setError(lang === "hi" ? "अमान्य या समाप्त कोड। कृपया Facebook पेज से नया कोड प्राप्त करें।"
@@ -189,7 +189,7 @@ function ChatBubble({ msg, lang }) {
 
 // ─── Main Chatbot ───
 function PrashnottariChat({ lang, onLock }) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => getChatHistory("gurudev"));
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -213,11 +213,16 @@ function PrashnottariChat({ lang, onLock }) {
 
     const newMessages = [...messages, { role: "user", content: userMsg }];
     setMessages(newMessages);
+    saveChatHistory("gurudev", newMessages);
     setLoading(true);
 
     try {
       const reply = await askGroq(newMessages, lang);
-      setMessages(prev => [...prev, { role: "assistant", content: reply }]);
+      setMessages(prev => {
+        const updated = [...prev, { role: "assistant", content: reply }];
+        saveChatHistory("gurudev", updated);
+        return updated;
+      });
     } catch (e) {
       if (e.message === "rate_limit") {
         setError(lang === "hi" ? "अभी बहुत अनुरोध हैं। 1 मिनट बाद पुनः प्रयास करें।" : lang === "mr" ? "सध्या खूप विनंत्या. 1 मिनिटानंतर पुन्हा प्रयत्न करा." : "Too many requests. Please try again in a minute.");
@@ -260,7 +265,7 @@ function PrashnottariChat({ lang, onLock }) {
               🗑️ Clear
             </button>
           )}
-          <button onClick={() => { sessionStorage.removeItem("chatbot_unlocked"); onLock(); }}
+          <button onClick={() => { onLock(); }}
             style={{ fontFamily: sansFont, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", background: "transparent", color: "rgba(255,255,255,0.7)", cursor: "pointer" }}>
             🔒 Lock
           </button>

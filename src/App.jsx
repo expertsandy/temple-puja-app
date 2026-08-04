@@ -18,6 +18,7 @@ import { SpiritualTools } from "./SpiritualTools.jsx";
 import { AITools } from "./AITools.jsx";
 import { PrashnottariChatbot } from "./PrashnottariChatbot.jsx";
 import { VideosPage } from "./VideosPage.jsx";
+import { saveDevoteeProfile, getDevoteeProfile, saveAccessCode, getAccessCode, accessCodeDaysLeft, saveChatHistory, getChatHistory, saveRashiDetails, getRashiDetails } from "./DevoteeStorage.js";
 import { HomeBannerAd, BlogAd, FooterAd, ToolsAd, AIToolsAd } from "./AdSense.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
 
@@ -474,7 +475,20 @@ function UpiQrCode({ amount, size = 200 }) {
 // ─── Registration Form ───
 function RegistrationForm({ state, dispatch, onRefresh }) {
   const { t, lang } = useLang();
-  const [form, setForm] = useState({ devoteeName: "", phone: "", email: "", gotra: "", templeId: state.selectedTemple || "", pujaIds: [...state.selectedPujas], date: "", time: "", members: 1, paymentScreenshot: null, screenshotName: "" });
+  const savedProfile = getDevoteeProfile();
+  const [form, setForm] = useState({
+    devoteeName: savedProfile?.name || "",
+    phone: savedProfile?.phone || "",
+    email: savedProfile?.email || "",
+    gotra: savedProfile?.gotra || "",
+    templeId: state.selectedTemple || "",
+    pujaIds: [...state.selectedPujas],
+    date: "",
+    time: "",
+    members: savedProfile?.members || 1,
+    paymentScreenshot: null,
+    screenshotName: "",
+  });
   const [saving, setSaving] = useState(false);
   const temple = state.temples.find(t => t.id === form.templeId);
   const selPujas = temple ? temple.pujas.filter(p => form.pujaIds.includes(p.id)) : [];
@@ -486,6 +500,14 @@ function RegistrationForm({ state, dispatch, onRefresh }) {
     setSaving(true);
     try {
       await dbAddRegistration({ id: "r" + Date.now(), ...form });
+      // Save profile for next visit
+      saveDevoteeProfile({
+        name: form.devoteeName,
+        phone: form.phone,
+        email: form.email,
+        gotra: form.gotra,
+        members: form.members,
+      });
       await onRefresh();
       dispatch({ type: "SUBMITTED" });
     } catch (e) { alert("Error: " + e.message); }
@@ -497,6 +519,17 @@ function RegistrationForm({ state, dispatch, onRefresh }) {
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 28 }}><h2 style={{ fontFamily: font, fontSize: 26, color: C.maroon, margin: "0 0 6px" }}>{t("regTitle")}</h2></div>
+      {savedProfile?.name && (
+        <div style={{ marginBottom: 16, padding: "12px 18px", background: C.successBg, borderRadius: 12, border: `1px solid ${C.success}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <p style={{ fontFamily: sansFont, fontSize: 13, color: C.success, margin: 0, fontWeight: 600 }}>
+            🙏 {lang === "hi" ? `स्वागत है, ${savedProfile.name}! आपका विवरण पहले से भरा गया है।` : lang === "mr" ? `स्वागत आहे, ${savedProfile.name}! तुमचे तपशील आधीच भरले गेले आहेत.` : `Welcome back, ${savedProfile.name}! Your details have been pre-filled.`}
+          </p>
+          <button onClick={() => { setForm(f => ({ ...f, devoteeName: "", phone: "", email: "", gotra: "", members: 1 })); clearDevoteeProfile(); }}
+            style={{ fontFamily: sansFont, fontSize: 11, color: C.light, background: "none", border: "none", cursor: "pointer", flexShrink: 0, marginLeft: 10 }}>
+            {lang === "hi" ? "साफ करें" : lang === "mr" ? "साफ करा" : "Clear"}
+          </button>
+        </div>
+      )}
       <div style={{ background: "#fff", borderRadius: 16, padding: 28, border: `1px solid ${C.border}` }}>
         <div style={{ marginBottom: 24, padding: "18px 20px", background: C.saffronLight, borderRadius: 12 }}>
           <h3 style={{ fontFamily: font, fontSize: 16, color: C.saffron, margin: "0 0 14px" }}>{t("templeAndPujas")}</h3>

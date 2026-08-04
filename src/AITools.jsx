@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext.jsx";
 import { verifyAccessCode } from "./supabase.js";
+import { saveAccessCode, getAccessCode, accessCodeDaysLeft } from "./DevoteeStorage.js";
 
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
@@ -367,7 +368,7 @@ function AIToolsGate({ lang, onUnlock }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (sessionStorage.getItem("aitools_unlocked") === "true") onUnlock();
+    if (getAccessCode()) onUnlock();
   }, []);
 
   const handleVerify = async () => {
@@ -375,7 +376,7 @@ function AIToolsGate({ lang, onUnlock }) {
     setLoading(true); setError("");
     try {
       const result = await verifyAccessCode(code);
-      if (result) { sessionStorage.setItem("aitools_unlocked", "true"); onUnlock(); }
+      if (result) { saveAccessCode(code, result.description || ""); onUnlock(); }
       else setError(lang === "hi" ? "अमान्य या समाप्त कोड। Facebook पेज से नया कोड प्राप्त करें।" : lang === "mr" ? "अवैध कोड. Facebook पेजवरून नवा कोड मिळवा." : "Invalid or expired code. Get the latest code from our Facebook page.");
     } catch (e) { setError("An error occurred. Please try again."); }
     setLoading(false);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLang } from "./LangContext.jsx";
+import { saveRashiDetails, getRashiDetails } from "./DevoteeStorage.js";
 
 const font = "'Noto Serif Devanagari', 'Playfair Display', Georgia, serif";
 const sansFont = "'DM Sans', 'Segoe UI', sans-serif";
@@ -344,10 +345,11 @@ function PanchangView({ lang }) {
 
 // ─── Rashi (Vedic + Western) ───
 function RashiView({ lang }) {
-  const [system, setSystem] = useState("vedic");
-  const [dob, setDob] = useState("");
-  const [tob, setTob] = useState("06:00");
-  const [city, setCity] = useState("Mumbai");
+  const savedRashi = getRashiDetails();
+  const [system, setSystem] = useState(savedRashi?.system || "vedic");
+  const [dob, setDob] = useState(savedRashi?.dob || "");
+  const [tob, setTob] = useState(savedRashi?.tob || "06:00");
+  const [city, setCity] = useState(savedRashi?.city || "Mumbai");
 
   let vedicRashi = null, westernRashi = null, nakshatra = null, pada = null, moonDeg = null;
 
@@ -390,7 +392,7 @@ function RashiView({ lang }) {
         <div style={{ display: "grid", gridTemplateColumns: system === "vedic" ? "1fr 1fr 1fr" : "1fr", gap: 14 }}>
           <div>
             <label style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 600, color: C.mid, marginBottom: 6, display: "block" }}>{lang === "en" ? "Date of Birth *" : lang === "hi" ? "जन्म तिथि *" : "जन्मतारीख *"}</label>
-            <input type="date" value={dob} onChange={e => setDob(e.target.value)} style={inputStyle} />
+            <input type="date" value={dob} onChange={e => { setDob(e.target.value); saveRashiDetails({ dob: e.target.value, tob, city, system }); }} style={inputStyle} />
           </div>
           {system === "vedic" && <>
             <div>
