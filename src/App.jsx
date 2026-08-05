@@ -160,13 +160,14 @@ function Header({ state, dispatch, adminUser, onLogout }) {
 
         {/* Desktop Nav */}
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {nav.map(n => (
+          {/* Home, e-Puja, My Bookings */}
+          {nav.slice(0, 3).map(n => (
             <button key={n.view} onClick={() => handleNav(n.view)}
               style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
               {n.label}
             </button>
           ))}
-          {/* Utilities Dropdown */}
+          {/* Tools Dropdown — between My Bookings and Blog */}
           <div style={{ position: "relative" }} onMouseEnter={() => setUtilitiesOpen(true)} onMouseLeave={() => setUtilitiesOpen(false)}>
             <button style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: isUtilityActive ? "rgba(123,26,44,0.12)" : "transparent", color: isUtilityActive ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
               {t("navUtilities")} ▾
@@ -182,6 +183,13 @@ function Header({ state, dispatch, adminUser, onLogout }) {
               </div>
             )}
           </div>
+          {/* Blog, About, Facebook, Videos */}
+          {nav.slice(3).map(n => (
+            <button key={n.view} onClick={() => handleNav(n.view)}
+              style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
+              {n.label}
+            </button>
+          ))}
           {!adminUser ? (
             <button onClick={() => handleNav("login")} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navAdmin")}</button>
           ) : (
