@@ -18,6 +18,7 @@ import { SpiritualTools } from "./SpiritualTools.jsx";
 import { AITools } from "./AITools.jsx";
 import { PrashnottariChatbot } from "./PrashnottariChatbot.jsx";
 import { VideosPage } from "./VideosPage.jsx";
+import { FacebookFeed } from "./FacebookFeed.jsx";
 import { saveDevoteeProfile, getDevoteeProfile, saveAccessCode, getAccessCode, accessCodeDaysLeft, saveChatHistory, getChatHistory, saveRashiDetails, getRashiDetails } from "./DevoteeStorage.js";
 import { HomeBannerAd, BlogAd, FooterAd, ToolsAd, AIToolsAd } from "./AdSense.jsx";
 import { useLang, LangSwitcher } from "./LangContext.jsx";
@@ -123,6 +124,7 @@ function Header({ state, dispatch, adminUser, onLogout }) {
     { label: t("navRegister"), view: "register" },
     { label: t("navMyBookings"), view: "my-bookings" },
     { label: t("navVideos"), view: "videos" },
+    { label: t("navFacebook"), view: "facebook" },
     { label: t("navBlog"), view: "blog" },
     { label: t("navAbout"), view: "about" },
   ];
@@ -1218,7 +1220,7 @@ function AccessCodesAdmin() {
 const VIEW_TO_PATH = {
   home: "/", register: "/register", "my-bookings": "/my-bookings",
   tools: "/tools", "ai-tools": "/ai-tools", chat: "/chat",
-  videos: "/videos", blog: "/blog", about: "/about",
+  videos: "/videos", facebook: "/facebook", blog: "/blog", about: "/about",
   privacy: "/privacy", terms: "/terms", refund: "/refund", disclaimer: "/disclaimer",
   login: "/admin/login", admin: "/admin",
 };
@@ -1391,6 +1393,7 @@ export default function App() {
         {state.view === "register" && <RegistrationForm state={state} dispatch={dispatch} onRefresh={refreshData} />}
         {state.view === "my-bookings" && <DevoteeDashboard temples={state.temples} fetchDevoteeBookings={fetchDevoteeBookings} />}
         {state.view === "videos" && <VideosPage />}
+        {state.view === "facebook" && <FacebookFeed />}
         {state.view === "blog" && !state.selectedPostId && <BlogPage posts={state.blogPosts} onSelectPost={(id) => dispatch({ type: "SELECT_POST", payload: id })} />}
         {state.view === "blog" && state.selectedPostId && <BlogPostView post={state.blogPosts.find(p => p.id === state.selectedPostId)} onBack={(id) => id ? dispatch({ type: "SELECT_POST", payload: id }) : dispatch({ type: "SELECT_POST", payload: null })} allPosts={state.blogPosts} />}
         {state.view === "tools" && <div><SpiritualTools /><ToolsAd /></div>}
