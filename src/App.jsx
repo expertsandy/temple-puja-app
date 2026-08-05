@@ -414,6 +414,23 @@ function HomePage({ state, dispatch }) {
     <div>
       {!sel ? (<>
         <div style={{ textAlign: "center", marginBottom: 32 }}><h2 style={{ fontFamily: font, fontSize: 28, color: C.maroon, margin: "0 0 8px" }}>{t("homeTitle")}</h2><p style={{ fontFamily: sansFont, fontSize: 15, color: C.light }}>{t("homeSubtitle")}</p></div>
+        {/* Facebook Subscribe Banner */}
+        <div style={{ marginBottom: 20, padding: "14px 22px", background: "linear-gradient(135deg, #1877F2, #0d5bbf)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div>
+            <p style={{ fontFamily: font, fontSize: 15, color: "#ffd700", margin: "0 0 3px", fontWeight: 700 }}>
+              🔐 {lang === "hi" ? "अध्यात्मिक सेवाओं तक पहुंच पाएं" : lang === "mr" ? "अध्यात्मिक सेवांमध्ये प्रवेश मिळवा" : "Get Access to Spiritual Services"}
+            </p>
+            <p style={{ fontFamily: sansFont, fontSize: 12, color: "rgba(255,255,255,0.85)", margin: 0 }}>
+              {lang === "hi" ? "Facebook पेज Subscribe करें और मासिक एक्सेस कोड पाएं — अध्यात्मिक सहायक और गुरुदेव चैट के लिए"
+                : lang === "mr" ? "Facebook पेज Subscribe करा आणि मासिक ऍक्सेस कोड मिळवा — अध्यात्मिक सहाय्यक आणि गुरुदेव चॅटसाठी"
+                : "Subscribe to Facebook page and get monthly access code for Spiritual Assistant and Gurudev Chat"}
+            </p>
+          </div>
+          <a href="https://www.facebook.com/shreedattarajgurumauli/subscribenow" target="_blank" rel="noopener noreferrer"
+            style={{ fontFamily: sansFont, fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 10, background: "#ffd700", color: "#1877F2", textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap" }}>
+            📘 Subscribe Now
+          </a>
+        </div>
         <FestivalPromoBanner dispatch={dispatch} lang={lang} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>{state.temples.map(t => <TempleCard key={t.id} temple={t} onSelect={() => dispatch({ type: "SELECT_TEMPLE", payload: t.id })} />)}</div>
         <HomeBannerAd />
