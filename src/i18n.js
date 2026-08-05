@@ -20,14 +20,14 @@ const translations = {
 
   // ─── Nav ───
   navHome: { en: "🏠 Home", hi: "🏠 होम", mr: "🏠 मुख्यपृष्ठ" },
-  navRegister: { en: "📋 Register", hi: "📋 पंजीकरण", mr: "📋 नोंदणी" },
+  navRegister: { en: "📋 e-Puja", hi: "📋 ई-पूजा", mr: "📋 ई-पूजा" },
   navMyBookings: { en: "📊 My Bookings", hi: "📊 मेरी बुकिंग", mr: "📊 माझ्या बुकिंग" },
   navVideos: { en: "▶️ Videos", hi: "▶️ वीडियो", mr: "▶️ व्हिडिओ" },
   navFacebook: { en: "📘 Facebook", hi: "📘 Facebook", mr: "📘 Facebook" },
   navTools: { en: "🔮 Spiritual Tools", hi: "🔮 अध्यात्मिक उपकरण", mr: "🔮 अध्यात्मिक साधने" },
   navAITools: { en: "🕉️ Spiritual Assistant", hi: "🕉️ अध्यात्मिक सहायक", mr: "🕉️ अध्यात्मिक सहाय्यक" },
   navChat: { en: "💬 Chat with Gurudev", hi: "💬 गुरुदेव से बात करें", mr: "💬 गुरुदेवांशी बोला" },
-  navUtilities: { en: "✨ Utilities", hi: "✨ उपयोगिताएं", mr: "✨ उपयुक्तता" },
+  navUtilities: { en: "🔮 Tools", hi: "🔮 टूल्स", mr: "🔮 टूल्स" },
   navBlog: { en: "📜 Blog", hi: "📜 ब्लॉग", mr: "📜 ब्लॉग" },
   navAbout: { en: "ℹ️ About", hi: "ℹ️ परिचय", mr: "ℹ️ आमच्याबद्दल" },
   navAdmin: { en: "🔐 Admin", hi: "🔐 एडमिन", mr: "🔐 एडमिन" },

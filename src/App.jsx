@@ -123,10 +123,10 @@ function Header({ state, dispatch, adminUser, onLogout }) {
     { label: t("navHome"), view: "home" },
     { label: t("navRegister"), view: "register" },
     { label: t("navMyBookings"), view: "my-bookings" },
-    { label: t("navVideos"), view: "videos" },
-    { label: t("navFacebook"), view: "facebook" },
     { label: t("navBlog"), view: "blog" },
     { label: t("navAbout"), view: "about" },
+    { label: t("navFacebook"), view: "facebook" },
+    { label: t("navVideos"), view: "videos" },
   ];
   const adminNav = adminUser ? [{ label: "⚙️ Admin", view: "admin" }] : [];
   const nav = [...mainNav, ...adminNav];
