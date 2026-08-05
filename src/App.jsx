@@ -159,17 +159,17 @@ function Header({ state, dispatch, adminUser, onLogout }) {
         </div>
 
         {/* Desktop Nav */}
-        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 2 }}>
           {/* Home, e-Puja, My Bookings */}
           {nav.slice(0, 3).map(n => (
             <button key={n.view} onClick={() => handleNav(n.view)}
-              style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
+              style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "7px 10px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
               {n.label}
             </button>
           ))}
           {/* Tools Dropdown — between My Bookings and Blog */}
           <div style={{ position: "relative" }} onMouseEnter={() => setUtilitiesOpen(true)} onMouseLeave={() => setUtilitiesOpen(false)}>
-            <button style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: isUtilityActive ? "rgba(123,26,44,0.12)" : "transparent", color: isUtilityActive ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
+            <button style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "7px 10px", borderRadius: 8, border: "none", cursor: "pointer", background: isUtilityActive ? "rgba(123,26,44,0.12)" : "transparent", color: isUtilityActive ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
               {t("navUtilities")} ▾
             </button>
             {utilitiesOpen && (
@@ -184,12 +184,19 @@ function Header({ state, dispatch, adminUser, onLogout }) {
             )}
           </div>
           {/* Blog, About, Facebook, Videos */}
-          {nav.slice(3).map(n => (
-            <button key={n.view} onClick={() => handleNav(n.view)}
-              style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap" }}>
-              {n.label}
-            </button>
-          ))}
+          {nav.slice(3).map(n => {
+            const isFB = n.view === "facebook";
+            const isYT = n.view === "videos";
+            return (
+              <button key={n.view} onClick={() => handleNav(n.view)}
+                title={isFB ? "Facebook" : isYT ? "YouTube" : n.label}
+                style={{ fontFamily: sansFont, fontSize: 12, fontWeight: 600, padding: isFB || isYT ? "7px 10px" : "7px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: state.view === n.view ? "rgba(123,26,44,0.12)" : "transparent", color: state.view === n.view ? C.maroon : "#5c2d1a", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 4 }}>
+                {isFB ? <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                : isYT ? <svg width="20" height="14" viewBox="0 0 24 17" fill="#FF0000"><path d="M23.498 2.186a3.016 3.016 0 00-2.122-2.136C19.505 0 12 0 12 0S4.495 0 2.622.505A3.017 3.017 0 00.502 2.186C0 4.07 0 8 0 8s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136C4.495 16.455 12 16.455 12 16.455s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 11.93 24 8 24 8s0-3.93-.502-5.814zM9.545 11.568V4.432L15.818 8l-6.273 3.568z"/></svg>
+                : n.label}
+              </button>
+            );
+          })}
           {!adminUser ? (
             <button onClick={() => handleNav("login")} style={{ fontFamily: sansFont, fontSize: 11, fontWeight: 600, padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(123,26,44,0.3)", cursor: "pointer", background: "transparent", color: "#5c2d1a" }}>{t("navAdmin")}</button>
           ) : (
